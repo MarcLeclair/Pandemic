@@ -11,8 +11,8 @@
 class DeckOfCard {
 	std::deque<Card> deck;
 	Card card;
-	bool isDeckShuffled;
-	typedef enum CardType { infection, player, role, reference }; // need a card type just to make sure all the cards within certain decks do belong there
+	bool isDeckShuffled = false;
+	typedef enum DeckType { infection, player, role}; // need a card type just to make sure all the cards within certain decks do belong there
 public:
 	DeckOfCard();// default constructor
 	DeckOfCard(std::vector<Card> arrayOfCard); // pass initial array of cards at beginning of game.  
@@ -25,7 +25,7 @@ public:
 	Card getTopCard();
 
 private:
-	void shuffleDeck(std::vector<Card> deck);
+	//void shuffleDeck(std::vector<Card> deck);
 	void storeInQue(std::vector<Card> deck);
 
 };

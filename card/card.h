@@ -2,7 +2,7 @@
 
 #include <string>
 #include "DeckOfCard.h"
-class Card: public DeckOfCard {
+class Card {
 
 
 	std::string cardValue;
@@ -18,3 +18,4 @@ private:
 };
 
 
+	
