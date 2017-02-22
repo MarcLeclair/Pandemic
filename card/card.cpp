@@ -5,7 +5,7 @@ Card::Card(std::string value) {
 }
 
 Card::Card() {
-	
+	cardValue = "";
 };
 
 

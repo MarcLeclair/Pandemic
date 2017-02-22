@@ -1,7 +1,7 @@
 #pragma once
-
 #include <string>
-#include "DeckOfCard.h"
+
+
 class Card {
 
 
@@ -14,7 +14,6 @@ public:
 	/*Card operator!=(const Card& cardToCompare);*/
 	bool isEqual(Card card2);
 private:
-		
 };
 
 

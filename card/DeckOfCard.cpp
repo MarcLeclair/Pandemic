@@ -1,7 +1,7 @@
 ﻿#include "DeckOfCard.h"
-#include <iterator>
 
-DeckOfCard::DeckOfCard(std::vector<Card> arrayOfCard) {
+DeckOfCard::DeckOfCard(DeckType type, std::vector<Card> arrayOfCard) {
+	this->type = type;
 	shuffleDeck(arrayOfCard);
 	storeInQue(arrayOfCard);
 
@@ -11,7 +11,9 @@ DeckOfCard::DeckOfCard() {
 	
 };
 Card DeckOfCard::getTopCard() {
+	Card returnValue = deck.front();
 	deck.pop_front();
+	return returnValue;
 };
 
 //void shuffleDeck(std::vector<Card> deck) {
