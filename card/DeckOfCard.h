@@ -10,12 +10,13 @@
 
 class DeckOfCard {
 	std::deque<Card> deck;
-	Card card;
+	Card *card;
 	bool isDeckShuffled = false;
 	typedef enum DeckType { infection, player, role}; // need a card type just to make sure all the cards within certain decks do belong there
+	DeckType type;
 public:
 	DeckOfCard();// default constructor
-	DeckOfCard(std::vector<Card> arrayOfCard); // pass initial array of cards at beginning of game.  
+	DeckOfCard(DeckType type, std::vector<Card> arrayOfCard); // pass initial array of cards at beginning of game.  
 	//Remove this comment after checking out for your assignment
 	//marc: im using a db to store my info, if you guys want to use it to I can put it online for us to use all the same db.
 	//I.e: I'll make calls to a certain table containt type cards x and just put it all in an array. You can use a txt file or hard code them here . 

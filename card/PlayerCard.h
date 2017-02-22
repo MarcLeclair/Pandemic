@@ -3,8 +3,12 @@
 
 class PlayerCard : public Card {
 
-	std::string cardValue;
+	std::string cardValue,type;
+	int id;
+	int *arrOfConnectedCity[];
 public:
-	PlayerCard(std::string value);
-
+	void getCardId();
+	PlayerCard(std::string type, std::string value, int id, int *connectedCity[]);
+	std::string getValue();
+	std::string getType();
 };

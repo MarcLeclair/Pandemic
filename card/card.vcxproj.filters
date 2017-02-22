@@ -21,10 +21,19 @@
     <ClCompile Include="DeckOfCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ODBC_Class.cpp">
+    <ClCompile Include="PlayerCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCard.cpp">
+    <ClCompile Include="ReferenceCards.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Pawn.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,10 +44,16 @@
     <ClInclude Include="DeckOfCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ODBC_Class.h">
+    <ClInclude Include="PlayerCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerCard.h">
+    <ClInclude Include="ReferenceCards.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Pawn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

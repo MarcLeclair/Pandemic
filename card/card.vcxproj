@@ -114,14 +114,19 @@
   <ItemGroup>
     <ClCompile Include="card.cpp" />
     <ClCompile Include="DeckOfCard.cpp" />
-    <ClCompile Include="ODBC_Class.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Pawn.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerCard.cpp" />
+    <ClCompile Include="ReferenceCards.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="card.h" />
     <ClInclude Include="DeckOfCard.h" />
-    <ClInclude Include="ODBC_Class.h" />
+    <ClInclude Include="Pawn.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerCard.h" />
+    <ClInclude Include="ReferenceCards.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
