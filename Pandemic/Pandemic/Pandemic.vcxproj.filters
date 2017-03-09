@@ -15,24 +15,24 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="B:\Bryce\Videos\map.cpp">
+    <ClCompile Include="map.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="B:\Bryce\Videos\player.cpp">
+    <ClCompile Include="player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="B:\Bryce\Videos\possession.cpp">
+    <ClCompile Include="possession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="B:\Bryce\Videos\map.h">
+    <ClInclude Include="map.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="B:\Bryce\Videos\player.h">
+    <ClInclude Include="player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="B:\Bryce\Videos\possession.h">
+    <ClInclude Include="possession.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
