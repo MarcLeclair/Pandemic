@@ -11,14 +11,9 @@
 #include <iostream>
 
 
-ReferenceCard::ReferenceCard()
-{
-}
-
-
-ReferenceCard::~ReferenceCard()
-{
-}
+ReferenceCard::ReferenceCard() : mapRef(NULL) {}
+ReferenceCard::ReferenceCard(Map* mp) : mapRef(mp){}
+ReferenceCard::~ReferenceCard(){}
 
 ReferenceCard::ReferenceCard(const ReferenceCard& rc) {
 
@@ -33,11 +28,11 @@ ReferenceCard::ReferenceCard(const ReferenceCard& rc) {
 *********************************************************************************************************/
 int ReferenceCard::drive(Pawn* pawn, int newCityID){
 	//Gets the player's current city. Should return a city object
-	int currentLocation = pawn->get_location();
+	int currentLocationID = pawn->get_location();
+	City current = mapRef->getCityByID(currentLocationID);
 
-	//Cannot perform this without Map and city full implementaiton
 	//Check if the cities are connected
-	if( !((*currentLocation).connectsTo(newCityID))){
+	if( !(current.connectsTo(newCityID))){
 		std::cout << "Sorry, cannot drive there; cities not connected." << std::endl;
 		return 0;
 	}
@@ -93,7 +88,6 @@ int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int c
 	}
 
 	//on the map, get the city with the cityID corresponding to newCity and return it
-	//City* newCity = Map.getCityByID(newCityID);
 	pawn->set_location(newCityID);
 	std::cout << "Player " << pawn->get_playerId() << " took a charter flight to " << pawn->get_location() << ". " << std::endl;
 	return 1;
@@ -106,15 +100,15 @@ int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int c
 / Currently takes in an int as CurrentLocation, should take in a city
 ****************************************************************************************************/
 int ReferenceCard::shuttleFlight(Pawn* pawn, int newCityID) {
-	int currentLocation = pawn->get_location();
+	int currentLocationID = pawn->get_location();
+	City currentLocation = mapRef->getCityByID(currentLocationID);
 
-	//City objects not implemented yet, must support this function to check whether there is a research station built
 	//get the city object at the newCity id, then make sure both cities have research stations
-	/*City* newCity = Map.getCityByID(newCityID);
-	if (!newCity.hasResearchStation() || !currentLocation.hasResearchStation()){
+	City newCity = mapRef->getCityByID(newCityID);
+	if (!(newCity.hasResearchStation()) || !(currentLocation.hasResearchStation())){
 		std::cout << "Cannot make shuttle flight; one of the cities does not have a research station" << std::endl;
 		return 0;
-	}*/
+	}
 
 	//If both places have research stations, change the player's location
 	pawn->set_location(newCityID);
@@ -137,17 +131,18 @@ int ReferenceCard::buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand
 		return 0;
 	}
 
-	int currentLocation = pawn->get_location();
-	
+	int currentLocationID = pawn->get_location();
+	City currentLocation = mapRef->getCityByID(currentLocationID);
+
 	//Cannot run this yet, as the city and player card objects have not been implemented
-	/*if (!cardAtIndex.getCityID() == currentLocation || currentLocation.hasResearchCenter()){
+	if (!(cardAtIndex.getCityID() == currentLocationID) || currentLocation.hasResearchStation()){
 		std::cout << "Cannot build research Station. City card does not match current location, or a research station already exists here." << std::endl;
 		return 0;
 	}
 	
 	//if all the proper conditions are met, build a research center in the current city
-	currentLocation.buildResearchCenter();
-	*/
+	currentLocation.buildResearchStation();
+	
 	std::cout << "Research station has been built!" << std::endl;
 	return 1;
 }
@@ -160,15 +155,14 @@ int ReferenceCard::buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand
 ************************************************************************/
 int ReferenceCard::treatDisease(Pawn* pawn) {
 
-	int currentLocation = (*pawn).getPawnLocation();
-	//Cannot implement yet due to city objects not being implemented
-	/*if (!currentLocation.hasDisease()) {
+	int currentLocationID = pawn->get_location();
+	City currentLocation = mapRef->getCityByID(currentLocationID);	//Cannot implement yet due to city objects not being implemented
+	if (!(currentLocation.hasDisease())) {
 		std::cout << "Current location does not have any diseases to treat." << std::endl;
 		return 0;
 	}
-	
-	currentLocation.reduceDisease();*/
-	std::cout << "Player " << (*pawn).getPlayerID() << " has helped treat a disease in " << (*pawn).getPawnLocation() << ". " << std::endl;
+	currentLocation.treatDisease();
+	std::cout << "Player " << pawn->get_playerId() << " has helped treat a disease in " << pawn->get_location() << ". " << std::endl;
 	return 1;
 }
 
@@ -189,16 +183,15 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givin
 		return 0;
 	}
 
-	int currentLocation = (*giverPawn).getPawnLocation();
-	//This part will be uncommented once city objects are proeprly implemented
-	/*if (!(givingCard.getCityID() != currentLocation.getCityID())) {
+	int currentLocation = giverPawn->get_location();
+	if (!(givingCard.getCityID() != currentLocation)) {
 		std::cout << "Exchange card must match current city. Cannot share knowledge." << std::endl;
 		return 0;
-	}*/
+	}
 
 	//If you get here, it means the sharing knowledge is valid
 	receivingHand.push_back(givingCard);
-	std::cout << "Player " << (*giverPawn).getPlayerID() << " has given a card to another player in " << (*giverPawn).getPawnLocation() << ". " << std::endl;
+	std::cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << giverPawn->get_location() << ". " << std::endl;
 	return 1;
 }
 
@@ -216,29 +209,28 @@ int ReferenceCard::discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::v
 		std::string cardType = cureCard.getType();
 		if (!(cardType == "City")) {
 			std::cout << "Card at index " << cure[i] << " is not a city card. Cannot cure" << std::endl;
-			return false;
+			return 0;
 		}
 		cureCards[i] = cureCard;
 	}
 
 	//Check if all the cards are the same color
-	/*for (int i = 1; i < 5; i++) {
-		if ((cureCards[i]).getColor() != (cureCards[i - 1]).getColor()) {
+	for (int i = 1; i < 5; i++) {
+		if (cureCards[i].getColor() != cureCards[i - 1].getColor()) {
 			std::cout << "Indicated cards are not all the same color. Cannot Cure disease" << std::endl;
 			return false;
 		}
-	}*/
+	}
 
-	int currentLocation = (*pawn).getPawnLocation();
+	int currentLocationID = pawn->get_location();
+	City currentLocation = mapRef->getCityByID(currentLocationID);
 	//Check if the current location has a research center
-	/*if (!(currentLocation.hasResearchCenter())) {
+	if (!(currentLocation.hasResearchStation())) {
 		std::cout << "Cannot cure disease; current city does not have research center." << std::endl;
-		return false;
-	}*/
-
-
-	/*int diseaseColor = (*cureCards[0]).getColor();
-	disease[color].cureDisease();*/
-	std::cout << "Player " << (*pawn).getPlayerID() << " has cured a disease! " << std::endl;
+		return 0;
+	}
+	
+	mapRef->cureDisease();
+	std::cout << "Player " << pawn->get_playerId() << " has cured a disease! " << std::endl;
 	return 1;
 }

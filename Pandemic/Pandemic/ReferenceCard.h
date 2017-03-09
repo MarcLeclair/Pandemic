@@ -21,6 +21,7 @@ class ReferenceCard
 {
 public:
 	ReferenceCard();
+	ReferenceCard(Map* mp);
 	ReferenceCard(const ReferenceCard& rc);
 	~ReferenceCard();
 
@@ -51,7 +52,7 @@ private:
 		"Share Knowledge",
 		"Discover Cure"
 	};
-
+	Map* mapRef;
 };
 
 

@@ -47,14 +47,14 @@ void ReferenceCard::display_information(){
   cout << "This is a "<<info<<" reference card!" << endl;
 }
 
-//Player Cards
-PlayerCard::PlayerCard(string type){
-  this->type=type;
-}
-
-void PlayerCard::display_information(){
-  cout << "This is a "<<this->type <<" PlayerCard!" << endl;
-}
+////Player Cards
+//PlayerCard::PlayerCard(string type){
+//  this->type=type;
+//}
+//
+//void PlayerCard::display_information(){
+//  cout << "This is a "<<this->type <<" PlayerCard!" << endl;
+//}
 
 /*
 int main () {
