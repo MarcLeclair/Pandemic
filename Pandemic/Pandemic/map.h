@@ -29,6 +29,8 @@ class City {
     void buildResearchStation();  //Build a research station in the current city
     bool hasDisease();
     bool hasDisease(char);
+	void treatDisease();
+	void treatDisease(char);
     bool connectsTo(int);  //currentCity checks if it connects to a city with the ID newCity
  
 };
@@ -36,6 +38,7 @@ class  Map{
 	vector<City> citylist;
  	int width, height;
 public:
+	void cureDisease();
     void save_map();
     void load_map();
     void createIndexTable();
