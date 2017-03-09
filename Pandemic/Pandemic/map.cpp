@@ -159,6 +159,9 @@ void Map::createIndexTable(){
     }
   }
 }
+void Map::cureDisease() {
+
+}
 City Map::getCityByID(int cityId){
   return citylist[cityId-1];
 

@@ -38,6 +38,7 @@ class  Map{
 	vector<City> citylist;
  	int width, height;
 public:
+	void cureDisease();
     void save_map();
     void load_map();
     void createIndexTable();
