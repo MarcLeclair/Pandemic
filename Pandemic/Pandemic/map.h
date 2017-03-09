@@ -2,7 +2,6 @@
 
 #include <string>
 #include <vector>
-#include "player.h"
 
 #ifndef MAP_H
 #define MAP_H
@@ -35,16 +34,15 @@ class City {
 };
 class  Map{
 	vector<City> citylist;
-  vector<Player> playerList;
  	int width, height;
-  public:
-    void add_player(Player, int);
+public:
     void save_map();
     void load_map();
     void createIndexTable();
     void createLinks();
     void display_information();
     void load_starting_map();
+	void display_research_cities();
     City getCityByID(int);
     Map ();
  
