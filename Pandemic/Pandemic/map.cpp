@@ -226,6 +226,24 @@ int City::getCityID(){
 void City::buildResearchStation(){
   this->researchCenter=true;
 }  
+void City::treatDisease(char type) {
+
+
+}
+void City::treatDisease() {
+	if (this->zone == 'b' && this->infectionCounters[0]>0) {
+		this->infectionCounters[0]--;
+	}
+	if (this->zone == 'r' && this->infectionCounters[1]>0) {
+		this->infectionCounters[1]--;
+	}
+	if (this->zone == 'u' && this->infectionCounters[2]>0) {
+		this->infectionCounters[2]--;
+	}
+	if (this->zone == 'y' && this->infectionCounters[3]>0) {
+		this->infectionCounters[3]--;
+	}
+}
 bool City::hasDisease(){
   for(int i=0;i<4;i++){
     if(infectionCounters[i]>0){
