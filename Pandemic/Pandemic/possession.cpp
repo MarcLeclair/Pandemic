@@ -18,6 +18,10 @@ int Pawn::get_playerId(){
   return this->playerId;
 }
 
+int Pawn::get_location() {
+	return this->locationId;
+}
+
 void Pawn::display_information(){
   cout << "This is a "<<this->colour <<" pawn!" << endl;
 }
