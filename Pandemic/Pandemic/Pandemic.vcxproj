@@ -21,12 +21,16 @@
   <ItemGroup>
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="PlayerCard.cpp" />
     <ClCompile Include="possession.cpp" />
+    <ClCompile Include="ReferenceCard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="PlayerCard.h" />
     <ClInclude Include="possession.h" />
+    <ClInclude Include="ReferenceCard.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{549AC8BD-384C-461E-8521-A4A0F8A4E2F2}</ProjectGuid>

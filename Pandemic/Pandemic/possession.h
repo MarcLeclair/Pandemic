@@ -21,6 +21,7 @@ class Pawn: public Possession{
   public:
     Pawn (string, int);
     void set_location(int);
+	int get_location();
     int get_playerId();
     void display_information();
  
@@ -42,12 +43,12 @@ class ReferenceCard: public Possession{
  
 };
 
-class PlayerCard: public Possession{
-  string type;
-  public:
-    PlayerCard (string);
-    void display_information();
-};
+//class PlayerCard: public Possession{
+//  string type;
+//  public:
+//    PlayerCard (string);
+//    void display_information();
+//};
 
 
 #endif

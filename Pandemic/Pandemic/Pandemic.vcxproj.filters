@@ -24,6 +24,12 @@
     <ClCompile Include="possession.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ReferenceCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerCard.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map.h">
@@ -33,6 +39,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="possession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ReferenceCard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PlayerCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
