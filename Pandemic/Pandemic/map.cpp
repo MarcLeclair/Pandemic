@@ -133,6 +133,13 @@ void Map::save_map(){
 
 
 }
+void Map::display_research_cities() {
+	for (int i = 0; i < citylist.size(); i++) {
+		if (citylist[i].hasResearchStation()) {
+			citylist[i].display_information();
+		}
+	}
+}
 void Map::display_information(){
   for(int i=0;i<citylist.size();i++){
     this->citylist[i].display_information();
@@ -156,13 +163,7 @@ City Map::getCityByID(int cityId){
   return citylist[cityId-1];
 
 }
-void Map::add_player(Player player,int cityId){
-  player.pawn->set_location(cityId);
-  playerList.push_back(player);
-  citylist[cityId-1].add_pawn(player.pawn->get_playerId());
 
-
-}
 //City
 City::City(){
 }
@@ -238,7 +239,7 @@ bool City::hasDisease(char disease){
 }
 bool City::connectsTo(int newCityId){
   for(int i=0; i<connections.size();i++){
-    if(connections[i]=newCityId){
+    if(connections[i]==newCityId){
       return true;
     }
   }
@@ -246,21 +247,7 @@ bool City::connectsTo(int newCityId){
 }
 int main () {
   string pause;
-  Player playerOne = Player("Player One");
-  playerOne.add_pawn(new Pawn("Red",1));
-  playerOne.add_role(new Role("Medic"));
-  playerOne.add_possession(new ReferenceCard("Basic Action"));
-  playerOne.add_possession(new PlayerCard("Bridge of Eldin"));
-  playerOne.add_possession(new PlayerCard("Faron Spring"));
-  playerOne.display_possesions();
 
-  Player playerTwo = Player("Player Two");
-  playerTwo.add_pawn(new Pawn("Blue",2));
-  playerTwo.add_role(new Role("Scientist"));
-  playerTwo.add_possession(new ReferenceCard("Advance Action"));
-  playerTwo.add_possession(new PlayerCard("Bridge of Eldin"));
-  playerTwo.add_possession(new PlayerCard("Faron Spring"));
-  playerTwo.display_possesions();
   cout <<"Press l to load Map or anything else to use default"<<endl;
   cin>>pause;
 
@@ -269,15 +256,7 @@ int main () {
     map.load_map();  
   }else{
     map.load_starting_map();
-    int cityId;
-    cout<<"Choose player's one pawn location (provide cityId)"<<endl;
-    cin>>cityId;
-    map.add_player(playerOne,cityId);
-    cout<<"Choose player's two pawn location (provide cityId)"<<endl;
-    cin>>cityId;
-    map.add_player(playerTwo,cityId);
   }
-
   map.display_information();
   cout<<"Press s to save map or anything else to quit"<<endl;
   cin>>pause;
