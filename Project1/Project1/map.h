@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "player.h"
 
 #ifndef MAP_H
 #define MAP_H
@@ -29,29 +30,21 @@ class City {
     void buildResearchStation();  //Build a research station in the current city
     bool hasDisease();
     bool hasDisease(char);
-	void treatDisease();
-	void treatDisease(char);
     bool connectsTo(int);  //currentCity checks if it connects to a city with the ID newCity
  
 };
 class  Map{
-	bool cured[4];
-	bool eradicated[4];
 	vector<City> citylist;
+  vector<Player> playerList;
  	int width, height;
-public:
-	void treatDisease();
-	void cureDisease();
-	void checkEradication();
+  public:
+    void add_player(Player, int);
     void save_map();
     void load_map();
     void createIndexTable();
     void createLinks();
     void display_information();
     void load_starting_map();
-	void display_research_cities();
-	void cureDisease(char);
-	void treatDisease(int);
     City getCityByID(int);
     Map ();
  
