@@ -8,7 +8,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "PlayerCard.h"
+#include "PlayerCards.h"
 #include "possession.h"
 #include "map.h"
 
@@ -41,6 +41,11 @@ public:
 	virtual int treatDisease(Pawn* pawn);
 	virtual int shareKnowledge(Pawn* pawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard);
 	virtual int discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vector<int> cure);
+
+	Map* getMapRef() {
+		return mapRef;
+	}
+
 private:
 	std::vector<std::string> allActions = {
 		"Drive/Ferry",
