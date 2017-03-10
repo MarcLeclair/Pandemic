@@ -18,10 +18,6 @@ int Pawn::get_playerId(){
   return this->playerId;
 }
 
-int Pawn::get_location() {
-	return this->locationId;
-}
-
 void Pawn::display_information(){
   cout << "This is a "<<this->colour <<" pawn!" << endl;
 }
@@ -38,16 +34,23 @@ void Role::display_information(){
   cout << "This is a "<<this->roleName <<" role card!" << endl;
 }
 
+//Reference Card
+ReferenceCard::ReferenceCard(string info){
+  this->info=info;
+}
 
+void ReferenceCard::display_information(){
+  cout << "This is a "<<info<<" reference card!" << endl;
+}
 
-////Player Cards
-//PlayerCard::PlayerCard(string type){
-//  this->type=type;
-//}
-//
-//void PlayerCard::display_information(){
-//  cout << "This is a "<<this->type <<" PlayerCard!" << endl;
-//}
+//Player Cards
+PlayerCard::PlayerCard(string type){
+  this->type=type;
+}
+
+void PlayerCard::display_information(){
+  cout << "This is a "<<this->type <<" PlayerCard!" << endl;
+}
 
 /*
 int main () {

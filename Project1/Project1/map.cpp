@@ -3,15 +3,13 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
 #include "map.h"
 using namespace std;
 
 //Map
 Map::Map(){
-	
+
 }
-map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 void Map::load_starting_map(){
   string line;
   ifstream mapFile ("locations-and-links.csv");
@@ -135,13 +133,6 @@ void Map::save_map(){
 
 
 }
-void Map::display_research_cities() {
-	for (int i = 0; i < citylist.size(); i++) {
-		if (citylist[i].hasResearchStation()) {
-			citylist[i].display_information();
-		}
-	}
-}
 void Map::display_information(){
   for(int i=0;i<citylist.size();i++){
     this->citylist[i].display_information();
@@ -161,39 +152,17 @@ void Map::createIndexTable(){
     }
   }
 }
-void Map::cureDisease(char disease) {
-	cured[zoneIndex[disease]] = true;
-}
-void Map::treatDisease(int cityId) {
-	City city = citylist[cityId - 1];
-	if (cured[zoneIndex[city.zone]]) {
-		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]] = 0;
-	}
-	else {
-		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]]--;
-	}
-}
-void Map::checkEradication() {
-	int count[4];
-	for (int i = 0; i < 4; i++) {
-		count = 0;
-	}
-	for (int i = 0; i<citylist.size(); i++) {
-		for (int j = 0; j < 4 j++) {
-			count[j] += citylist[i].infectionCounters[j];
-		}
-	}
-	for (int i = 0; i < 4; i++) {
-		if (count[i]==0) {
-			eradicated[i] = true;
-		}
-	}
-}
 City Map::getCityByID(int cityId){
   return citylist[cityId-1];
 
 }
+void Map::add_player(Player player,int cityId){
+  player.pawn->set_location(cityId);
+  playerList.push_back(player);
+  citylist[cityId-1].add_pawn(player.pawn->get_playerId());
 
+
+}
 //City
 City::City(){
 }
@@ -256,24 +225,6 @@ int City::getCityID(){
 void City::buildResearchStation(){
   this->researchCenter=true;
 }  
-void City::treatDisease(char type) {
-
-
-}
-void City::treatDisease() {
-	if (this->zone == 'b' && this->infectionCounters[0]>0) {
-		this->infectionCounters[0]--;
-	}
-	if (this->zone == 'r' && this->infectionCounters[1]>0) {
-		this->infectionCounters[1]--;
-	}
-	if (this->zone == 'u' && this->infectionCounters[2]>0) {
-		this->infectionCounters[2]--;
-	}
-	if (this->zone == 'y' && this->infectionCounters[3]>0) {
-		this->infectionCounters[3]--;
-	}
-}
 bool City::hasDisease(){
   for(int i=0;i<4;i++){
     if(infectionCounters[i]>0){
@@ -287,7 +238,7 @@ bool City::hasDisease(char disease){
 }
 bool City::connectsTo(int newCityId){
   for(int i=0; i<connections.size();i++){
-    if(connections[i]==newCityId){
+    if(connections[i]=newCityId){
       return true;
     }
   }
@@ -295,7 +246,21 @@ bool City::connectsTo(int newCityId){
 }
 int main () {
   string pause;
+  Player playerOne = Player("Player One");
+  playerOne.add_pawn(new Pawn("Red",1));
+  playerOne.add_role(new Role("Medic"));
+  playerOne.add_possession(new ReferenceCard("Basic Action"));
+  playerOne.add_possession(new PlayerCard("Bridge of Eldin"));
+  playerOne.add_possession(new PlayerCard("Faron Spring"));
+  playerOne.display_possesions();
 
+  Player playerTwo = Player("Player Two");
+  playerTwo.add_pawn(new Pawn("Blue",2));
+  playerTwo.add_role(new Role("Scientist"));
+  playerTwo.add_possession(new ReferenceCard("Advance Action"));
+  playerTwo.add_possession(new PlayerCard("Bridge of Eldin"));
+  playerTwo.add_possession(new PlayerCard("Faron Spring"));
+  playerTwo.display_possesions();
   cout <<"Press l to load Map or anything else to use default"<<endl;
   cin>>pause;
 
@@ -304,7 +269,15 @@ int main () {
     map.load_map();  
   }else{
     map.load_starting_map();
+    int cityId;
+    cout<<"Choose player's one pawn location (provide cityId)"<<endl;
+    cin>>cityId;
+    map.add_player(playerOne,cityId);
+    cout<<"Choose player's two pawn location (provide cityId)"<<endl;
+    cin>>cityId;
+    map.add_player(playerTwo,cityId);
   }
+
   map.display_information();
   cout<<"Press s to save map or anything else to quit"<<endl;
   cin>>pause;
