@@ -21,14 +21,14 @@
   <ItemGroup>
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="PlayerCard.cpp" />
+    <ClCompile Include="PlayerCards.cpp" />
     <ClCompile Include="possession.cpp" />
     <ClCompile Include="ReferenceCard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="PlayerCard.h" />
+    <ClInclude Include="PlayerCards.h" />
     <ClInclude Include="possession.h" />
     <ClInclude Include="ReferenceCard.h" />
   </ItemGroup>
