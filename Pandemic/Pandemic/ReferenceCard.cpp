@@ -58,7 +58,7 @@ int ReferenceCard::directFlight(Pawn* pawn, std::vector<PlayerCard> hand, int ca
 	}
 	
 	//Cannot perform this without city cards and city object full implementation
-	int newCityID = cardAtIndex.getCityID();
+	int newCityID = cardAtIndex.getCityId();
 	pawn->set_location(newCityID);
 	std::cout << "Player " << pawn->get_playerId() << " took a direct flight to " << pawn->get_location() << ". " << std::endl;
 	return 1;
@@ -82,7 +82,7 @@ int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int c
 
 	int currentLocation = pawn->get_location();
 	//Cannot implement the following until PlayerCards and City objects are properly implemented
-	if (currentLocation != cardAtIndex.getCityID()) {
+	if (currentLocation != cardAtIndex.getCityId()) {
 		std::cout << "Cannot make charter flight; indicated card does not match current city." << std::endl;
 		return 0;
 	}
@@ -135,7 +135,7 @@ int ReferenceCard::buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand
 	City currentLocation = mapRef->getCityByID(currentLocationID);
 
 	//Cannot run this yet, as the city and player card objects have not been implemented
-	if (!(cardAtIndex.getCityID() == currentLocationID) || currentLocation.hasResearchStation()){
+	if (!(cardAtIndex.getCityId() == currentLocationID) || currentLocation.hasResearchStation()){
 		std::cout << "Cannot build research Station. City card does not match current location, or a research station already exists here." << std::endl;
 		return 0;
 	}
@@ -184,7 +184,7 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givin
 	}
 
 	int currentLocation = giverPawn->get_location();
-	if (!(givingCard.getCityID() != currentLocation)) {
+	if (!(givingCard.getCityId() != currentLocation)) {
 		std::cout << "Exchange card must match current city. Cannot share knowledge." << std::endl;
 		return 0;
 	}
