@@ -45,12 +45,10 @@ int ReferenceCard::drive(Pawn* pawn, int newCityID){
 
 /********************************************************************************
 / Function to fly player to a city corresponding to the city card in his/her hand
-/ Takes in an int as currentLocation, should take in a City object
 / Sets the player's current location to the location indicated on the card
 *********************************************************************************/
-int ReferenceCard::directFlight(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex) {
-	PlayerCard cardAtIndex = hand.at(cardIndex);
-	std::string cardType = cardAtIndex.getType();
+int ReferenceCard::directFlight(Pawn* pawn, PlayerCard dest) {
+	std::string cardType = dest.getType();
 
 	if (cardType != "City") {
 		std::cout << "Indicated card is not a city card." << std::endl;
@@ -58,7 +56,7 @@ int ReferenceCard::directFlight(Pawn* pawn, std::vector<PlayerCard> hand, int ca
 	}
 	
 	//Cannot perform this without city cards and city object full implementation
-	int newCityID = cardAtIndex.getCityId();
+	int newCityID = dest.getCityId();
 	pawn->set_location(newCityID);
 	std::cout << "Player " << pawn->get_playerId() << " took a direct flight to " << pawn->get_location() << ". " << std::endl;
 	return 1;
@@ -68,12 +66,9 @@ int ReferenceCard::directFlight(Pawn* pawn, std::vector<PlayerCard> hand, int ca
 /**************************************************************************************************
 / Function to fly player to any city when the player is in a city and holds that city's Player card
 / Must check player's current location is equal to the card's city ID
-/ Returns the city ID of the new city
-/ Currently takes in an int as the currentlocation, should take in a City object
 **************************************************************************************************/
-int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex, int newCityID) {
-	PlayerCard cardAtIndex = hand.at(cardIndex);
-	std::string cardType = cardAtIndex.getType();
+int ReferenceCard::charterFlight(Pawn* pawn, PlayerCard dest, int newCityID) {
+	std::string cardType = dest.getType();
 
 	if (cardType != "City") {
 		std::cout << "Cannot make Charter Flight. Indicated card is not a city card." << std::endl;
@@ -82,7 +77,7 @@ int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int c
 
 	int currentLocation = pawn->get_location();
 	//Cannot implement the following until PlayerCards and City objects are properly implemented
-	if (currentLocation != cardAtIndex.getCityId()) {
+	if (currentLocation != dest.getCityId()) {
 		std::cout << "Cannot make charter flight; indicated card does not match current city." << std::endl;
 		return 0;
 	}
@@ -96,8 +91,6 @@ int ReferenceCard::charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int c
 /***************************************************************************************************
 / Function to fly player from a city with a research station to another city with a research station
 / Must check if the players current city has a research station
-/ returns cityID of the new city
-/ Currently takes in an int as CurrentLocation, should take in a city
 ****************************************************************************************************/
 int ReferenceCard::shuttleFlight(Pawn* pawn, int newCityID) {
 	int currentLocationID = pawn->get_location();
@@ -119,12 +112,9 @@ int ReferenceCard::shuttleFlight(Pawn* pawn, int newCityID) {
 /**********************************************************************************
 / Function to build a research station in a city
 / Should take in a city card corresponding to the player's current location
-/ Should return an updated city object, as it updates the current city information
-/ Takes in an int as the current location, should take in a City object
 ***********************************************************************************/
-int ReferenceCard::buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex) {
-	PlayerCard cardAtIndex = hand.at(cardIndex);
-	std::string cardType = cardAtIndex.getType();
+int ReferenceCard::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
+	std::string cardType = currentCity.getType();
 
 	if (!(cardType == "City")) {
 		std::cout << "Cannot build a research station, indicated card is not a city card" << std::endl;
@@ -135,7 +125,7 @@ int ReferenceCard::buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand
 	City currentLocation = mapRef->getCityByID(currentLocationID);
 
 	//Cannot run this yet, as the city and player card objects have not been implemented
-	if (!(cardAtIndex.getCityId() == currentLocationID) || currentLocation.hasResearchStation()){
+	if (!(currentCity.getCityId() == currentLocationID) || currentLocation.hasResearchStation()){
 		std::cout << "Cannot build research Station. City card does not match current location, or a research station already exists here." << std::endl;
 		return 0;
 	}
@@ -174,8 +164,7 @@ int ReferenceCard::treatDisease(Pawn* pawn) {
 / We are constraining functionality so that the current player is the giving player. Only the current player
 / can give a card to the player of their choosing.
 ***********************************************************************************************************/
-int ReferenceCard::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard) {
-	PlayerCard givingCard = givingHand.at(exchangeCard);
+int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::vector<PlayerCard> receivingHand) {
 	std::string cardType = givingCard.getType();
 
 	if (!(cardType == "City")) {
@@ -200,23 +189,20 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givin
 / This function will cure a disease of the corresponding color
 / Must only be executed in a city with a research station
 ***************************************************************/
-int ReferenceCard::discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vector<int> cure) {
-	PlayerCard cureCards[5];
+int ReferenceCard::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 
 	//Get all the indicated cure cards and make sure they're all city cards
-	for (int i = 0; i < 5; i++) {
-		PlayerCard cureCard = hand.at(cure[i]);
+	for (PlayerCard cureCard : cure) {
 		std::string cardType = cureCard.getType();
 		if (!(cardType == "City")) {
-			std::cout << "Card at index " << cure[i] << " is not a city card. Cannot cure" << std::endl;
+			std::cout << "You must indicate 5 city cards. Please retry."<< std::endl;
 			return 0;
 		}
-		cureCards[i] = cureCard;
 	}
 
 	//Check if all the cards are the same color
 	for (int i = 1; i < 5; i++) {
-		if (cureCards[i].getColor() != cureCards[i - 1].getColor()) {
+		if (cure[i].getColor() != cure[i - 1].getColor()) {
 			std::cout << "Indicated cards are not all the same color. Cannot Cure disease" << std::endl;
 			return false;
 		}
