@@ -20,10 +20,13 @@ class Pawn: public Possession{
   int playerId;
   public:
     Pawn (string, int);
+	Pawn();
+	Pawn(const Pawn&);
     void set_location(int);
 	int get_location();
     int get_playerId();
     void display_information();
+	string get_color();
  
 };
 
