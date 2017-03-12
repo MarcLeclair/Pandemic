@@ -32,15 +32,15 @@ public:
 	//These four functions will change the player's location to the new city, if preconditions are met
 	//they will return integers based on whether they have succeeded or not
 	int drive(Pawn* pawn, int newCityID);
-	virtual int directFlight(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex);
-	virtual int charterFlight(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex, int newCityID);
+	virtual int directFlight(Pawn* pawn, PlayerCard dest);
+	virtual int charterFlight(Pawn* pawn, PlayerCard dest, int newCityID);
 	virtual int shuttleFlight(Pawn* pawn, int newCityID);
 
 
-	virtual int buildResearchStation(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex);
+	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
 	virtual int treatDisease(Pawn* pawn);
-	virtual int shareKnowledge(Pawn* pawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard);
-	virtual int discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vector<int> cure);
+	virtual int shareKnowledge(Pawn* pawn, PlayerCard givingCard, vector<PlayerCard> receivingHand);
+	virtual int discoverCure(Pawn* pawn, vector<PlayerCard> cure);
 
 	Map* getMapRef() {
 		return mapRef;

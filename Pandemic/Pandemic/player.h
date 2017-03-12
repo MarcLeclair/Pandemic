@@ -72,14 +72,21 @@ public:
 	void discardCard(int disc);
 	void balanceHand();
 
-	//Function to infect a city. This takes a string, but should take an integer corresponding to a city ID
-	void infectCity(std::string cityID);
-
 	//Functions to execute actions during a player's turn
 	int requestAction();
-	int performAction();
 	void outputPossibleActions();
 
+	//Action Functions, being called on the role card
+	int drive(int newCityID);
+	int direct_flight(int cardIndex);
+	int charter_flight(int cardIndex, int newCityID);
+	int shuttle_flight(int newCityID);
+
+
+	int build_research_station(int cardIndex);
+	int treat_disease();
+	int share_knowledge(vector<PlayerCard> receivingHand, int exchangeCard);
+	int discover_cure(vector<int> cure);
 private:
 	Pawn playerPawn;
 	ReferenceCard refcard;

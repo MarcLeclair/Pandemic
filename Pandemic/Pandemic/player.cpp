@@ -138,3 +138,66 @@ int Player::requestAction() {
 	return newAction - 1;
 }
 
+/**************************************************************
+/ Function to execute the drive function on this player's pawn
+***************************************************************/
+int Player::drive(int newCityID) {
+	return role->drive(&playerPawn, newCityID);
+}
+
+/********************************************************************
+/ Function to execute a direct flight function on this player's pawn
+*********************************************************************/
+int Player::direct_flight(int cardIndex) {
+	PlayerCard destination = cardsInHand[cardIndex];
+	return role->directFlight(&playerPawn, destination);
+}
+
+/*********************************************************
+/ Function to execute a charter flight to another city
+*********************************************************/
+int Player::charter_flight(int cardIndex, int newCityID) {
+	PlayerCard destination = cardsInHand[cardIndex];
+	return role->charterFlight(&playerPawn, destination, newCityID);
+}
+
+/******************************************************************************
+/ Function to execute a shuttle flight to another city with a research station
+*******************************************************************************/
+int Player::shuttle_flight(int newCityID) {
+	return role->shuttleFlight(&playerPawn, newCityID);
+}
+
+/***********************************************************
+/ Function to build a research station in your current city
+************************************************************/
+int Player::build_research_station(int cardIndex) {
+	PlayerCard currentCity = cardsInHand[cardIndex];
+	return role->buildResearchStation(&playerPawn, currentCity);
+}
+
+/******************************************************
+/ Function to treat a disease cube in the current city
+*******************************************************/
+int Player::treat_disease() {
+	return role->treatDisease(&playerPawn);
+}
+
+/************************************************************
+/ Function to give one of your city cards to another player
+*************************************************************/
+int Player::share_knowledge( vector<PlayerCard> receivingHand, int exchangeCard) {
+	PlayerCard givingCard = cardsInHand[exchangeCard];
+	return role->shareKnowledge(&playerPawn, givingCard, receivingHand);
+}
+
+/******************************
+/ Function to cure a disease
+******************************/
+int Player::discover_cure(vector<int> cure) {
+	vector<PlayerCard> cureCards;
+	for (int i = 0; i < cure.size(); i++) {
+		cureCards.push_back(cardsInHand[cure[i]]);
+	}
+	return role->discoverCure(&playerPawn, cureCards);
+}
