@@ -30,22 +30,5 @@ class Pawn: public Possession{
  
 };
 
-class Role: public Possession{
-  string roleName;
-  public:
-    Role (string);
-    void display_information();
- 
-};
-
-
-//class PlayerCard: public Possession{
-//  string type;
-//  public:
-//    PlayerCard (string);
-//    void display_information();
-//};
-
-
 #endif
 

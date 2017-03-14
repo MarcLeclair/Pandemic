@@ -44,39 +44,3 @@ string Pawn::get_color() {
 	return this->colour;
 }
 
-//Role Card
-Role::Role(string roleName){
-  this->roleName=roleName;
-}
-
-void Role::display_information(){
-  cout << "This is a "<<this->roleName <<" role card!" << endl;
-}
-
-
-
-////Player Cards
-//PlayerCard::PlayerCard(string type){
-//  this->type=type;
-//}
-//
-//void PlayerCard::display_information(){
-//  cout << "This is a "<<this->type <<" PlayerCard!" << endl;
-//}
-
-/*
-int main () {
-	vector<Possession*> possessions;
-  possessions.push_back(new Possession());
-  possessions.push_back(new Pawn("Red"));
-  possessions.push_back(new Role("Medic"));
-  possessions.push_back(new ReferenceCard("Basic Action"));
-  possessions.push_back(new PlayerCard("Bridge of Eldin"));
-  possessions.push_back(new PlayerCard("Faron Spring"));
-  for(int i=0; i < possessions.size(); i++){
-    possessions[i]->display_information();
-  }
-
-
-	return 0;
-}*/
