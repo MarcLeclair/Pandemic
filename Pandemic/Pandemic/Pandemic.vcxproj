@@ -22,7 +22,7 @@
     <ClCompile Include="DeckOfCard.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
-    <ClCompile Include="PlayerCards.cpp" />
+    <ClCompile Include="PlayerCard.cpp" />
     <ClCompile Include="possession.cpp" />
     <ClCompile Include="ReferenceCard.cpp" />
   </ItemGroup>
@@ -30,7 +30,7 @@
     <ClInclude Include="DeckOfCard.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
-    <ClInclude Include="PlayerCards.h" />
+    <ClInclude Include="PlayerCard.h" />
     <ClInclude Include="possession.h" />
     <ClInclude Include="ReferenceCard.h" />
   </ItemGroup>

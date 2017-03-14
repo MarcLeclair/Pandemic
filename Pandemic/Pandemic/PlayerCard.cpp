@@ -1,31 +1,20 @@
-/*
-/ Claudia Della Serra, 26766048
-/ COMP 345, Advanced Programming with C++
-/
-/ Assignment 1 PlayerCard Class
-*/
-
 #include "PlayerCard.h"
-#include <string>
 
 
 PlayerCard::PlayerCard() {
-	/*setType(NULL);
-	setTitle(NULL);*/
+	type = "";
+	id = 0;
+	cardValue = "";
 }
-
-PlayerCard::PlayerCard(std::string ty, std::string ttl)
-{
-	setType(ty);
-	setTitle(ttl);
+PlayerCard::PlayerCard(std::string type, int id, std::string value, std::string color) {
+	this->id = id;
+	cardValue = value;
+	this->type = type;
+	this->color = color;
 }
+PlayerCard::PlayerCard(std::string type, int id, std::string value) { // event card constructor 
+	this->id = id;
+	cardValue = value;
+	this->type = type;
+};
 
-PlayerCard::PlayerCard(const PlayerCard& pc) {
-	type = pc.type;
-	title = pc.title;
-}
-
-
-PlayerCard::~PlayerCard()
-{
-}

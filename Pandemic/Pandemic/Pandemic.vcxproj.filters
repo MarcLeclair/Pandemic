@@ -27,10 +27,10 @@
     <ClCompile Include="ReferenceCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerCards.cpp">
+    <ClCompile Include="DeckOfCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DeckOfCard.cpp">
+    <ClCompile Include="PlayerCard.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,10 +47,10 @@
     <ClInclude Include="ReferenceCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="PlayerCards.h">
+    <ClInclude Include="DeckOfCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DeckOfCard.h">
+    <ClInclude Include="PlayerCard.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
