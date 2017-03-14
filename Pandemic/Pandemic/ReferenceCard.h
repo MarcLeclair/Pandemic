@@ -8,7 +8,7 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "PlayerCards.h"
+#include "PlayerCard.h"
 #include "possession.h"
 #include "map.h"
 
