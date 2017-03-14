@@ -14,6 +14,7 @@ public:
 	void drawInfection();
 	void shuffleInfection();
 	void startInfect();
+	void infectEpidemic();
 
 	/*void startInfect() {
 	int counter = 0;
