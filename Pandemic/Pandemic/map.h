@@ -1,5 +1,5 @@
 #include <iostream>
-
+#include "player.h"
 #include <string>
 #include <vector>
 
@@ -14,6 +14,7 @@ class City {
     double location[2];
     int infectionCounters[4];
     bool researchCenter;
+	bool outbreakHappened;
     vector<int> pawnList;
     vector<int> connections;
     vector<City*> connectionsRef;
@@ -40,6 +41,8 @@ class  Map{
 	vector<City> citylist;
  	int width, height;
 public:
+	void outbreak(int, char);
+	void addDisease(int);
 	void treatDisease();
 	void cureDisease();
 	void checkEradication();
