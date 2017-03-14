@@ -11,9 +11,14 @@ public:
 	PlayerCard();
 	PlayerCard(std::string type, int id, std::string value, std::string color);
 	PlayerCard(std::string type, int id, std::string value);
-	std::string getValue();
-	std::string getType();
-	int getCityId();
+	
+	std::string getValue() { return cardValue; }
+	
+	std::string getType() { return type; } 
+	
+	int getCityId() { return id; }
+
+	std::string getColour(){ return color; }
 };
 
 
