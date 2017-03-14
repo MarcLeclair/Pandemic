@@ -14,6 +14,17 @@ Pawn::Pawn(string colour, int playerId){
   this->colour=colour;
   this->playerId=playerId;
 }
+Pawn::Pawn(){
+	this->colour = "no color";
+	this->playerId = 0;
+}
+
+Pawn::Pawn(const Pawn& copyPawn) {
+	this->colour = copyPawn.colour;
+	this->locationId = copyPawn.locationId;
+	this->playerId = copyPawn.playerId;
+}
+
 int Pawn::get_playerId(){
   return this->playerId;
 }
@@ -27,6 +38,10 @@ void Pawn::display_information(){
 }
 void Pawn::set_location(int locationId){
   this->locationId=locationId;
+}
+
+string Pawn::get_color() {
+	return this->colour;
 }
 
 //Role Card
