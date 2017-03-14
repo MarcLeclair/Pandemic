@@ -173,6 +173,15 @@ void Map::treatDisease(int cityId) {
 		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]]--;
 	}
 }
+void Map::treatDisease(int cityId, char color) {
+	City city = citylist[cityId - 1];
+	if (cured[zoneIndex[color]]) {
+		city.infectionCounters[zoneIndex[color]] = 0;
+	}
+	else {
+		city.infectionCounters[zoneIndex[color]]--;
+	}
+}
 void Map::addDisease(int cityId) {
 	if (!cured[zoneIndex[citylist[cityId].zone]]) {
 		if (citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]] < 3) {
@@ -221,6 +230,26 @@ City Map::getCityByID(int cityId){
   return citylist[cityId-1];
 
 }
+void Map::addPawn(Pawn* pawn) {
+	pawnlist.push_back(pawn);
+	citylist[3].pawnRefList.push_back(pawn);
+	citylist[3].pawnList.push_back(pawn->get_playerId);
+	pawn->set_location(4);
+}
+void Map::movePawn(Pawn* pawn, int cityId) {
+	//this->getCityByID(pawn->get_location).pawnRefList
+	this->getCityByID(pawn->get_location).pawnRefList;
+	for (int i = 0; i < this->getCityByID(pawn->get_location).pawnRefList.size(); i++) {
+		if (pawn->get_playerId() == this->getCityByID(pawn->get_location).pawnRefList[i]->get_playerId()) {
+			this->getCityByID(pawn->get_location).pawnRefList.erase(this->getCityByID(pawn->get_location).pawnRefList.begin()+i);
+			break;
+		}
+	}
+	this->getCityByID(cityId).pawnRefList.push_back(pawn);
+	pawn->set_location(cityId);
+}
+
+
 
 //City
 City::City(){
