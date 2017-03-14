@@ -57,7 +57,7 @@ public:
 	void treatDisease(int, char); //treat specified color disease at specified city
 	void addPawn(Pawn*); //adds a pawn to starting location
 	void movePawn(Pawn*, int); //moves a pawns location
-    City& getCityByID(int); //returns the city given by specified int 
+    City getCityByID(int); //returns the city given by specified int 
     Map ();
 private:
 	void outbreak(int, char); //handles outbreaks

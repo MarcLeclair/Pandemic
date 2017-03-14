@@ -233,15 +233,15 @@ City Map::getCityByID(int cityId){
 void Map::addPawn(Pawn* pawn) {
 	pawnlist.push_back(pawn);
 	citylist[3].pawnRefList.push_back(pawn);
-	citylist[3].pawnList.push_back(pawn->get_playerId);
+	citylist[3].pawnList.push_back(pawn->get_playerId());
 	pawn->set_location(4);
 }
 void Map::movePawn(Pawn* pawn, int cityId) {
 	//this->getCityByID(pawn->get_location).pawnRefList
-	this->getCityByID(pawn->get_location).pawnRefList;
-	for (int i = 0; i < this->getCityByID(pawn->get_location).pawnRefList.size(); i++) {
-		if (pawn->get_playerId() == this->getCityByID(pawn->get_location).pawnRefList[i]->get_playerId()) {
-			this->getCityByID(pawn->get_location).pawnRefList.erase(this->getCityByID(pawn->get_location).pawnRefList.begin()+i);
+	this->getCityByID(pawn->get_location()).pawnRefList;
+	for (int i = 0; i < this->getCityByID(pawn->get_location()).pawnRefList.size(); i++) {
+		if (pawn->get_playerId() == this->getCityByID(pawn->get_location()).pawnRefList[i]->get_playerId()) {
+			this->getCityByID(pawn->get_location()).pawnRefList.erase(this->getCityByID(pawn->get_location()).pawnRefList.begin()+i);
 			break;
 		}
 	}
