@@ -20,6 +20,9 @@ public:
 	Game(int);
 	void StartGame();
 	bool isGameOver();
-	void performPlayersTurn(int) 
+	void performPlayersTurn(int);
+	int pollForCity();
+	int pollForCards(int);
+	int pollForRetry();
 };
 
