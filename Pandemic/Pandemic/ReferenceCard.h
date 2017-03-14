@@ -1,10 +1,3 @@
-/*
-/ Claudia Della Serra, 26766048
-/ COMP 345, Advanced Programming with C++
-/
-/ Assignment 1 ReferenceCard Class
-*/
-
 #pragma once
 #include <string>
 #include <vector>

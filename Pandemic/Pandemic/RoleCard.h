@@ -3,7 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "PlayerCards.h"
+#include "PlayerCard.h"
 #include "ReferenceCard.h"
 #include "map.h"
 
@@ -113,8 +113,8 @@ public:
 	OperationsExpert();
 	OperationsExpert(const OperationsExpert &ops);
 	virtual ~OperationsExpert();
-	virtual int buildResearchStation(Pawn* pawn, std::vector<PlayerCard*> hand, int cardIndex);
-	int specialOperationsMove(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex);
+	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
+	int specialOperationsMove(Pawn* pawn, PlayerCard moveCard);
 };
 
 
@@ -129,7 +129,7 @@ public:
 	Scientist();
 	Scientist(const Scientist& sci);
 	virtual ~Scientist();
-	virtual int discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vector<int> cure);
+	virtual int discoverCure(Pawn* pawn, vector<PlayerCard> cure);
 };
 
 /****************************************************************************************************
