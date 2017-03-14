@@ -174,12 +174,10 @@ void Map::treatDisease(int cityId) {
 	}
 }
 void Map::checkEradication() {
-	int count[4];
-	for (int i = 0; i < 4; i++) {
-		count = 0;
-	}
+	int count[4]={0,0,0,0};
+
 	for (int i = 0; i<citylist.size(); i++) {
-		for (int j = 0; j < 4 j++) {
+		for (int j = 0; j < 4; j++) {
 			count[j] += citylist[i].infectionCounters[j];
 		}
 	}
