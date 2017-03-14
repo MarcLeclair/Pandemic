@@ -98,26 +98,37 @@ Medic::~Medic()
 /****************************************************************************************************************
 / Overidden function from Reference Card.
 / Treats all of the diseases in a city.
-/ Should treat all diseases of same color (this functionality will come once disease objects have been created)
+/ Should treat all diseases of same color, thus if there are cubes of more than one color in the city, only the
+/ cubes of one of the colors will be treated
 *****************************************************************************************************************/
 int Medic::treatDisease(Pawn* pawn) {
 	int currentLocationID = pawn->get_location();
 	City currentLocation = getMapRef()->getCityByID(currentLocationID);
-	//Cannot implement yet due to city objects not being implemented
+
 	if (!currentLocation.hasDisease()) {
 	cout << "Current location does not have any diseases to treat." << endl;
 	return 0;
 	}
-	int amountOfInfection = 0;
+
+	char zone;
+	int amountOfInfection;
 	for (int i = 0; i < 4; i++) {
-		amountOfInfection += currentLocation.infectionCounters[i];
+		if (currentLocation.infectionCounters[i] > 0) {
+			if (i == 0) zone = 'b';
+			else if (i == 1) zone = 'r';
+			else if (i == 2) zone = 'u';
+			else zone = 'y';
+
+			amountOfInfection = currentLocation.infectionCounters[i];
+			break;
+		}
 	}
 
 	for(int i=0; i< amountOfInfection; i++){
-		currentLocation.treatDisease();
+		getMapRef()->treatDisease(currentLocationID, zone);
 	}
 
-	cout << "You are a medic! You've treated all of the diseases in city " << currentLocationID << endl;
+	cout << "You are a medic! You've treated all of the diseases of one color in city " << currentLocationID << endl;
 	return 1;
 }
 /*********************
@@ -147,8 +158,8 @@ OperationsExpert::~OperationsExpert()
 / Function to build a reserch station without using any city cards
 / This should be an overload of the ReferenceCard function to build a research station
 *****************************************************************************************************************/
-int OperationsExpert::buildResearchStation(Pawn* pawn, std::vector<PlayerCard*> hand, int cardIndex) {
-	//Takes in a hand and card for semantics purposes, however does not do anything with them
+int OperationsExpert::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
+	//Passes a card for semantics, however it does nothing with the card and the card will not be discarded from the player's hand
 	int currentLocationID = pawn->get_location();
 	City currentLocation = getMapRef()->getCityByID(currentLocationID);
 
@@ -169,8 +180,7 @@ int OperationsExpert::buildResearchStation(Pawn* pawn, std::vector<PlayerCard*> 
 / Special function to  move an operations expert from a city with a research station to any other city,
 / given that they have a city card (does not have to match the destination city).
 *********************************************************************************************************/
-int OperationsExpert::specialOperationsMove(Pawn* pawn, std::vector<PlayerCard> hand, int cardIndex) {
-	PlayerCard moveCard = hand.at(cardIndex);
+int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
 	std::string cardType = moveCard.getType();
 
 	if (cardType != "City") {
@@ -187,7 +197,7 @@ int OperationsExpert::specialOperationsMove(Pawn* pawn, std::vector<PlayerCard> 
 	}
 
 	int newCityID = moveCard.getCityId();
-	pawn->set_location(newCityID);
+	getMapRef()->movePawn(pawn, newCityID);
 	cout << "You have executed your Special Move! Your current location is now " << pawn->get_location() << endl;
 	return 1;
 
@@ -219,29 +229,21 @@ Scientist::~Scientist()
 / Function to cure diseases
 / Only change from Reference card is that it expects 4 cure cards and not 5
 *****************************************************************************************************************/
-int Scientist::discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vector<int> cure) {
-	PlayerCard cureCards[4];
-
-	if (cure.size() > 4) {
-		cout << "You have passed too many cards to this functions, please retry." << endl;
-		return 0;
-	}
+int Scientist::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 
 	//Get all the indicated cure cards and make sure they're all city cards
-	for (int i = 0; i < 4; i++) {
-		PlayerCard cureCard = hand.at(cure[i]);
+	for (PlayerCard cureCard : cure) {
 		std::string cardType = cureCard.getType();
 		if (!(cardType == "City")) {
-			cout << "Card at index " << cure[i] << " is not a city card. Cannot cure" << endl;
+			std::cout << "You must indicate 5 city cards. Please retry." << std::endl;
 			return 0;
 		}
-		cureCards[i] = cureCard;
 	}
 
 	//Check if all the cards are the same color
 	for (int i = 1; i < 4; i++) {
-		if (cureCards[i].getColor() != cureCards[i - 1].getColor()) {
-			cout << "Indicated cards are not all the same color. Cannot Cure disease" << endl;
+		if (cure[i].getColour() != cure[i - 1].getColour()) {
+			std::cout << "Indicated cards are not all the same color. Cannot Cure disease" << std::endl;
 			return false;
 		}
 	}
@@ -250,12 +252,27 @@ int Scientist::discoverCure(Pawn* pawn, std::vector<PlayerCard> hand, std::vecto
 	City currentLocation = getMapRef()->getCityByID(currentLocationID);
 	//Check if the current location has a research center
 	if (!(currentLocation.hasResearchStation())) {
-		cout << "Cannot cure disease; current city does not have research center." << endl;
+		std::cout << "Cannot cure disease; current city does not have research center." << std::endl;
 		return 0;
 	}
 
-	getMapRef()->cureDisease();
-	cout << "Player " << pawn->get_playerId() << " has cured a disease! " << endl;
+	string cureColor = cure[0].getColour();
+	char zone;
+
+	//assign a zone id to the color for curing purposes
+	if (cureColor == "black")
+		zone = 'b';
+	else if (cureColor == "blue")
+		zone = 'u';
+	else if (cureColor == "red")
+		zone = 'r';
+	else
+		zone = 'y';
+
+
+	getMapRef()->cureDisease(zone);
+
+	std::cout << "Player " << pawn->get_playerId() << " has cured a disease! " << std::endl;
 	return 1;
 }
 /*******************************
@@ -371,7 +388,7 @@ Dispatcher::~Dispatcher()
 /*******************************************************************************
 / Function to move to a city with another pawn already in it
 ********************************************************************************/
-int Dispatcher::specialMoveAnotherPlayer(Pawn* pawn, int newCityID, int playerID) {
+int Dispatcher::specialMoveAnotherPlayer(Pawn* otherPlayer, int newCityID) {
 	//Cannot implement without proper City and Map classes
 	City newCity = getMapRef()->getCityByID(newCityID);
 	if (newCity.pawnList.size()) {
@@ -379,10 +396,8 @@ int Dispatcher::specialMoveAnotherPlayer(Pawn* pawn, int newCityID, int playerID
 		return 0;
 	}
 
-	Pawn otherPlayer = newCity.getPawnByID(playerID);
-	
-	otherPlayer.set_location(newCityID);
-	cout << "Moved player " << otherPlayer.get_location()<< " to city " << newCityID << endl;
+	getMapRef()->movePawn(otherPlayer, newCityID);
+	cout << "Moved player " << otherPlayer->get_playerId() << " to city " << newCityID << endl;
 	return 1;
 	
 }
