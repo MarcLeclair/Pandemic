@@ -173,6 +173,36 @@ void Map::treatDisease(int cityId) {
 		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]]--;
 	}
 }
+void Map::addDisease(int cityId) {
+	if (!cured[zoneIndex[citylist[cityId].zone]]) {
+		if (citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]] < 3) {
+			citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]]++;
+		}
+		else {
+			citylist[cityId].outbreakHappened = true;
+			for (int i = 0; i < citylist[cityId].connections.size(); i++) {
+				outbreak(citylist[cityId].connections[i], citylist[cityId].zone);
+			}
+			for (int i = 0; i < citylist.size(); i++) {
+				citylist[i].outbreakHappened = false;
+			}
+		}
+	}
+}
+
+void Map::outbreak(int cityId, char color) {
+	citylist[cityId].outbreakHappened = true;
+	if (!cured[zoneIndex[color]]) {
+		if (citylist[cityId].infectionCounters[zoneIndex[color]] < 3) {
+			citylist[cityId].infectionCounters[zoneIndex[color]]++;
+		}
+		else {
+			for (int i = 0; i < citylist[cityId].connections.size(); i++) {
+				outbreak(citylist[cityId].connections[i], color);
+			}
+		}
+	}
+}
 void Map::checkEradication() {
 	int count[4]={0,0,0,0};
 
@@ -182,7 +212,7 @@ void Map::checkEradication() {
 		}
 	}
 	for (int i = 0; i < 4; i++) {
-		if (count[i]==0) {
+		if (count[i]==0 && this->cured[i]) {
 			eradicated[i] = true;
 		}
 	}
@@ -205,7 +235,7 @@ City::City (int id, string name,char zone,double x, double y,int iC[], bool rese
     this->infectionCounters[i]=(int)iC[i]- '0';
   }
   this->researchCenter=researchCenter;
-  
+  this->outbreakHappened = false;
 }
 
 void City::display_information(){
