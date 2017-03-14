@@ -66,6 +66,8 @@ public:
 
 	std::vector<PlayerCard> getHand() { return cardsInHand; }
 
+
+	int performAction();
 	//Functions to operate on the player's hand of PlayerCards
 	void drawCard(PlayerCard plc);
 	void displayCardsInHand();
