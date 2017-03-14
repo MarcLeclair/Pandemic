@@ -8,7 +8,7 @@
 using namespace std;
 class City {
   public:
-	 string name;
+	string name;
     int id;
     char zone;
     double location[2];
