@@ -1,6 +1,4 @@
 #include "Infection.h"
-#include "map.h"
-#include "DeckOfCard.h"
 
 Infection::Infection() {
 
@@ -29,7 +27,7 @@ void Infection::shuffleInfection() {
 	int N = InfectionDeck.size();
 	for (int i = N - 1; i > 0; --i) {
 		int r = rand() % (i + 1);
-		std::swap(InfectionDeck[i], InfectionDeck[r]);
+		swap(InfectionDeck[i], InfectionDeck[r]);
 	}
 }
 

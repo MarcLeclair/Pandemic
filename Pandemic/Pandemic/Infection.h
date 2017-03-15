@@ -17,7 +17,7 @@ private:
 	vector<Infection> InfectionDeck;
 	vector<Infection> InfectionDeckDiscard;
 	int locationID;
-	int cubes = 0;
+	int ctr = 0;
 
 public:
 	Infection();
