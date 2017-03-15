@@ -4,8 +4,8 @@
 #include <vector>
 
 #include "possession.h"
-#include "DeckOfCard.h"
-#include "Infection.h"
+//#include "DeckOfCard.h"
+//#include "Infection.h"
 #include "map.h"
 #include "player.h"
 //#include "PlayerCards.h"
@@ -13,8 +13,8 @@
 using namespace std;
 class Game {
 	Map map;
-	vector<Player> playerlist;
-	vector<RoleCard> rolelist;
+	vector<Player*> playerlist;
+	vector<RoleCard*> rolelist;
 public:
 	Game();
 	Game(int);
@@ -24,5 +24,9 @@ public:
 	int pollForCity();
 	int pollForCards(int);
 	int pollForRetry();
+	void save_players();
+	void load_players();
+
+	void displayPlayers();
 };
 
