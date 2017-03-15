@@ -361,7 +361,22 @@ bool Game::isGameOver() {
 	return false;
 }
 
+DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic) {
 
+	vector<PlayerCard> playerCards;
+	vector<City> temp = map.getCities();
+	for (City city : temp) {
+		int id = city.id;
+		string name = city.name;
+		string colour = "none";
+
+		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
+		playerCards.push_back(cardToPush);
+	}
+	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards, numOfEpidemic);
+	
+	return playerDeck;
+}
 int main() {
 	Game* game = new Game(2);
 	game->displayPlayers();
