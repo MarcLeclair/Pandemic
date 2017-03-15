@@ -21,13 +21,13 @@ private:
 
 public:
 	Infection();
-	Infection(int);
-	void drawInfection();
-	void shuffleInfection();
-	void startInfect();
-	void infectEpidemic();
-	void makeDeck();
-	int getInfectionID();
+	Infection(int); //defines Infection with an integer, being the location's ID
+	void drawInfection(); //draws a single infection card and adds respective amount of cubes
+	void shuffleInfection(); //shuffles the infection deck
+	void startInfect(); //beginning 9 card draws for board start state
+	void infectEpidemic(); //infection cards if epidemic card drawn
+	void makeDeck(); //instantiates vector with 48 IDs
+	int getInfectionID(); //gives the location ID of the caard drawn
 
 	/*void startInfect() {
 	int counter = 0;

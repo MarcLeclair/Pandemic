@@ -20,7 +20,8 @@ void Infection::makeDeck() {
 
 
 void Infection::drawInfection() {
-	getTopCard();
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
 }
 
 void Infection::shuffleInfection() {
@@ -32,14 +33,22 @@ void Infection::shuffleInfection() {
 }
 
 void Infection::startInfect() {
-	getTopCard();
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
 
 
 void Infection :: infectEpidemic() {
-	getBottomCard();
-	for (int i; i <= toInfectDiscard.size(); i++) {
-		InfectionDeck.push() = toInfectDiscard.pop;
-	}
+	InfectionDeck[48].getInfectionID();
+	
 }
