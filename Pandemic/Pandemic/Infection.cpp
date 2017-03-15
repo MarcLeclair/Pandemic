@@ -49,6 +49,12 @@ void Infection::startInfect() {
 
 
 void Infection :: infectEpidemic() {
-	InfectionDeck[48].getInfectionID();
-	
+	addDisease(InfectionDeck[48].getInfectionID());
+	addDisease(InfectionDeck[48].getInfectionID());
+	addDisease(InfectionDeck[48].getInfectionID());
+	//move it to front
+
+	//reshuffle up until ctr+1
+
+	//reset ctr
 }
