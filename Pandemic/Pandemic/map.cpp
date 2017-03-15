@@ -350,25 +350,26 @@ bool City::connectsTo(int newCityId){
   }
   return false;
 }
-int main () {
-  string pause;
 
-  cout <<"Press l to load Map or anything else to use default"<<endl;
-  cin>>pause;
-
-	Map map;
-  if(pause=="l"){
-    map.load_map();  
-  }else{
-    map.load_starting_map();
-  }
-  map.display_information();
-  cout<<"Press s to save map or anything else to quit"<<endl;
-  cin>>pause;
-  if(pause=="s"){
-    cout<<"Map Saved"<<endl;
-    map.save_map();
-  }
-
-	return 0;
-}
+//int main () {
+//  string pause;
+//
+//  cout <<"Press l to load Map or anything else to use default"<<endl;
+//  cin>>pause;
+//
+//	Map map;
+//  if(pause=="l"){
+//    map.load_map();  
+//  }else{
+//    map.load_starting_map();
+//  }
+//  map.display_information();
+//  cout<<"Press s to save map or anything else to quit"<<endl;
+//  cin>>pause;
+//  if(pause=="s"){
+//    cout<<"Map Saved"<<endl;
+//    map.save_map();
+//  }
+//
+//	return 0;
+//}
