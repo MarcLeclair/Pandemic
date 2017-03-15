@@ -1,20 +1,33 @@
 #pragma once
 #include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <iterator>
+#include <random>
+#include <queue>
+
+#include "DeckOfCard.h"
+#include "map.h"
 using namespace std;
 
 class Infection
 {
 private:
-	vector<int> toInfect = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48 };
-	vector<int> toInfectDiscard;
+	vector<Infection> InfectionDeck;
+	vector<Infection> InfectionDeckDiscard;
+	int locationID;
 	int cubes = 0;
 
 public:
 	Infection();
+	Infection(int);
 	void drawInfection();
 	void shuffleInfection();
 	void startInfect();
 	void infectEpidemic();
+	void makeDeck();
+	int getInfectionID();
 
 	/*void startInfect() {
 	int counter = 0;
