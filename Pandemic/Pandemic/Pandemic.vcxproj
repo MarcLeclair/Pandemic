@@ -20,21 +20,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="DeckOfCard.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="Infection.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="PlayerCards.cpp" />
     <ClCompile Include="possession.cpp" />
     <ClCompile Include="ReferenceCard.cpp" />
+    <ClCompile Include="RoleCard.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeckOfCard.h" />
+    <ClInclude Include="game.h" />
     <ClInclude Include="Infection.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="PlayerCards.h" />
     <ClInclude Include="possession.h" />
     <ClInclude Include="ReferenceCard.h" />
+    <ClInclude Include="RoleCard.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{549AC8BD-384C-461E-8521-A4A0F8A4E2F2}</ProjectGuid>

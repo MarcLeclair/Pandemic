@@ -1,20 +1,33 @@
 #pragma once
 #include <iostream>
+#include <vector>
+#include <stack>
+#include <algorithm>
+#include <iterator>
+#include <random>
+#include <queue>
+
+#include "DeckOfCard.h"
+#include "map.h"
 using namespace std;
 
 class Infection
 {
 private:
-	vector<int> toInfect = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48 };
-	vector<int> toInfectDiscard;
-	int cubes = 0;
+	vector<Infection> InfectionDeck;
+	vector<Infection> InfectionDeckDiscard;
+	int locationID;
+	int ctr = 0;
 
 public:
 	Infection();
-	void drawInfection();
-	void shuffleInfection();
-	void startInfect();
-	void infectEpidemic();
+	Infection(int); //defines Infection with an integer, being the location's ID
+	void drawInfection(); //draws a single infection card and adds respective amount of cubes
+	void shuffleInfection(); //shuffles the infection deck
+	void startInfect(); //beginning 9 card draws for board start state
+	void infectEpidemic(); //infection cards if epidemic card drawn
+	void makeDeck(); //instantiates vector with 48 IDs
+	int getInfectionID(); //gives the location ID of the caard drawn
 
 	/*void startInfect() {
 	int counter = 0;

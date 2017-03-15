@@ -1,29 +1,54 @@
 #include "Infection.h"
-#include "map.h"
-#include "DeckOfCard.h"
 
 Infection::Infection() {
 
 }
 
-DeckOfCard<Infection> InfectionDeck = new DeckOfCard(toInfect);
-
-void Infection::startInfect() {
-	getTopCard();
+Infection::Infection(int ID) {
+	locationID = ID;
 }
 
-
-void Infection::shuffleInfection() {
-	InfectionDeck.shuffleDeck;
+int Infection::getInfectionID() {
+	return locationID;
 }
+
+void Infection::makeDeck() {
+	for (int i = 0; i < 48; i++) {
+		InfectionDeck.push_back(Infection(i+1));
+	}
+}
+
 
 void Infection::drawInfection() {
-	getTopCard();
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
 }
 
-void Infection :: infectEpidemic() {
-	getBottomCard();
-	for (int i; i <= toInfectDiscard.size(); i++) {
-		InfectionDeck.push() = toInfectDiscard.pop;
+void Infection::shuffleInfection() {
+	int N = InfectionDeck.size();
+	for (int i = N - 1; i > 0; --i) {
+		int r = rand() % (i + 1);
+		swap(InfectionDeck[i], InfectionDeck[r]);
 	}
+}
+
+void Infection::startInfect() {
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+	addDisease(InfectionDeck[ctr].getInfectionID());
+}
+
+
+
+void Infection :: infectEpidemic() {
+	InfectionDeck[48].getInfectionID();
+	
 }
