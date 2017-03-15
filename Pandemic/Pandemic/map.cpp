@@ -248,7 +248,9 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 	this->getCityByID(cityId).pawnRefList.push_back(pawn);
 	pawn->set_location(cityId);
 }
-
+vector<City> Map::getCities() {
+	return citylist;
+}
 
 
 //City
