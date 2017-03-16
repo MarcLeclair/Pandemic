@@ -25,7 +25,7 @@ Game::Game(int numberPlayers) {
 	DeckOfCard<PlayerCard>* deck = instantiatePlayerCards(map, 4);
 	Infection InfectionDeck = Infection(0);
 	InfectionDeck.makeDeck();
-	InfectionDeck.startInfect(map);
+	InfectionDeck.startInfect(&map);
 }
 
 void Game::StartGame() {
