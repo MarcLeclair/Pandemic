@@ -4,7 +4,7 @@
 #include <vector>
 
 #include "possession.h"
-//#include "DeckOfCard.h"
+#include "DeckOfCard.h"
 //#include "Infection.h"
 #include "map.h"
 #include "player.h"
