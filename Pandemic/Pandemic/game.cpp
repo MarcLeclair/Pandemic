@@ -1,5 +1,4 @@
 #include "game.h"
-#include "DeckOfCard.h"
 using namespace std;
 
 Game::Game() {
