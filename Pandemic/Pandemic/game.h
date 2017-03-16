@@ -18,6 +18,13 @@ class Game {
 public:
 	Game();
 	Game(int);
+	Map getMap() {
+		return map;
+	}
+
+	vector<Player*> getPlayerlist() {
+		return playerlist;
+	}
 	void StartGame();
 	bool isGameOver();
 	void performPlayersTurn(int);
