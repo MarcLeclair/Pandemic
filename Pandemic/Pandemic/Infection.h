@@ -25,7 +25,7 @@ public:
 	void drawInfection(Map); //draws a single infection card and adds respective amount of cubes
 	void shuffleInfection(); //shuffles the infection deck
 	void startInfect(Map); //beginning 9 card draws for board start state
-	void infectEpidemic(); //infection cards if epidemic card drawn
+	void infectEpidemic(Map); //infection cards if epidemic card drawn
 	void makeDeck(); //instantiates vector with 48 IDs
 	int getInfectionID(); //gives the location ID of the caard drawn
 

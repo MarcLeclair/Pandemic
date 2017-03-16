@@ -48,10 +48,10 @@ void Infection::startInfect(Map map) {
 
 
 
-void Infection :: infectEpidemic() {
-	addDisease(InfectionDeck[48].getInfectionID());
-	addDisease(InfectionDeck[48].getInfectionID());
-	addDisease(InfectionDeck[48].getInfectionID());
+void Infection :: infectEpidemic(Map map) {
+	map.addDisease(InfectionDeck[48].getInfectionID());
+	map.addDisease(InfectionDeck[48].getInfectionID());
+	map.addDisease(InfectionDeck[48].getInfectionID());
 	//move it to front
 
 	//reshuffle up until ctr+1
