@@ -20,8 +20,13 @@ ReferenceCard::ReferenceCard(const ReferenceCard& rc) {
 *********************************************************************************************************/
 int ReferenceCard::drive(Pawn* pawn, int newCityID){
 	//Gets the player's current city. Should return a city object
+	cout << "Driving " << endl;
 	int currentLocationID = pawn->get_location();
+	cout << "Obtained location: " << currentLocationID << endl;
+	mapRef->display_information();
 	City current = mapRef->getCityByID(currentLocationID);
+
+	cout << "Obtained current city " << endl;
 
 	//Check if the cities are connected
 	if( !(current.connectsTo(newCityID))){

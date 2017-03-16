@@ -18,7 +18,7 @@ using namespace std;
 class RoleCard : public ReferenceCard
 {
 public:
-	RoleCard();
+	RoleCard(Map* mp);
 	RoleCard(const RoleCard& rolec);
 	~RoleCard();
 
@@ -72,7 +72,7 @@ class Researcher :
 	public RoleCard
 {
 public:
-	Researcher();
+	Researcher(Map* mp);
 	Researcher(const Researcher& res);
 	virtual ~Researcher();
 	virtual int shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard);
@@ -95,7 +95,7 @@ class Medic :
 	public RoleCard
 {
 public:
-	Medic();
+	Medic(Map* mp);
 	Medic (const Medic& med);
 	virtual ~Medic();
 	virtual int treatDisease(Pawn* pawn);
@@ -110,7 +110,7 @@ class OperationsExpert :
 	public RoleCard
 {
 public:
-	OperationsExpert();
+	OperationsExpert(Map* mp);
 	OperationsExpert(const OperationsExpert &ops);
 	virtual ~OperationsExpert();
 	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
@@ -126,7 +126,7 @@ class Scientist :
 	public RoleCard
 {
 public:
-	Scientist();
+	Scientist(Map* mp);
 	Scientist(const Scientist& sci);
 	virtual ~Scientist();
 	virtual int discoverCure(Pawn* pawn, vector<PlayerCard> cure);
@@ -142,7 +142,7 @@ class ContingencyPlanner :
 	public RoleCard
 {
 public:
-	ContingencyPlanner();
+	ContingencyPlanner(Map* mp);
 	ContingencyPlanner(const ContingencyPlanner& cp);
 	virtual ~ContingencyPlanner();
 	int pickUpSpecialEvent(PlayerCard* sp);
@@ -164,7 +164,7 @@ class QuarantineSpecialist :
 	public RoleCard
 {
 public:
-	QuarantineSpecialist();
+	QuarantineSpecialist(Map* mp);
 	QuarantineSpecialist(const QuarantineSpecialist& qs);
 	virtual ~QuarantineSpecialist();
 };
@@ -182,7 +182,7 @@ class Dispatcher :
 	public RoleCard
 {
 public:
-	Dispatcher();
+	Dispatcher(Map* mp);
 	Dispatcher(const Dispatcher& disp);
 	virtual ~Dispatcher();
 	int specialMoveAnotherPlayer(Pawn* otherPlayer, int newCityID);

@@ -7,13 +7,13 @@ Game::Game() {
 Game::Game(int numberPlayers) {
 	map = Map();
 	map.load_starting_map();
-	rolelist.push_back(new Medic());
-	rolelist.push_back(new Researcher());
-	rolelist.push_back(new OperationsExpert());
-	rolelist.push_back(new Scientist());
-	rolelist.push_back(new ContingencyPlanner());
-	rolelist.push_back(new QuarantineSpecialist());
-	rolelist.push_back(new Dispatcher());
+	rolelist.push_back(new Medic(&map));
+	rolelist.push_back(new Researcher(&map));
+	rolelist.push_back(new OperationsExpert(&map));
+	rolelist.push_back(new Scientist(&map));
+	rolelist.push_back(new ContingencyPlanner(&map));
+	rolelist.push_back(new QuarantineSpecialist(&map));
+	rolelist.push_back(new Dispatcher(&map));
 	for (int i = 0; i < numberPlayers; i++) {
 		Player* player = new Player(i, rolelist[i], &map);
 		this->playerlist.push_back(player);
@@ -331,13 +331,13 @@ void Game::load_players() {
 			}
 
 			RoleCard* rc;
-			if (role == "Medic") rc = new Medic();
-			else if (role == "Contingency Planner") rc = new ContingencyPlanner();
-			else if (role == "Researcher") rc = new Researcher();
-			else if (role == "Dispatcher") rc = new Dispatcher();
-			else if (role == "Operations Expert") rc = new OperationsExpert();
-			else if (role == "Quarantine Specialist") rc = new QuarantineSpecialist();
-			else rc = new Scientist();
+			if (role == "Medic") rc = new Medic(&map);
+			else if (role == "Contingency Planner") rc = new ContingencyPlanner(&map);
+			else if (role == "Researcher") rc = new Researcher(&map);
+			else if (role == "Dispatcher") rc = new Dispatcher(&map);
+			else if (role == "Operations Expert") rc = new OperationsExpert(&map);
+			else if (role == "Quarantine Specialist") rc = new QuarantineSpecialist(&map);
+			else rc = new Scientist(&map);
 
 			Player* player1 = new Player(pId, rc, &map);
 
@@ -385,7 +385,11 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 int main() {
 	Game* game = new Game(2);
 	game->displayPlayers();
-	game->save_players();
+	vector<Player*> players = game->getPlayerlist();
+	cout << players[0]->getCurrentLocation() << endl;
+	//game->getMap().display_information();
+	players[1]->drive(26);
+
 	system("PAUSE");
 	delete game;
 	return 0;

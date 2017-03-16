@@ -16,7 +16,7 @@
 /************************
 / Base Role Card Class
 *************************/
-RoleCard::RoleCard() : ReferenceCard()
+RoleCard::RoleCard(Map* mp) : ReferenceCard(mp)
 {
 }
 
@@ -37,7 +37,7 @@ RoleCard::~RoleCard()
 / Researcher Class Implementations
 ***********************************/
 
-Researcher::Researcher() : RoleCard()
+Researcher::Researcher(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Researcher");
 	setRoleColor("brown");
@@ -80,7 +80,7 @@ int Researcher::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHa
 /*************
 / Medic Class
 **************/
-Medic::Medic() : RoleCard()
+Medic::Medic(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Medic");
 	setRoleColor("orange");
@@ -139,7 +139,7 @@ int Medic::treatDisease(Pawn* pawn) {
 /*************************
 / Operations Expert Class
 *************************/
-OperationsExpert::OperationsExpert() : RoleCard()
+OperationsExpert::OperationsExpert(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Operations Expert");
 	setRoleColor("lime");
@@ -210,7 +210,7 @@ int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
 /*************************
 / Scientist Class
 *************************/
-Scientist::Scientist() : RoleCard()
+Scientist::Scientist(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Scientist");
 	setRoleColor("White");
@@ -282,7 +282,7 @@ int Scientist::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 /***************************
 / Contingency Planner Class
 ***************************/
-ContingencyPlanner::ContingencyPlanner() : RoleCard()
+ContingencyPlanner::ContingencyPlanner(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Contingency Planner");
 	setRoleColor("Blue");
@@ -347,7 +347,7 @@ void ContingencyPlanner::playSpecialEvent() {
 /***************************
 / QuarantineSpecialist Class
 ***************************/
-QuarantineSpecialist::QuarantineSpecialist() : RoleCard()
+QuarantineSpecialist::QuarantineSpecialist(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Quarantine Specialist");
 	setRoleColor("green");
@@ -370,7 +370,7 @@ QuarantineSpecialist::~QuarantineSpecialist()
 /***************************
 / Dispatcher Class
 ***************************/
-Dispatcher::Dispatcher() : RoleCard()
+Dispatcher::Dispatcher(Map* mp) : RoleCard(mp)
 {
 	setRoleName("Dispatcher");
 	setRoleColor("pink");
