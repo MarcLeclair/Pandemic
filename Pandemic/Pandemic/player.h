@@ -14,7 +14,7 @@
 #include "RoleCard.h"
 #include "possession.h"
 #include "PlayerCard.h"
-
+#include "map.h"
 
 /********************************************************************************************************
 / Class that encapsulates all the functionality for a single player
@@ -27,7 +27,7 @@ class Player
 public:
 	Player();
 	Player(const Player& plr);
-	Player(int pid, RoleCard* rolec);
+	Player(int pid, RoleCard* rolec, Map* mp);
 	~Player();
 
 	int getPlayerID() {

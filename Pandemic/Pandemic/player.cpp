@@ -12,10 +12,10 @@ Player::Player() {
 }
 
 
-Player::Player(int pid, RoleCard* rolec)
+Player::Player(int pid, RoleCard* rolec, Map* mp)
 {
 	playerID = pid;
-	ReferenceCard* myReference = new ReferenceCard();
+	ReferenceCard* myReference = new ReferenceCard(mp);
 	setReferenceCard(*myReference);
 
 	setRoleCard(rolec);

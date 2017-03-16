@@ -15,7 +15,7 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new QuarantineSpecialist());
 	rolelist.push_back(new Dispatcher());
 	for (int i = 0; i < numberPlayers; i++) {
-		Player* player = new Player(i, rolelist[i]);
+		Player* player = new Player(i, rolelist[i], &map);
 		this->playerlist.push_back(player);
 		map.addPawn(player->getMyPawn());
 	}
@@ -339,7 +339,7 @@ void Game::load_players() {
 			else if (role == "Quarantine Specialist") rc = new QuarantineSpecialist();
 			else rc = new Scientist();
 
-			Player* player1 = new Player(pId, rc);
+			Player* player1 = new Player(pId, rc, &map);
 
 			for (int i = 0; i < numOfCards; i++) {
 				player1->drawCard(hand[i]);

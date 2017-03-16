@@ -4,12 +4,12 @@
 #include <iostream>
 
 
-ReferenceCard::ReferenceCard() : mapRef(NULL) {}
+ReferenceCard::ReferenceCard() {}
 ReferenceCard::ReferenceCard(Map* mp) : mapRef(mp){}
 ReferenceCard::~ReferenceCard(){}
 
 ReferenceCard::ReferenceCard(const ReferenceCard& rc) {
-
+	mapRef = rc.mapRef;
 }
 
 
