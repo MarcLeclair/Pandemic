@@ -49,8 +49,4 @@ public:
 	cubes = 1;
 	counter++;
 	}*/
-}
-
-
 };
-
