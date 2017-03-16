@@ -21,6 +21,9 @@ Game::Game(int numberPlayers) {
 	}
 	//load_players();
 	//initialize both decks of cards??
+	Infection InfectionDeck = Infection(0);
+	InfectionDeck.makeDeck();
+	InfectionDeck.startInfect(map);
 }
 
 void Game::StartGame() {

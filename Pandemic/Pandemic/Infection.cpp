@@ -46,8 +46,6 @@ void Infection::startInfect(Map map) {
 	map.addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
-
-
 void Infection :: infectEpidemic(Map map) {
 	map.addDisease(InfectionDeck[48].getInfectionID());
 	map.addDisease(InfectionDeck[48].getInfectionID());

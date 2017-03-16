@@ -5,7 +5,7 @@
 
 #include "possession.h"
 #include "DeckOfCard.h"
-//#include "Infection.h"
+#include "Infection.h"
 #include "map.h"
 #include "player.h"
 //#include "PlayerCards.h"
