@@ -19,8 +19,8 @@ void Infection::makeDeck() {
 }
 
 
-void Infection::drawInfection(Map map) {
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
+void Infection::drawInfection(Map* map) {
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
 	ctr++;
 }
 
@@ -32,24 +32,24 @@ void Infection::shuffleInfection() {
 	}
 }
 
-void Infection::startInfect(Map map) {
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
+void Infection::startInfect(Map* map) {
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
 	ctr++;
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
 	ctr++;
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
-	map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
+	*map.addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
-void Infection :: infectEpidemic(Map map) {
-	map.addDisease(InfectionDeck[48].getInfectionID());
-	map.addDisease(InfectionDeck[48].getInfectionID());
-	map.addDisease(InfectionDeck[48].getInfectionID());
+void Infection :: infectEpidemic(Map* map) {
+	*map.addDisease(InfectionDeck[48].getInfectionID());
+	*map.addDisease(InfectionDeck[48].getInfectionID());
+	*map.addDisease(InfectionDeck[48].getInfectionID());
 	//move it to front
 	std::vector<Infection>::iterator it;
 	//it = InfectionDeck.rend();
