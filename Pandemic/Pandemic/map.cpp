@@ -237,15 +237,14 @@ void Map::addPawn(Pawn* pawn) {
 	pawn->set_location(4);
 }
 void Map::movePawn(Pawn* pawn, int cityId) {
-	//this->getCityByID(pawn->get_location).pawnRefList
-	this->getCityByID(pawn->get_location()).pawnRefList;
-	for (int i = 0; i < this->getCityByID(pawn->get_location()).pawnRefList.size(); i++) {
-		if (pawn->get_playerId() == this->getCityByID(pawn->get_location()).pawnRefList[i]->get_playerId()) {
-			this->getCityByID(pawn->get_location()).pawnRefList.erase(this->getCityByID(pawn->get_location()).pawnRefList.begin()+i);
-			break;
+
+	vector <Pawn*>::iterator it3;
+	for (it3 = this->citylist[(pawn->get_location()) - 1].pawnRefList.begin(); it3 != this->citylist[(pawn->get_location()) - 1].pawnRefList.end(); ++it3) {
+		if ((*it3)->get_location() == pawn->get_location()) {
+			it3=this->citylist[(pawn->get_location()) - 1].pawnRefList.erase(it3);
 		}
 	}
-	this->getCityByID(cityId).pawnRefList.push_back(pawn);
+	this->citylist[(pawn->get_location()) - 1].pawnRefList.push_back(pawn);
 	pawn->set_location(cityId);
 }
 vector<City> Map::getCities() {
