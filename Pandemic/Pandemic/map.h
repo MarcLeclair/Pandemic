@@ -58,6 +58,7 @@ public:
 	void addPawn(Pawn*); //adds a pawn to starting location
 	void movePawn(Pawn*, int); //moves a pawns location
     City getCityByID(int); //returns the city given by specified int 
+	vector<City> getCities(); // return list of cities
     Map ();
 private:
 	void outbreak(int, char); //handles outbreaks
