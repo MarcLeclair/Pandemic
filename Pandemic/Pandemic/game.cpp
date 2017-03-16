@@ -21,6 +21,8 @@ Game::Game(int numberPlayers) {
 	}
 	//load_players();
 	//initialize both decks of cards??
+
+	DeckOfCard<PlayerCard>* deck = instantiatePlayerCards(map, 4);
 	Infection InfectionDeck = Infection(0);
 	InfectionDeck.makeDeck();
 	InfectionDeck.startInfect(map);
@@ -364,7 +366,7 @@ bool Game::isGameOver() {
 	return false;
 }
 
-DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic) {
+DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic) {
 
 	vector<PlayerCard> playerCards;
 	vector<City> temp = map.getCities();
@@ -376,7 +378,7 @@ DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic) {
 		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
 		playerCards.push_back(cardToPush);
 	}
-	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards, numOfEpidemic);
+	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards);
 	
 	return playerDeck;
 }
