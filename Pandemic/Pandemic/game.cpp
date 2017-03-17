@@ -28,6 +28,7 @@ Game::Game(int numberPlayers) {
 
 	InfectionDeck = new Infection(0);
 	InfectionDeck->makeDeck();
+	InfectionDeck->shuffleInfection();
 	InfectionDeck->startInfect(&map);
 }
 

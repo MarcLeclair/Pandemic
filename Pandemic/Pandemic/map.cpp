@@ -239,6 +239,7 @@ void Map::treatDisease(int cityId, char color) {
 }
 void Map::addDisease(int cityId) {
 	cityId--;
+	cout << "Adding disease cube on city: " << cityId << endl;
 	if (!cured[zoneIndex[citylist[cityId].zone]]) {
 		if (citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]] < 3) {
 			citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]]++;
