@@ -28,17 +28,27 @@ void Infection::saveInfectionDeck() {
 	for (int i = 0; i < InfectionDeck.size(); i++) {
 		InfectionSave << InfectionDeck[i].getInfectionID() << endl;
 	}
+	InfectionSave << ctr;
 	InfectionSave.close();
 }
 
 void Infection::loadInfectionDeck() {
 	string line;
-	ifstream mapFile("InfectionDeck.txt");
-	if (mapFile.is_open())
+	int place = 0;
+	ifstream InfectionSave("InfectionDeck.txt");
+	if (InfectionSave.is_open())
 	{
-		while (getline(mapFile, line))
+		while (getline(InfectionSave, line))
 		{
-
+			string s = line;
+			int ID=std::stoi(s);
+			InfectionDeck[place].setInfectionID(ID);
+			if (place == 49) {
+				ctr = ID;
+			}
+			place++;
+		}
+	}
 }
 
 void Infection::endTurnInfection(Map* map) {
