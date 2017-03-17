@@ -1,9 +1,3 @@
-/*
-/ Claudia Della Serra, 26766048
-/ COMP 345, Advanced Programming with C++
-/
-*/
-
 #include "RoleCard.h"
 
 
@@ -63,7 +57,7 @@ int Researcher::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHa
 	PlayerCard givingCard = givingHand.at(exchangeCard);
 	std::string cardType = givingCard.getType();
 
-	if (!(cardType == "City")) {
+	if (!(cardType == "city")) {
 		cout << "Cannot exchange non-city cards." << endl;
 		return 0;
 	}
@@ -183,7 +177,7 @@ int OperationsExpert::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
 int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
 	std::string cardType = moveCard.getType();
 
-	if (cardType != "City") {
+	if (cardType != "city") {
 		cout << "Cannot move without a city card." << endl;
 		return 0;
 	}
@@ -234,7 +228,7 @@ int Scientist::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 	//Get all the indicated cure cards and make sure they're all city cards
 	for (PlayerCard cureCard : cure) {
 		std::string cardType = cureCard.getType();
-		if (!(cardType == "City")) {
+		if (cardType != "city") {
 			std::cout << "You must indicate 5 city cards. Please retry." << std::endl;
 			return 0;
 		}

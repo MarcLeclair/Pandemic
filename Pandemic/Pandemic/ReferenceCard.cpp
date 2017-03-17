@@ -46,7 +46,7 @@ int ReferenceCard::drive(Pawn* pawn, int newCityID){
 int ReferenceCard::directFlight(Pawn* pawn, PlayerCard dest) {
 	std::string cardType = dest.getType();
 
-	if (cardType != "City") {
+	if (cardType != "city") {
 		std::cout << "Indicated card is not a city card." << std::endl;
 		return 0;
 	}
@@ -67,7 +67,7 @@ int ReferenceCard::directFlight(Pawn* pawn, PlayerCard dest) {
 int ReferenceCard::charterFlight(Pawn* pawn, PlayerCard dest, int newCityID) {
 	std::string cardType = dest.getType();
 
-	if (cardType != "City") {
+	if (cardType != "city") {
 		std::cout << "Cannot make Charter Flight. Indicated card is not a city card." << std::endl;
 		return 0;
 	}
@@ -116,7 +116,7 @@ int ReferenceCard::shuttleFlight(Pawn* pawn, int newCityID) {
 int ReferenceCard::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
 	std::string cardType = currentCity.getType();
 
-	if (!(cardType == "City")) {
+	if (!(cardType == "city")) {
 		std::cout << "Cannot build a research station, indicated card is not a city card" << std::endl;
 		return 0;
 	}
@@ -166,7 +166,7 @@ int ReferenceCard::treatDisease(Pawn* pawn) {
 int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::vector<PlayerCard> receivingHand) {
 	std::string cardType = givingCard.getType();
 
-	if (!(cardType == "City")) {
+	if (!(cardType == "city")) {
 		std::cout << "Cannot exchange non-city cards." << std::endl;
 		return 0;
 	}
@@ -193,7 +193,7 @@ int ReferenceCard::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 	//Get all the indicated cure cards and make sure they're all city cards
 	for (PlayerCard cureCard : cure) {
 		std::string cardType = cureCard.getType();
-		if (!(cardType == "City")) {
+		if (!(cardType == "city")) {
 			std::cout << "You must indicate 5 city cards. Please retry."<< std::endl;
 			return 0;
 		}
