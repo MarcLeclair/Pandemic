@@ -18,6 +18,13 @@ void Infection::makeDeck() {
 	}
 }
 
+void Infection::saveInfectionDeck() {
+	InfectionSave.open("InfectionDeck.Txt");
+	for (int i = 0; i < InfectionDeck.size(); i++) {
+		InfectionSave << InfectionDeck[i];
+	}
+}
+
 
 void Infection::endTurnInfection(Map* map) {
 	if (epidemicVal < 4) {
@@ -50,6 +57,7 @@ void Infection::startInfect(Map* map) {
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	cout << City[ctr].name() << " has been infected." << endl;
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
@@ -57,6 +65,21 @@ void Infection::startInfect(Map* map) {
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
