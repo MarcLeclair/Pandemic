@@ -42,6 +42,7 @@ class  Map{
 	vector<City> citylist; //list of all cites
 	vector<Pawn*> pawnlist; //list of pawns
  	int width, height;
+	int numberOutbreaks;
 public:
 	void addDisease(int);//adds a single disease cube to a specified city 
 	void checkEradication(); //checks if a disease is iradicated
@@ -57,6 +58,7 @@ public:
 	void treatDisease(int, char); //treat specified color disease at specified city
 	void addPawn(Pawn*); //adds a pawn to starting location
 	void movePawn(Pawn*, int); //moves a pawns location
+	void display_status(); //displays the status of the map
     City getCityByID(int); //returns the city given by specified int 
 	vector<City> getCities(); // return list of cities
     Map ();

@@ -25,6 +25,7 @@ public:
 	vector<Player*> getPlayerlist() {
 		return playerlist;
 	}
+	void displayDisplayOptions();
 	void StartGame();
 	bool isGameOver();
 	void performPlayersTurn(int);

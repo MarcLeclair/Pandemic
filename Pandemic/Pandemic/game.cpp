@@ -25,7 +25,7 @@ Game::Game(int numberPlayers) {
 	DeckOfCard<PlayerCard>* deck = instantiatePlayerCards(map, 4);
 	Infection InfectionDeck = Infection(0);
 	InfectionDeck.makeDeck();
-	InfectionDeck.startInfect(map);
+	InfectionDeck.startInfect(&map);
 }
 
 void Game::StartGame() {
@@ -64,20 +64,48 @@ void Game::performPlayersTurn(int pId) {
 	int redo = 1;
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 		//Preliminary initializations
-		int action = playerlist[pId]->requestAction();
 		int newCityID;
 		int count = 0;
-		int cardIndex;
+		int cardIndex = -1;
 		vector<int> cure;
 		int playerID;
 		vector<PlayerCard> receivingHand;
-
-
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
 		City currentCity = map.getCityByID(currentCityID);
 		vector<int> pawnsInCity = currentCity.pawnList;
+		int displayaction = -1;
+		bool redoDisplay=true;
+		do {
+			displayDisplayOptions();
+			cin >> displayaction;
+			switch (displayaction) {
+			case 0:
+				redoDisplay = false;
+			case 1:
+				currentCity.display_information();
+				break;
+			case 2:
+				for (int i = 0; i < currentCity.connectionsRef.size(); i++) {
+					currentCity.connectionsRef[i]->display_information();
+				}
+				break;
+			case 3:
+				map.display_information();
+				break;
+			case 4:
+				map.display_status();
+				break;
+			case 5:
+				//display hand
+				break;
 
+			}
+
+		}while (redoDisplay);
+
+		
+		int action = playerlist[pId]->requestAction();
 		do {
 			switch (action) {
 			case 1: //drive
@@ -234,7 +262,7 @@ void Game::performPlayersTurn(int pId) {
 
 		if (success != 0) {
 			playerlist[pId]->useAction();
-			if (cardIndex) playerlist[pId]->discardCard(cardIndex);
+			if (cardIndex!=-1) playerlist[pId]->discardCard(cardIndex);
 		}
 	}
 
@@ -360,11 +388,21 @@ void Game::displayPlayers() {
 		cout << playerlist[i]->getPawnColor() << " pawn." << endl;
 	}
 }
+void Game::displayDisplayOptions() {
+	cout << "Select option"<< endl;
+	cout << "0) Chose action" << endl;
+	cout << "1) Display information of the city you are on" << endl;
+	cout << "2) Display information of adjacent cites" << endl;
+	cout << "3) Display information of all cites" << endl;
+	cout << "4) Display game status"<< endl;
+	cout << "5) Display cards in hand"<< endl;
+}
 
 bool Game::isGameOver() {
 	//add checks here
 	return false;
 }
+
 
 DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic) {
 
@@ -385,6 +423,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 int main() {
 	Game* game = new Game(2);
 	game->displayPlayers();
+	game->StartGame();
 	vector<Player*> players = game->getPlayerlist();
 	cout << players[0]->getCurrentLocation() << endl;
 	//game->getMap().display_information();

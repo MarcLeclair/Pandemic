@@ -138,6 +138,39 @@ int Player::requestAction() {
 	return newAction - 1;
 }
 
+void Player::display_player_info() {
+	cout << "Player " << getPlayerID() << "'s status: " << endl;
+
+	//1) Pawn information
+	cout << "\tPawn status: " << endl;
+	cout << "\t\tPawn color: " << getPawnColor();
+	cout << "\t\tLocation id: " << getCurrentLocation();
+
+	//2) Role information
+	cout << "\tRole Status: " << endl;
+	cout << "\t\tRole: " << getRole() << endl;
+	cout << "\t\tSpecial Role Actions: " << endl;
+	vector<string> roleActions = getRoleCard()->getSpecialActions();
+	if (roleActions.size() == 0) cout << "\t\t\tNone" << endl;
+	else {
+		for (int i = 0; i < roleActions.size(); i++)
+			cout << "\t\t\t" << roleActions[i] << endl;
+	}
+
+	//3) Reference Card information
+	cout << "\tReference Card and Player turn status: " << endl;
+	cout << "\t\tAvailable actions: " << endl;
+	vector<string> refActions = getRefCard()->getAllActions();
+	for (int i = 0; i < refActions.size(); i++) {
+		cout << "\t\t\t" << i + 1 << refActions[i] << endl;
+	}
+
+	//4 PlayerCards information
+	cout << "\tPlayer's hand status: " << endl;
+	displayCardsInHand();
+
+}
+
 /**************************************************************
 / Function to execute the drive function on this player's pawn
 ***************************************************************/
