@@ -6,6 +6,7 @@
 #include <iterator>
 #include <random>
 #include <queue>
+#include <fstream>
 
 #include "DeckOfCard.h"
 #include "map.h"
@@ -29,7 +30,9 @@ public:
 	void infectEpidemic(Map*); //infection cards if epidemic card drawn
 	void makeDeck(); //instantiates vector with 48 IDs
 	int getInfectionID(); //gives the location ID of the caard drawn
-	int numberToDraw();
+	void setInfectionID(int); //sets location ID
+	void saveInfectionDeck(); //saves deck
+	void loadInfectionDeck(); //loads it
 
 	/*void startInfect() {
 	int counter = 0;

@@ -12,12 +12,44 @@ int Infection::getInfectionID() {
 	return locationID;
 }
 
+void Infection::setInfectionID(int ID) {
+	locationID = ID;
+}
+
 void Infection::makeDeck() {
 	for (int i = 0; i < 48; i++) {
 		InfectionDeck.push_back(Infection(i+1));
 	}
 }
 
+void Infection::saveInfectionDeck() {
+	ofstream InfectionSave;
+	InfectionSave.open("InfectionDeck.txt");
+	for (int i = 0; i < InfectionDeck.size(); i++) {
+		InfectionSave << InfectionDeck[i].getInfectionID() << endl;
+	}
+	InfectionSave << ctr;
+	InfectionSave.close();
+}
+
+void Infection::loadInfectionDeck() {
+	string line;
+	int place = 0;
+	ifstream InfectionSave("InfectionDeck.txt");
+	if (InfectionSave.is_open())
+	{
+		while (getline(InfectionSave, line))
+		{
+			string s = line;
+			int ID=std::stoi(s);
+			InfectionDeck[place].setInfectionID(ID);
+			if (place == 49) {
+				ctr = ID;
+			}
+			place++;
+		}
+	}
+}
 
 void Infection::endTurnInfection(Map* map) {
 	if (epidemicVal < 4) {
@@ -50,6 +82,7 @@ void Infection::startInfect(Map* map) {
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	cout << City[ctr].name() << " has been infected." << endl;
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
@@ -57,6 +90,21 @@ void Infection::startInfect(Map* map) {
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
