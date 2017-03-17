@@ -244,26 +244,28 @@ void Map::addDisease(int cityId) {
 		if (citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]] < 3) {
 			citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]]++;
 		}
-		else {
+		else if (!citylist[cityId].outbreakHappened) {
 			citylist[cityId].outbreakHappened = true;
+			numberOutbreaks++;
 			for (int i = 0; i < citylist[cityId].connections.size(); i++) {
 				outbreak(citylist[cityId].connections[i], citylist[cityId].zone);
 			}
-			for (int i = 0; i < citylist.size(); i++) {
-				citylist[i].outbreakHappened = false;
-			}
 		}
 	}
+	for (int i = 0; i < citylist.size(); i++) {
+		citylist[i].outbreakHappened = false;
+	}
 }
-
 void Map::outbreak(int cityId, char color) {
-	numberOutbreaks++;
-	citylist[cityId].outbreakHappened = true;
-	if (!cured[zoneIndex[color]]) {
+	cityId--;
+
+	if (!cured[zoneIndex[citylist[cityId].zone]]) {
 		if (citylist[cityId].infectionCounters[zoneIndex[color]] < 3) {
 			citylist[cityId].infectionCounters[zoneIndex[color]]++;
 		}
-		else {
+		else if (!citylist[cityId].outbreakHappened) {
+			citylist[cityId].outbreakHappened = true;
+			numberOutbreaks++;
 			for (int i = 0; i < citylist[cityId].connections.size(); i++) {
 				outbreak(citylist[cityId].connections[i], color);
 			}

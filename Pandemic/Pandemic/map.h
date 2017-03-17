@@ -65,7 +65,6 @@ public:
     Map ();
 private:
 	void outbreak(int, char); //handles outbreaks
- 
 };
 
 
