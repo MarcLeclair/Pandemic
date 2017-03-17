@@ -235,6 +235,7 @@ void Map::treatDisease(int cityId, char color) {
 	checkEradication();
 }
 void Map::addDisease(int cityId) {
+	cityId--;
 	if (!cured[zoneIndex[citylist[cityId].zone]]) {
 		if (citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]] < 3) {
 			citylist[cityId].infectionCounters[zoneIndex[citylist[cityId].zone]]++;
