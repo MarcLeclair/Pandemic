@@ -73,6 +73,7 @@ public:
 	void displayCardsInHand();
 	void discardCard(int disc);
 	void balanceHand();
+	void display_player_info();
 
 	//Functions to execute actions during a player's turn
 	int requestAction();
