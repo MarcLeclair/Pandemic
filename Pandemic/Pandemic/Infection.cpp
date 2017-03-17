@@ -67,6 +67,9 @@ void Infection::endTurnInfection(Map* map) {
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
 	}
+
+	int cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
 }
 
@@ -82,30 +85,64 @@ void Infection::startInfect(Map* map) {
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	cout << City[ctr].name() << " has been infected." << endl;
+
+	int cityID = InfectionDeck[ctr].getInfectionID();
+	cout  <<  map->getCityByID(cityID).name <<" has been infected." << endl;
+	ctr++;
+
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
+	ctr++;
+
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
+	ctr++;
+
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
+
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
+
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	cityID = InfectionDeck[ctr].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	ctr++;
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	ctr++;
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	ctr++;
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
 }
 
 void Infection :: infectEpidemic(Map* map) {
