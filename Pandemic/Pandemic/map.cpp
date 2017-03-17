@@ -320,7 +320,31 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 vector<City> Map::getCities() {
 	return citylist;
 }
+bool Map::checkGameOver() {
+	if (numberOutbreaks >= 8) {
+		return true;
+	}
+	int count[4] = { 0,0,0,0 };
 
+	for (int i = 0; i<citylist.size(); i++) {
+		for (int j = 0; j < 4; j++) {
+			count[j] += citylist[i].infectionCounters[j];
+		}
+	}
+	for (int i = 0; i < 4; i++) {
+		if (count[i] == 0 >24) {
+			eradicated[i] = true;
+		}
+	}
+	return false;
+}
+bool Map::checkWin() {
+	bool ifWon = true;
+	for (int i = 0; i < 4; i++) {
+		ifWon = ifWon && cured[i];
+	}
+	return ifWon;
+}
 
 //City
 City::City(){

@@ -414,6 +414,14 @@ void Game::displayDisplayOptions() {
 
 bool Game::isGameOver() {
 	//add checks here
+	if (map.checkGameOver()) {
+		cout << "Game Over!!!"<< endl;
+		return true;
+	}
+	if (map.checkWin()) {
+		cout << "Win!!!" << endl;
+		return true;
+	}
 	return false;
 }
 
