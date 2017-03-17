@@ -60,6 +60,8 @@ public:
 	void addPawn(Pawn*); //adds a pawn to starting location
 	void movePawn(Pawn*, int); //moves a pawns location
 	void display_status(); //displays the status of the map
+	bool checkGameOver();
+	bool checkWin();
     City getCityByID(int); //returns the city given by specified int 
 	vector<City> getCities(); // return list of cities
     Map ();

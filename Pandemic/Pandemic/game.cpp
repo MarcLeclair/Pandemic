@@ -18,8 +18,15 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new Dispatcher(&map));
 	for (int i = 0; i < numberPlayers; i++) {
 		Player* player = new Player(i, rolelist[i], &map);
-		for (int j = 0; j < (6 - numberPlayers); j++)
-			player->drawCard(deck->getTopCard());
+		for (int j = 0; j < (6 - numberPlayers); j++) {
+			PlayerCard card = deck->getTopCard();
+			if (card.getType() != "epidemic") {
+				player->drawCard(card);
+			}
+			else {
+				j--;
+			}
+		}
 		this->playerlist.push_back(player);
 		map.addPawn(player->getMyPawn());
 	}
@@ -45,11 +52,25 @@ void Game::StartGame() {
 
 		cout << "Drawing cards finished. Infecting Cities." << endl;
 		InfectionDeck->endTurnInfection(&map);
+		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
+			cout << "Saving the game" << endl;
+			SaveGame();
+		}
 		currentPlayersId++;
 	}
 
 }
+void Game::SaveGame() {
+	map.save_map();
+	save_players();
 
+}
+
+void Game::LoadGame() {
+	map.load_map();
+	load_players();
+
+}
 int Game::pollForCity() {
 	int newCityID = 0;
 	cin >> newCityID;
@@ -282,8 +303,23 @@ void Game::performPlayersTurn(int pId) {
 }
 
 void Game::drawPlayerCards(int pId) {
-	playerlist[pId]->drawCard(deck->getTopCard());
-	playerlist[pId]->drawCard(deck->getTopCard());
+	PlayerCard card1 = deck->getTopCard();
+	PlayerCard card2 = deck->getTopCard();
+	if (card1.getType() != "epidemic") {
+		playerlist[pId]->drawCard(card1);
+	}
+	else {
+		InfectionDeck->infectEpidemic(&map);
+	}
+	if (card1.getType() != "epidemic") {
+		playerlist[pId]->drawCard(card2);
+	}
+	else {
+		InfectionDeck->infectEpidemic(&map);
+	}
+
+
+
 }
 
 void Game::save_players() {
@@ -414,6 +450,14 @@ void Game::displayDisplayOptions() {
 
 bool Game::isGameOver() {
 	//add checks here
+	if (map.checkGameOver()) {
+		cout << "Game Over!!!"<< endl;
+		return true;
+	}
+	if (map.checkWin()) {
+		cout << "Win!!!" << endl;
+		return true;
+	}
 	return false;
 }
 
