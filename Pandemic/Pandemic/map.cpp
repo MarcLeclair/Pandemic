@@ -186,6 +186,9 @@ void Map::save_map(){
 
 
 }
+void Map::addResearchStation(int cityId) {
+	citylist[cityId - 1].buildResearchStation();
+}
 void Map::display_research_cities() {
 	for (int i = 0; i < citylist.size(); i++) {
 		if (citylist[i].hasResearchStation()) {
@@ -216,21 +219,21 @@ void Map::cureDisease(char disease) {
 	cured[zoneIndex[disease]] = true;
 }
 void Map::treatDisease(int cityId) {
-	City city = citylist[cityId - 1];
-	if (cured[zoneIndex[city.zone]]) {
-		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]] = 0;
+
+	if (cured[zoneIndex[citylist[cityId - 1].zone]]) {
+		citylist[cityId - 1].infectionCounters[zoneIndex[citylist[cityId - 1].zone]] = 0;
 	}
 	else {
-		city.infectionCounters[zoneIndex[citylist[cityId - 1].zone]]--;
+		citylist[cityId - 1].infectionCounters[zoneIndex[citylist[cityId - 1].zone]]--;
 	}
+	checkEradication();
 }
 void Map::treatDisease(int cityId, char color) {
-	City city = citylist[cityId - 1];
 	if (cured[zoneIndex[color]]) {
-		city.infectionCounters[zoneIndex[color]] = 0;
+		citylist[cityId - 1].infectionCounters[zoneIndex[color]] = 0;
 	}
 	else {
-		city.infectionCounters[zoneIndex[color]]--;
+		citylist[cityId - 1].infectionCounters[zoneIndex[color]]--;
 	}
 	checkEradication();
 }
