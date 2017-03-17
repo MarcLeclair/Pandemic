@@ -135,7 +135,7 @@ int Player::requestAction() {
 	while (newAction > refcard.getAllActions().size()) {
 		cout << "Invalid action ID. Please Try Again." << endl;
 	}
-	return newAction - 1;
+	return newAction;
 }
 
 void Player::display_player_info() {
