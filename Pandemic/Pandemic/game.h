@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "possession.h"
 #include "DeckOfCard.h"
@@ -15,6 +16,8 @@ class Game {
 	Map map;
 	vector<Player*> playerlist;
 	vector<RoleCard*> rolelist;
+	DeckOfCard<PlayerCard>* deck;
+	Infection* InfectionDeck;
 public:
 	Game();
 	Game(int);
@@ -25,7 +28,11 @@ public:
 	vector<Player*> getPlayerlist() {
 		return playerlist;
 	}
+	DeckOfCard<PlayerCard>* getDeck() {
+		return deck;
+	}
 	void displayDisplayOptions();
+	void drawPlayerCards(int);
 	void StartGame();
 	bool isGameOver();
 	void performPlayersTurn(int);

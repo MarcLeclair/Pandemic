@@ -93,7 +93,7 @@ void Player::drawCard(PlayerCard plc) {
 void Player::displayCardsInHand() {
 	int cardNum = 1;
 	for (PlayerCard card : cardsInHand) {
-		cout << "\t" << cardNum << ". " << card.getType() << " card: " << card.getValue() << endl;
+		cout << "\t" << cardNum << ". " << card.getType() << " card: " << card.getValue() << "(" << card.getCityId() << ")" <<endl;
 		cardNum++;
 	}
 }
@@ -134,6 +134,7 @@ int Player::requestAction() {
 	cin >> newAction;
 	while (newAction > refcard.getAllActions().size()) {
 		cout << "Invalid action ID. Please Try Again." << endl;
+		cin >> newAction;
 	}
 	return newAction;
 }

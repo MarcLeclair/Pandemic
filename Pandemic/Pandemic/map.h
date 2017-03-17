@@ -44,6 +44,7 @@ class  Map{
  	int width, height;
 	int numberOutbreaks;
 public:
+	void addResearchStation(int);
 	void addDisease(int);//adds a single disease cube to a specified city 
 	void checkEradication(); //checks if a disease is iradicated
     void save_map(); //saves map to save file
@@ -64,7 +65,6 @@ public:
     Map ();
 private:
 	void outbreak(int, char); //handles outbreaks
- 
 };
 
 
