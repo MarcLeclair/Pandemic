@@ -38,12 +38,12 @@ void Infection::loadInfectionDeck() {
 	ifstream InfectionSave("InfectionDeck.txt");
 	if (InfectionSave.is_open())
 	{
-		while (getline(InfectionSave, line))
+		while (getline(InfectionSave, line))			//keep going as long as there is another line
 		{
 			string s = line;
-			int ID=std::stoi(s);
+			int ID=std::stoi(s);						 //string to int
 			InfectionDeck[place].setInfectionID(ID);
-			if (place == 49) {
+			if (place == 49) {							//this should be the last line
 				ctr = ID;
 			}
 			place++;
@@ -79,10 +79,11 @@ void Infection::shuffleInfection() {
 }
 
 void Infection::startInfect(Map* map) {
+	//infect 3 cities with 3 cubes
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
-	cout << City[ctr].name() << " has been infected." << endl;
+	//cout << City[ctr].name() << " has been infected." << endl;
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
@@ -91,6 +92,7 @@ void Infection::startInfect(Map* map) {
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	//infect 3 cities with 2 cubes
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
@@ -100,6 +102,7 @@ void Infection::startInfect(Map* map) {
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
+	//infect 3 cities with 1 cube
 	ctr++;
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
 	ctr++;

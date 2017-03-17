@@ -15,11 +15,11 @@ using namespace std;
 class Infection
 {
 private:
-	vector<Infection> InfectionDeck;
-	vector<Infection> InfectionDeckDiscard;
-	int locationID;
-	int epidemicVal;
-	int ctr = 0;
+	vector<Infection> InfectionDeck; //the deck 
+	vector<Infection> InfectionDeckDiscard; //temp deck to shuffle discarded cards
+	int locationID; //the infection card's locationID
+	int epidemicVal; // the value of the infection rate on the map to see how many infection cards are drawn
+	int ctr = 0; //keeps place in the deck
 
 public:
 	Infection();
