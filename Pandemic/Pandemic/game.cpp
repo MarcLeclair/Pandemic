@@ -416,18 +416,31 @@ bool Game::isGameOver() {
 
 DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic) {
 
+	stringstream colourConversion;
+	string colour;
+
 	vector<PlayerCard> playerCards;
 	vector<City> temp = map.getCities();
 	for (City city : temp) {
 		int id = city.id;
 		string name = city.name;
-		string colour = "none";
+		colourConversion << (city.zone);
+		colourConversion >>  colour;
 
 		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
 		playerCards.push_back(cardToPush);
 	}
 	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards);
 	
+	//vector<PlayerCard> t = playerDeck->returnVector();
+	//for (PlayerCard player : t) {
+	//	cout << player.getValue() << endl;
+	//}
+	//vector<int> x = playerDeck->indices();
+
+	//for (int w : x) {
+	//	cout << w << endl;
+	//Testing}
 	return playerDeck;
 }
 int main() {

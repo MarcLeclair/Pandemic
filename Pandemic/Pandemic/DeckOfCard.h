@@ -13,6 +13,7 @@
 ****************************************************************/
 template <class T> class DeckOfCard {
 	
+	std::vector<int> some;
 	std::deque<T> deck;
 	std::vector<T> vectorDeck;
 	T *card;
@@ -24,7 +25,8 @@ public:
 	 DeckOfCard(std::vector<T> arrayOfCard);
 	 T getTopCard();
 	 void storeInQue(std::vector<T> initialDeck);
-
+	 std::vector<T> returnVector();
+	 std::vector<int> indices();
 
 private:
 
@@ -101,16 +103,30 @@ template <class T> void DeckOfCard<T>::shuffleInInfection(std::vector<T> &cardDe
 //Shuffle deck Algorithm fisher -yates shuffle based -- Takes in 2 cards at random place in the array and swap them together
 // Although rand() isn't truly random ( as in it will favor a side at some point), it does serve its purpose right in this case
 template <class T> void DeckOfCard<T>::shuffleDeck(std::vector<T> &cardDeck) {
+
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> distr(1, 48); // define the range
+
 	int N = cardDeck.size();
 	for (int i = N - 1; i>0; --i) {
-		int r = rand() % (i + 1);
+		int r = distr(eng) % (i + 1);
 		std::swap(cardDeck[i], cardDeck[r]);
+		some.push_back(r);
 	}
+/*
+	for (T typ : cardDeck) {
+		vectorDeck.push_back(typ);
+	} testing */
 
-	/*for (PlayerCard card : cardDeck) {
-	std::cout << card.getValue() << std::endl;
-	} Used for testing*/
 };
+
+//template <class T> std::vector<int> DeckOfCard<T>::indices() {
+//	return some;
+//};
+//template <class T> std::vector<T> DeckOfCard<T>::returnVector() {
+//	return vectorDeck;
+// TESTING FUNCTIONS}
 
 
 
