@@ -290,22 +290,24 @@ void Map::addPawn(Pawn* pawn) {
 	pawn->set_location(4);
 }
 void Map::movePawn(Pawn* pawn, int cityId) {
-
+	citylist[(pawn->get_location()) - 1].display_information();
 	vector <Pawn*>::iterator it3;
 	for (it3 = this->citylist[(pawn->get_location()) - 1].pawnRefList.begin(); it3 != this->citylist[(pawn->get_location()) - 1].pawnRefList.end(); ++it3) {
 		if ((*it3)->get_playerId() == pawn->get_playerId()) {
 			it3=this->citylist[(pawn->get_location()) - 1].pawnRefList.erase(it3);
+			break;
 		}
 	}
 	vector <int>::iterator it2;
 	for (it2 = this->citylist[(pawn->get_location()) - 1].pawnList.begin(); it2 != this->citylist[(pawn->get_location()) - 1].pawnList.end(); ++it2) {
 		if ((*it2) == pawn->get_playerId()) {
 			it2 = this->citylist[(pawn->get_location()) - 1].pawnList.erase(it2);
+			break;
 		}
 	}
 	pawn->set_location(cityId);
-	this->citylist[(pawn->get_location()) - 1].pawnRefList.push_back(pawn);
-	this->citylist[(pawn->get_location()) - 1].pawnList.push_back(pawn->get_playerId());
+	this->citylist[cityId - 1].pawnRefList.push_back(pawn);
+	this->citylist[cityId - 1].pawnList.push_back(pawn->get_playerId());
 
 }
 vector<City> Map::getCities() {
