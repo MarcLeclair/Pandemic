@@ -12,6 +12,10 @@ int Infection::getInfectionID() {
 	return locationID;
 }
 
+void Infection::setInfectionID(int ID) {
+	locationID = ID;
+}
+
 void Infection::makeDeck() {
 	for (int i = 0; i < 48; i++) {
 		InfectionDeck.push_back(Infection(i+1));
@@ -19,12 +23,23 @@ void Infection::makeDeck() {
 }
 
 void Infection::saveInfectionDeck() {
-	InfectionSave.open("InfectionDeck.Txt");
+	ofstream InfectionSave;
+	InfectionSave.open("InfectionDeck.txt");
 	for (int i = 0; i < InfectionDeck.size(); i++) {
-		InfectionSave << InfectionDeck[i];
+		InfectionSave << InfectionDeck[i].getInfectionID() << endl;
 	}
+	InfectionSave.close();
 }
 
+void Infection::loadInfectionDeck() {
+	string line;
+	ifstream mapFile("InfectionDeck.txt");
+	if (mapFile.is_open())
+	{
+		while (getline(mapFile, line))
+		{
+
+}
 
 void Infection::endTurnInfection(Map* map) {
 	if (epidemicVal < 4) {

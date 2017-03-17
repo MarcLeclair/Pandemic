@@ -20,7 +20,6 @@ private:
 	int locationID;
 	int epidemicVal;
 	int ctr = 0;
-	ofstream InfectionSave;
 
 public:
 	Infection();
@@ -31,6 +30,7 @@ public:
 	void infectEpidemic(Map*); //infection cards if epidemic card drawn
 	void makeDeck(); //instantiates vector with 48 IDs
 	int getInfectionID(); //gives the location ID of the caard drawn
+	void setInfectionID(int); //sets location ID
 	void saveInfectionDeck(); //saves deck
 	void loadInfectionDeck(); //loads it
 
