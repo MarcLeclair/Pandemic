@@ -144,8 +144,8 @@ void Player::display_player_info() {
 
 	//1) Pawn information
 	cout << "\tPawn status: " << endl;
-	cout << "\t\tPawn color: " << getPawnColor();
-	cout << "\t\tLocation id: " << getCurrentLocation();
+	cout << "\t\tPawn color: " << getPawnColor() << endl;;
+	cout << "\t\tLocation id: " << getCurrentLocation() << endl;
 
 	//2) Role information
 	cout << "\tRole Status: " << endl;
@@ -163,7 +163,7 @@ void Player::display_player_info() {
 	cout << "\t\tAvailable actions: " << endl;
 	vector<string> refActions = getRefCard()->getAllActions();
 	for (int i = 0; i < refActions.size(); i++) {
-		cout << "\t\t\t" << i + 1 << refActions[i] << endl;
+		cout << "\t\t\t" << i + 1 << ". " << refActions[i] << endl;
 	}
 
 	//4 PlayerCards information
