@@ -130,7 +130,7 @@ int ReferenceCard::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
 	}
 	
 	//if all the proper conditions are met, build a research center in the current city
-	currentLocation.buildResearchStation();
+	mapRef->addResearchStation(currentLocationID);
 	
 	std::cout << "Research station has been built!" << std::endl;
 	return 1;

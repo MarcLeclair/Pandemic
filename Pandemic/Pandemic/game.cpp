@@ -35,12 +35,16 @@ Game::Game(int numberPlayers) {
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
-		cout << "Player " << currentPlayersId << "' turn starts." << endl;
+		cout << "Player " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
-		cout << "Player " << currentPlayersId << " actions over. Drawing player cards." << endl;
+		cout << "Player " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
 		drawPlayerCards(currentPlayersId%playerlist.size());
-		cout << "Finished drawn cards. Player " << currentPlayersId << "'s hand is now: " << endl;
+
+		cout << "Finished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 		playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
+
+		cout << "Drawing cards finished. Infecting Cities." << endl;
+		InfectionDeck->endTurnInfection(&map);
 		currentPlayersId++;
 	}
 
@@ -134,7 +138,7 @@ void Game::performPlayersTurn(int pId) {
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
-				success = playerlist[pId]->direct_flight(cardIndex);
+				success = playerlist[pId]->direct_flight(cardIndex-1);
 				break;
 			case 3: //charter flight
 				cout << "You chose to take a charter flight." << endl;
@@ -146,7 +150,7 @@ void Game::performPlayersTurn(int pId) {
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1 || newCityID >48 || newCityID < 1);
 
-				success = playerlist[pId]->charter_flight(cardIndex, newCityID);
+				success = playerlist[pId]->charter_flight(cardIndex-1, newCityID);
 				break;
 			case 4: //shuttle flight
 				cout << "You chose to take a shuttle flight." << endl;
@@ -163,7 +167,7 @@ void Game::performPlayersTurn(int pId) {
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
-				success = playerlist[pId]->build_research_station(cardIndex);
+				success = playerlist[pId]->build_research_station(cardIndex-1);
 				break;
 			case 6: //treat disease
 				cout << "You chose to treat a disease!\nTreating disease in current city." << endl;
@@ -189,7 +193,7 @@ void Game::performPlayersTurn(int pId) {
 					cout << "Which card would you like to give to the player?" << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex < 1 || cardIndex > playerlist[pId]->getNumOfCards());
-				success = playerlist[pId]->share_knowledge(receivingHand, cardIndex);
+				success = playerlist[pId]->share_knowledge(receivingHand, cardIndex-1);
 
 				//Balance the receiving player's hand, in case they've acquired too many cards
 				playerlist[playerID]->balanceHand();
@@ -202,7 +206,7 @@ void Game::performPlayersTurn(int pId) {
 					do {
 						cardIndex = pollForCards(pId);
 					} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
-					cure.push_back(cardIndex);
+					cure.push_back(cardIndex-1);
 				}
 				success = playerlist[pId]->discover_cure(cure);
 				if (success != 0) { //If it worked, we need to discard the cards used
@@ -222,7 +226,7 @@ void Game::performPlayersTurn(int pId) {
 					} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
 					RoleCard* rc = playerlist[pId]->getRoleCard();
-					PlayerCard moveCard = playerlist[pId]->getHand().at(cardIndex);
+					PlayerCard moveCard = playerlist[pId]->getHand().at(cardIndex-1);
 					//We are casting the role to an OperationsExpert type because we know it is an Operations Expert
 					success = dynamic_cast<OperationsExpert&>(*rc).specialOperationsMove(playerlist[pId]->getMyPawn(), moveCard);
 				}
