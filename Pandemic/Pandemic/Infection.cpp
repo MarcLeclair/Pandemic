@@ -19,8 +19,22 @@ void Infection::makeDeck() {
 }
 
 
-void Infection::drawInfection(Map* map) {
-	map->addDisease(InfectionDeck[ctr].getInfectionID());
+void Infection::endTurnInfection(Map* map) {
+	if (epidemicVal < 4) {
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+	}
+	else if (epidemicVal == 4 || epidemicVal == 5) {
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+	}
+	else if (epidemicVal > 5) {
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		map->addDisease(InfectionDeck[ctr].getInfectionID());
+	}
 	ctr++;
 }
 
@@ -70,4 +84,7 @@ void Infection :: infectEpidemic(Map* map) {
 
 	//reset ctr
 	ctr = 0;
+
+	//increase epidemic value
+	epidemicVal++;
 }
