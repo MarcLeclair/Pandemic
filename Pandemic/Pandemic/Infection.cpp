@@ -52,7 +52,7 @@ void Infection :: infectEpidemic(Map* map) {
 	map->addDisease(InfectionDeck[48].getInfectionID());
 	//move it to front
 	std::vector<Infection>::iterator it;
-	//it = InfectionDeck.rend();
+	//it = vector<InfectionDeck>.rend();
 	for (int i = 0; i <= ctr+1; i++) {
 		InfectionDeckDiscard.push_back(InfectionDeck[i]);
 	}
