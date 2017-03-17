@@ -201,7 +201,7 @@ int ReferenceCard::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 
 	//Check if all the cards are the same color
 	for (int i = 1; i < 5; i++) {
-		if (cure[i].getColour() != cure[i - 1].getColour()) {
+		if (mapRef->getCityByID(cure[i].getCityId()).zone != mapRef->getCityByID(cure[i-1].getCityId()).zone{
 			std::cout << "Indicated cards are not all the same color. Cannot Cure disease" << std::endl;
 			return false;
 		}
