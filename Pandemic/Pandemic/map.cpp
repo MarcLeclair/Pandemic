@@ -10,6 +10,10 @@ using namespace std;
 //Map
 Map::Map(){
 	numberOutbreaks = 0;
+	for (int i = 0; i < 4; i++) {
+		cured[i] = false;
+		eradicated[i] = false;
+	}
 }
 map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 void Map::load_starting_map(){
@@ -228,6 +232,7 @@ void Map::treatDisease(int cityId, char color) {
 	else {
 		city.infectionCounters[zoneIndex[color]]--;
 	}
+	checkEradication();
 }
 void Map::addDisease(int cityId) {
 	if (!cured[zoneIndex[citylist[cityId].zone]]) {
