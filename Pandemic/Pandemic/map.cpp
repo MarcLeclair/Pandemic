@@ -288,12 +288,20 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 
 	vector <Pawn*>::iterator it3;
 	for (it3 = this->citylist[(pawn->get_location()) - 1].pawnRefList.begin(); it3 != this->citylist[(pawn->get_location()) - 1].pawnRefList.end(); ++it3) {
-		if ((*it3)->get_location() == pawn->get_location()) {
+		if ((*it3)->get_playerId() == pawn->get_playerId()) {
 			it3=this->citylist[(pawn->get_location()) - 1].pawnRefList.erase(it3);
 		}
 	}
-	this->citylist[(pawn->get_location()) - 1].pawnRefList.push_back(pawn);
+	vector <int>::iterator it2;
+	for (it2 = this->citylist[(pawn->get_location()) - 1].pawnList.begin(); it2 != this->citylist[(pawn->get_location()) - 1].pawnList.end(); ++it2) {
+		if ((*it2) == pawn->get_playerId()) {
+			it2 = this->citylist[(pawn->get_location()) - 1].pawnList.erase(it2);
+		}
+	}
 	pawn->set_location(cityId);
+	this->citylist[(pawn->get_location()) - 1].pawnRefList.push_back(pawn);
+	this->citylist[(pawn->get_location()) - 1].pawnList.push_back(pawn->get_playerId());
+
 }
 vector<City> Map::getCities() {
 	return citylist;
@@ -334,8 +342,8 @@ if(researchCenter){
   cout<< "This city has a research center" <<endl;
  }
 
- for(int i=1; i<pawnList.size();i++){
-  cout <<"Player's "<<pawnList[i]<<" pawn is on this spot."<<endl;
+ for(int i=0; i<pawnRefList.size();i++){
+  cout <<"Player's "<<pawnRefList[i]->get_playerId() <<" pawn is on this spot."<<endl;
  }
 
  cout<< endl <<endl;
