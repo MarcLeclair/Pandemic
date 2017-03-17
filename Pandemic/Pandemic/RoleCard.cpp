@@ -64,7 +64,7 @@ int Researcher::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHa
 
 	//If you get here, it means the sharing knowledge is valid
 	receivingHand.push_back(givingCard);
-	cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << giverPawn->get_location() << ". " << endl;
+	cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << getMapRef()->getCityByID(giverPawn->get_location()).name << ". " << endl;
 	return 1;
 }
 /*************************
@@ -192,7 +192,7 @@ int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
 
 	int newCityID = moveCard.getCityId();
 	getMapRef()->movePawn(pawn, newCityID);
-	cout << "You have executed your Special Move! Your current location is now " << pawn->get_location() << endl;
+	cout << "You have executed your Special Move! Your current location is now " << getMapRef()->getCityByID(pawn->get_location()).name << endl;
 	return 1;
 
 
