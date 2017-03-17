@@ -415,6 +415,10 @@ bool Game::isGameOver() {
 
 DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic) {
 
+
+	PlayerCard epidemic = PlayerCard("epidemic", -1, "1-INCREASE \n move the infection rate marker forward 1 space"
+													 "2-INFECT \n draw the bottom card from the infection deck  and put 3 cubes  on that city. Discard that card \n"
+													 "3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
 	stringstream colourConversion;
 	string colour;
 
@@ -429,6 +433,10 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
 		playerCards.push_back(cardToPush);
 	}
+
+	for (int i = 0; i < 4; i++) {
+		playerCards.push_back(epidemic);
+	}
 	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards);
 	
 	//vector<PlayerCard> t = playerDeck->returnVector();
@@ -440,6 +448,8 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	//for (int w : x) {
 	//	cout << w << endl;
 	//Testing}
+/*
+	playerDeck->shuffleInInfection(*playerDeck, numOfEpidemic);*/
 	return playerDeck;
 }
 int main() {

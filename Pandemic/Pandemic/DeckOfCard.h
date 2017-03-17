@@ -25,13 +25,14 @@ public:
 	 DeckOfCard(std::vector<T> arrayOfCard);
 	 T getTopCard();
 	 void storeInQue(std::vector<T> initialDeck);
-	 std::vector<T> returnVector();
-	 std::vector<int> indices();
+	 void shuffleInInfection(DeckOfCard<T> &cardDeck, int numberOfEpidemic);
+	 /*std::vector<T> returnVector();
+	 std::vector<int> indices();*/
 
 private:
 
-	void shufflePlayerCard(std::vector<T> &cardDeck, int epidemicRate, int position, T epidemic);
-	 void shuffleInInfection(std::vector<T> &cardDeck, int numberOfEpidemic);
+	void shufflePlayerCard(std::vector<T> &cardDeck, int epidemicRate, int position);
+	 
 	void shuffleDeck(std::vector<T> &cardDeck);
 
 };
@@ -61,7 +62,7 @@ template <class T> void DeckOfCard<T>::storeInQue(std::vector<T> initialDeck) {
 		deck.emplace_back(card);
 	}
 };
-template <class T> void DeckOfCard<T>::shufflePlayerCard(std::vector<T> &cardDeck, int epidemicRate, int position, T epidemic) {
+template <class T> void DeckOfCard<T>::shufflePlayerCard(std::vector<T> &cardDeck, int epidemicRate, int position) {
 
 	
 
@@ -78,7 +79,13 @@ template <class T> void DeckOfCard<T>::shufflePlayerCard(std::vector<T> &cardDec
 		}
 };
 
-template <class T> void DeckOfCard<T>::shuffleInInfection(std::vector<T> &cardDeck, int numberOfEpidemic) {
+template <class T> void DeckOfCard<T>::shuffleInInfection(DeckOfCard<T> &cardDeck, int numberOfEpidemic) {
+
+
+	std::vector<T> playerTemp;
+	for (int i = 0; i <= cardDeck.deck.size(); i++) {
+		playerTemp.push_back(cardDeck.getTopCard());
+	}
 
 	std::vector<int>::iterator it; // create random access iterator
 
@@ -86,18 +93,20 @@ template <class T> void DeckOfCard<T>::shuffleInInfection(std::vector<T> &cardDe
 	int posInVector;
 
 	if (numberOfEpidemic == 4) {
-		posInVector = (cardDeck.size() - 1) / 4; //53 - 1  = 52 ; 52/ 4 = 13 --> will insert an epidemic every 13 card
+		posInVector = (cardDeck.deck.size() - 1) / 4; //53 - 1  = 52 ; 52/ 4 = 13 --> will insert an epidemic every 13 card
 	}
 	else if (numberOfEpidemic == 5) {
-		posInVector = (cardDeck.size() - 3) / 5; //53 - 3  = 50 ; 50/ 5 = 10  --> will insert an epidemic every 10 card
+		posInVector = (cardDeck.deck.size() - 3) / 5; //53 - 3  = 50 ; 50/ 5 = 10  --> will insert an epidemic every 10 card
 	}
 	else if (numberOfEpidemic == 6) {
-		posInVector = (cardDeck.size() - 5) / 6;//53 -  5  = 48 ; 48/ 6 = 8 --> will insert an epidemic every 8 card
+		posInVector = (cardDeck.deck.size() - 5) / 6;//53 -  5  = 48 ; 48/ 6 = 8 --> will insert an epidemic every 8 card
 	}
 
 	for (int counter = 1; counter <= numberOfEpidemic; counter++) {
-		shuffleDeck(cardDeck, posInVector, counter); //this shuffle deck  algorithm is used for epidemic cards
+		shufflePlayerCard(playerTemp, posInVector, counter); //this shuffle deck  algorithm is used for epidemic cards
 	}
+
+	storeInQue(playerTemp);
 };
 
 //Shuffle deck Algorithm fisher -yates shuffle based -- Takes in 2 cards at random place in the array and swap them together
