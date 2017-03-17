@@ -172,7 +172,7 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::v
 	}
 
 	int currentLocation = giverPawn->get_location();
-	if (!(givingCard.getCityId() != currentLocation)) {
+	if (givingCard.getCityId() != currentLocation) {
 		std::cout << "Exchange card must match current city. Cannot share knowledge." << std::endl;
 		return 0;
 	}
