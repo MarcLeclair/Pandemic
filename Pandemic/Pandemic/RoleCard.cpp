@@ -250,19 +250,7 @@ int Scientist::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 		return 0;
 	}
 
-	string cureColor = cure[0].getColour();
-	char zone;
-
-	//assign a zone id to the color for curing purposes
-	if (cureColor == "black")
-		zone = 'b';
-	else if (cureColor == "blue")
-		zone = 'u';
-	else if (cureColor == "red")
-		zone = 'r';
-	else
-		zone = 'y';
-
+	char zone = getMapRef()->getCityByID(currentLocationID).zone;
 
 	getMapRef()->cureDisease(zone);
 
