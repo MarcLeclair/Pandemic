@@ -9,7 +9,7 @@ using namespace std;
 
 //Map
 Map::Map(){
-	
+	numberOutbreaks = 0;
 }
 map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 void Map::load_starting_map(){
@@ -57,7 +57,7 @@ void Map::load_starting_map(){
     }
     mapFile.close();
   }
-
+  createLinks();
 }
 void Map::load_map(){
   string line;
@@ -104,7 +104,54 @@ void Map::load_map(){
     }
     mapFile.close();
   }
+  createLinks();
 
+}
+void Map::display_status() {
+	bool ifnothingcured = true;
+	cout <<"Number of outbreaks: "<< numberOutbreaks << endl;
+	for (int i = 0; i < 4; i++) {
+		if (cured[i]) {
+			ifnothingcured = false;
+			if (eradicated[i]) {
+				switch (i) {
+				case 0:
+					cout << "The black disease is eradicated!" << endl;
+					break;
+				case 1:
+					cout << "The red disease is eradicated!" << endl;
+					break;
+				case 2:
+					cout << "The blue disease is eradicated!" << endl;
+					break;
+				case 3:
+					cout << "The yellow disease is eradicated!" << endl;
+					break;
+				}
+			}
+			else {
+				switch (i) {
+				case 0:
+					cout << "The black disease is cured!" << endl;
+					break;
+				case 1:
+					cout << "The red disease is cured!" << endl;
+					break;
+				case 2:
+					cout << "The blue disease is cured!" << endl;
+					break;
+				case 3:
+					cout << "The yellow disease is cured!" << endl;
+					break;
+				}
+
+			}
+		}
+
+	}
+	if (ifnothingcured) {
+		cout << "No dieases have been cured or eradicated" << endl;
+	}
 }
 void Map::save_map(){
   ofstream mapFile;
@@ -150,7 +197,7 @@ void Map::display_information(){
 void Map::createLinks(){
   for(int i=0;i<citylist.size();i++){
     for(int j=0;j<citylist[i].connections.size();j++){
-      citylist[i].connectionsRef.push_back(&citylist[citylist[i].connections[j]]);
+      citylist[i].connectionsRef.push_back(&citylist[citylist[i].connections[j]-1]);
     }
   }
 }
@@ -200,6 +247,7 @@ void Map::addDisease(int cityId) {
 }
 
 void Map::outbreak(int cityId, char color) {
+	numberOutbreaks++;
 	citylist[cityId].outbreakHappened = true;
 	if (!cured[zoneIndex[color]]) {
 		if (citylist[cityId].infectionCounters[zoneIndex[color]] < 3) {
