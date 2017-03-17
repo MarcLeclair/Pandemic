@@ -1,7 +1,7 @@
 1,Bridge of Eldin,9-26-48-27-20-44,b,0,0-0-0-0,0
 2,Bublin Encampment,31-28-15-6-3,r,0,0-0-0-0,0
 3,Bublin Fortress,18-2-6-34,r,0,0-0-0-0,0
-4,Castle Town,21-26-22-25,y,0,0-0-0-0,0
+4,Castle Town,21-26-22-25,y,0,0-0-0-0,1
 5,Castle Waterway,19-44-20-25-14-35,b,0,0-0-0-0,0
 6,Cave of Ordeals,3-2-15,r,0,0-0-0-0,0
 7,City in the Sky,15-28-33,r,0,0-0-0-0,0
@@ -45,4 +45,4 @@
 45,Yeti Den,41-47,y,0,0-0-0-0,0
 46,Zora's Domain,19-35-47,y,0,0-0-0-0,0
 47,Zora's Fountain,42-45-46-35-14,y,0,0-0-0-0,0
-48,Zora's River,22-26-1,b,0,0-0-0-2,1
+48,Zora's River,22-26-1,b,0,0-0-0-0,0

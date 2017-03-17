@@ -133,6 +133,14 @@ void Game::performPlayersTurn(int pId) {
 			case 5:
 				playerlist[pId]->displayCardsInHand();
 				break;
+			case 6:
+				playerlist[pId]->display_player_info();
+				break;
+			case 7:
+				for (int i = 0; i < playerlist.size(); i++) {
+					playerlist[pId]->display_player_info();
+				}
+				break;
 
 			}
 
@@ -446,6 +454,8 @@ void Game::displayDisplayOptions() {
 	cout << "3) Display information of all cites" << endl;
 	cout << "4) Display game status"<< endl;
 	cout << "5) Display cards in hand"<< endl;
+	cout << "6) Display current player settings" << endl;
+	cout << "7) Display all players settings" << endl;
 }
 
 bool Game::isGameOver() {

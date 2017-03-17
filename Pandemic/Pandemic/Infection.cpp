@@ -52,25 +52,51 @@ void Infection::loadInfectionDeck() {
 }
 
 void Infection::endTurnInfection(Map* map) {
+	int cityID = 0;
 	if (epidemicVal < 4) {
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
 	}
 	else if (epidemicVal == 4 || epidemicVal == 5) {
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
 	}
 	else if (epidemicVal > 5) {
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
+		cityID = InfectionDeck[ctr].getInfectionID();
+		cout << map->getCityByID(cityID).name << " has been infected." << endl;
 		map->addDisease(InfectionDeck[ctr].getInfectionID());
+		ctr++;
 	}
 
-	int cityID = InfectionDeck[ctr].getInfectionID();
-	cout << map->getCityByID(cityID).name << " has been infected." << endl;
-	ctr++;
+
 }
 
 void Infection::shuffleInfection() {
