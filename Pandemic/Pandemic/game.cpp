@@ -7,6 +7,8 @@ Game::Game() {
 Game::Game(int numberPlayers) {
 	map = Map();
 	map.load_starting_map();
+	deck = instantiatePlayerCards(map, 4);
+
 	rolelist.push_back(new Medic(&map));
 	rolelist.push_back(new Researcher(&map));
 	rolelist.push_back(new OperationsExpert(&map));
@@ -16,22 +18,28 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new Dispatcher(&map));
 	for (int i = 0; i < numberPlayers; i++) {
 		Player* player = new Player(i, rolelist[i], &map);
+		for (int j = 0; j < (6 - numberPlayers); j++)
+			player->drawCard(deck->getTopCard());
 		this->playerlist.push_back(player);
 		map.addPawn(player->getMyPawn());
 	}
 	//load_players();
 	//initialize both decks of cards??
 
-	DeckOfCard<PlayerCard>* deck = instantiatePlayerCards(map, 4);
-	Infection InfectionDeck = Infection(0);
-	InfectionDeck.makeDeck();
-	InfectionDeck.startInfect(&map);
+	InfectionDeck = new Infection(0);
+	InfectionDeck->makeDeck();
+	InfectionDeck->startInfect(&map);
 }
 
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
+		cout << "Player " << currentPlayersId << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
+		cout << "Player " << currentPlayersId << " actions over. Drawing player cards." << endl;
+		drawPlayerCards(currentPlayersId%playerlist.size());
+		cout << "Finished drawn cards. Player " << currentPlayersId << "'s hand is now: " << endl;
+		playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 		currentPlayersId++;
 	}
 
@@ -75,7 +83,7 @@ void Game::performPlayersTurn(int pId) {
 		City currentCity = map.getCityByID(currentCityID);
 		vector<int> pawnsInCity = currentCity.pawnList;
 		int displayaction = -1;
-		bool redoDisplay=true;
+		bool redoDisplay = true;
 		do {
 			displayDisplayOptions();
 			cin >> displayaction;
@@ -97,14 +105,14 @@ void Game::performPlayersTurn(int pId) {
 				map.display_status();
 				break;
 			case 5:
-				//display hand
+				playerlist[pId]->displayCardsInHand();
 				break;
 
 			}
 
-		}while (redoDisplay);
+		} while (redoDisplay);
 
-		
+
 		int action = playerlist[pId]->requestAction();
 		do {
 			switch (action) {
@@ -262,14 +270,15 @@ void Game::performPlayersTurn(int pId) {
 
 		if (success != 0) {
 			playerlist[pId]->useAction();
-			if (cardIndex!=-1) playerlist[pId]->discardCard(cardIndex);
+			cout << "Player " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
+			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1);
 		}
 	}
+}
 
-	/*for (int i = 0; i < 2; i++)
-		playerlist[pId].drawCard;*/
-
-	//Draw epidemic cards		
+void Game::drawPlayerCards(int pId) {
+	playerlist[pId]->drawCard(deck->getTopCard());
+	playerlist[pId]->drawCard(deck->getTopCard());
 }
 
 void Game::save_players() {
@@ -422,6 +431,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 }
 int main() {
 	Game* game = new Game(2);
+	DeckOfCard<PlayerCard>* deck = game->getDeck();
 	game->displayPlayers();
 	game->StartGame();
 	vector<Player*> players = game->getPlayerlist();
