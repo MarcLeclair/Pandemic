@@ -34,6 +34,8 @@ public:
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
 	void StartGame();
+	void SaveGame();
+	void LoadGame();
 	bool isGameOver();
 	void performPlayersTurn(int);
 	int pollForCity();
