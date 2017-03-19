@@ -153,6 +153,7 @@ void Map::display_status() {
 		}
 
 	}
+
 	if (ifnothingcured) {
 		cout << "No dieases have been cured or eradicated" << endl;
 	}
@@ -246,6 +247,7 @@ void Map::addDisease(int cityId) {
 		}
 		else if (!citylist[cityId].outbreakHappened) {
 			citylist[cityId].outbreakHappened = true;
+			cout << "Outbreak in " << citylist[cityId].name << "!" << endl;
 			numberOutbreaks++;
 			for (int i = 0; i < citylist[cityId].connections.size(); i++) {
 				outbreak(citylist[cityId].connections[i], citylist[cityId].zone);
