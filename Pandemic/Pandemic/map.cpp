@@ -297,7 +297,7 @@ void Map::addPawn(Pawn* pawn) {
 	pawn->set_location(4);
 }
 void Map::movePawn(Pawn* pawn, int cityId) {
-	citylist[(pawn->get_location()) - 1].display_information();
+	//citylist[(pawn->get_location()) - 1].display_information();
 	vector <Pawn*>::iterator it3;
 	for (it3 = this->citylist[(pawn->get_location()) - 1].pawnRefList.begin(); it3 != this->citylist[(pawn->get_location()) - 1].pawnRefList.end(); ++it3) {
 		if ((*it3)->get_playerId() == pawn->get_playerId()) {
@@ -365,6 +365,7 @@ City::City (int id, string name,char zone,double x, double y,int iC[], bool rese
 void City::display_information(){
  cout << "ID: " <<id << endl;
  cout << "Name: "<<name << endl;
+ cout << "Color: " << zone << endl;
  cout << "Location: " << location[0] <<","<< location[1] <<endl;
  cout << "# Black Cubes: "<<infectionCounters[0]<<endl;
   cout << "# Red Cubes: "<<infectionCounters[1]<<endl;

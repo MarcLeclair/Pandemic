@@ -32,25 +32,26 @@ Game::Game(int numberPlayers) {
 	}
 	//load_players();
 	//initialize both decks of cards??
-
+	cout << endl;
 	InfectionDeck = new Infection(0);
 	InfectionDeck->makeDeck();
 	InfectionDeck->shuffleInfection();
 	InfectionDeck->startInfect(&map);
+	cout << endl;
 }
 
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
-		cout << "Player " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
+		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
-		cout << "Player " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
+		cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
 		drawPlayerCards(currentPlayersId%playerlist.size());
 
-		cout << "Finished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
+		cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 		playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 
-		cout << "Drawing cards finished. Infecting Cities." << endl;
+		cout << "\nDrawing cards finished. Infecting Cities." << endl;
 		InfectionDeck->endTurnInfection(&map);
 		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 			cout << "Saving the game" << endl;
@@ -86,7 +87,7 @@ int Game::pollForCards(int pId) {
 
 int Game::pollForRetry() {
 	int redo = -1;
-	cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
+	cout << "\nOops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
 	cin >> redo;
 	return redo;
 }
@@ -111,11 +112,13 @@ void Game::performPlayersTurn(int pId) {
 		int displayaction = -1;
 		bool redoDisplay = true;
 		do {
+			cout << endl;
 			displayDisplayOptions();
 			cin >> displayaction;
 			switch (displayaction) {
 			case 0:
 				redoDisplay = false;
+				break;
 			case 1:
 				currentCity.display_information();
 				break;
@@ -138,7 +141,7 @@ void Game::performPlayersTurn(int pId) {
 				break;
 			case 7:
 				for (int i = 0; i < playerlist.size(); i++) {
-					playerlist[pId]->display_player_info();
+					playerlist[i]->display_player_info();
 				}
 				break;
 
@@ -151,7 +154,7 @@ void Game::performPlayersTurn(int pId) {
 		do {
 			switch (action) {
 			case 1: //drive
-				cout << "You chose to drive." << endl;
+				cout << "\nYou chose to drive." << endl;
 
 				do {
 					cout << "Please choose a city corresponding to the city you want to drive to." << endl;
@@ -161,30 +164,30 @@ void Game::performPlayersTurn(int pId) {
 				break;
 
 			case 2: //direct flight
-				cout << "You chose to take a direct flight." << endl;
+				cout << "\nYou chose to take a direct flight." << endl;
 				do {
-					cout << "Please choose a city card in your hand corresponding to the city you want to fly to." << endl;
+					cout << "\nPlease choose a city card in your hand corresponding to the city you want to fly to." << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
 				success = playerlist[pId]->direct_flight(cardIndex-1);
 				break;
 			case 3: //charter flight
-				cout << "You chose to take a charter flight." << endl;
+				cout << "\nYou chose to take a charter flight." << endl;
 
 				do { //Poll the user for the city they'd like to go to, and the city card they'd like to discard
-					cout << "Please choose the city you would like to fly to" << endl;
+					cout << "\nPlease choose the city you would like to fly to" << endl;
 					newCityID = pollForCity();
-					cout << "Please choose the city card you'd like to discard to make this flight." << endl;
+					cout << "\Please choose the city card you'd like to discard to make this flight." << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1 || newCityID >48 || newCityID < 1);
 
 				success = playerlist[pId]->charter_flight(cardIndex-1, newCityID);
 				break;
 			case 4: //shuttle flight
-				cout << "You chose to take a shuttle flight." << endl;
+				cout << "\nYou chose to take a shuttle flight." << endl;
 				do {
-					cout << "Please choose the city you'd like to fly to." << endl;
+					cout << "\nPlease choose the city you'd like to fly to." << endl;
 					newCityID = pollForCity();
 				} while (newCityID > 48 || newCityID < 1);
 
@@ -192,25 +195,25 @@ void Game::performPlayersTurn(int pId) {
 				break;
 			case 5: //build research station
 				do {
-					cout << "Please choose the city card corresponding to the city that you are in" << endl;
+					cout << "\nPlease choose the city card corresponding to the city that you are in" << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
 				success = playerlist[pId]->build_research_station(cardIndex-1);
 				break;
 			case 6: //treat disease
-				cout << "You chose to treat a disease!\nTreating disease in current city." << endl;
+				cout << "\nYou chose to treat a disease!\nTreating disease in current city." << endl;
 				success = playerlist[pId]->treat_disease();
 				break;
 			case 7: //share knowledge
-				cout << "You chose to share knowledge!" << endl;
+				cout << "\nYou chose to share knowledge!" << endl;
 				do {
-					cout << "Which player would you like to share knowledge with?" << endl;
+					cout << "\nWhich player would you like to share knowledge with?" << endl;
 					cin >> playerID;
 				} while (playerID > playerlist.size() || playerID < 1);
 
 				if (find(pawnsInCity.begin(), pawnsInCity.end(), playerID) == pawnsInCity.end()) {
-					cout << "Cannot share knowledge, player " << playerID << " is not in the current location with you." << endl;
+					cout << "\nCannot share knowledge, player " << playerID << " is not in the current location with you." << endl;
 					redo = pollForRetry();
 					break;
 				}
@@ -219,7 +222,7 @@ void Game::performPlayersTurn(int pId) {
 				}
 
 				do {
-					cout << "Which card would you like to give to the player?" << endl;
+					cout << "\nWhich card would you like to give to the player?" << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex < 1 || cardIndex > playerlist[pId]->getNumOfCards());
 				success = playerlist[pId]->share_knowledge(receivingHand, cardIndex-1);
@@ -229,11 +232,17 @@ void Game::performPlayersTurn(int pId) {
 
 				break;
 			case 8: //cure a disease
-				cout << "You chose to cure a diease." << endl;
+				cout << "\nYou chose to cure a diease." << endl;
+				if (playerlist[pId]->getNumOfCards() < 5) {
+					cout << "You do not have enough cards in your hand to cure a disease!" << endl;
+					success = 0;
+					break;
+				}
 				while (count < 5) {
-					cout << "Indicate card " << count + 1 << " of cure cards." << endl;
+					cout << "\nIndicate card " << count + 1 << " of cure cards." << endl;
 					do {
 						cardIndex = pollForCards(pId);
+						count++;
 					} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 					cure.push_back(cardIndex-1);
 				}
@@ -248,9 +257,9 @@ void Game::performPlayersTurn(int pId) {
 			case 9:
 				//This case can constitute a different action, as Contingency Planner, Operations Expert, and Dispatcher all have different extra actions
 				if (playerlist[pId]->getRole() == "Operations Expert") {//We are going to execute a special move from a city with a researc station to any city
-					cout << "You chose the Operations Expert's special move!" << endl;
+					cout << "\nYou chose the Operations Expert's special move!" << endl;
 					do {
-						cout << "Please indicate a city card you wish to discard to make this move. Note, it does not have to match the city you are moving to!" << endl;
+						cout << "\nPlease indicate a city card you wish to discard to make this move. Note, it does not have to match the city you are moving to!" << endl;
 						cardIndex = pollForCards(pId);
 					} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
@@ -261,7 +270,7 @@ void Game::performPlayersTurn(int pId) {
 				}
 
 				else if (playerlist[pId]->getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
-					cout << "You chose the Contingency Planner's special move!" << endl;
+					cout << "\nYou chose the Contingency Planner's special move!" << endl;
 					//Since we do not have a discard pile at the moment, we will pass any arbitrary card to the function
 					cout << "Passing an arbitrary PlayerCard to the function " << endl;
 					PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");
@@ -270,14 +279,14 @@ void Game::performPlayersTurn(int pId) {
 				}
 
 				else if (playerlist[pId]->getRole() == "Dispatcher") { //We will be moving any other pawn as if it is our own
-					cout << "You chose the Dispatcher's special move!" << endl;
+					cout << "\nYou chose the Dispatcher's special move!" << endl;
 					do {
 						cout << "Which player's pawn would you like to move? " << endl;
 						cin >> playerID;
 					} while (playerID > playerlist.size() || playerID < 0);
 
 					do {
-						cout << "Please choose a city with another player in it to travel to." << endl;
+						cout << "\nPlease choose a city with another player in it to travel to." << endl;
 						newCityID = pollForCity();
 					} while (newCityID > 48 || newCityID < 1);
 
@@ -285,7 +294,7 @@ void Game::performPlayersTurn(int pId) {
 					success = dynamic_cast<Dispatcher&>(*rc).specialMoveAnotherPlayer(playerlist[playerID]->getMyPawn(), newCityID);
 				}
 				else {
-					cout << "Your role does not have any special moves." << endl;
+					cout << "\nYour role does not have any special moves." << endl;
 					redo = pollForRetry();
 					break;
 				}
@@ -307,7 +316,7 @@ void Game::performPlayersTurn(int pId) {
 
 		if (success != 0) {
 			playerlist[pId]->useAction();
-			cout << "Player " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
+			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
 			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1);
 		}
 	}
@@ -450,8 +459,8 @@ void Game::displayPlayers() {
 	}
 }
 void Game::displayDisplayOptions() {
-	cout << "Select option"<< endl;
-	cout << "0) Chose action" << endl;
+	cout << "\nSelect option"<< endl;
+	cout << "0) Choose action" << endl;
 	cout << "1) Display information of the city you are on" << endl;
 	cout << "2) Display information of adjacent cites" << endl;
 	cout << "3) Display information of all cites" << endl;
@@ -481,7 +490,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	PlayerCard epidemic = PlayerCard("epidemic", -1, "1-INCREASE \n move the infection rate marker forward 1 space \n"
 													 "\t 2-INFECT \n draw the bottom card from the infection deck  and put 3 cubes  on that city. Discard that card \n"
 													 "\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
-	stringstream colourConversion;
+	//stringstream colourConversion;
 	string colour;
 
 	vector<PlayerCard> playerCards;
@@ -489,8 +498,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	for (City city : temp) {
 		int id = city.id;
 		string name = city.name;
-		colourConversion << (city.zone);
-		colourConversion >>  colour;
+		colour = string(1, city.zone);
 
 		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
 		playerCards.push_back(cardToPush);
@@ -514,6 +522,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	//Testing}
 	return playerDeck;
 }
+
 int main() {
 	Game* game = new Game(2);
 	DeckOfCard<PlayerCard>* deck = game->getDeck();
