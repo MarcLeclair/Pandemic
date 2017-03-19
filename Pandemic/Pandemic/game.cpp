@@ -208,7 +208,7 @@ void Game::performPlayersTurn(int pId) {
 			case 7: //share knowledge
 				cout << "\nYou chose to share knowledge!" << endl;
 				do {
-					cout << "\nWhich player would you like to share knowledge with?" << endl;
+					cout << "Which player would you like to share knowledge with?" << endl;
 					cin >> playerID;
 				} while (playerID > playerlist.size() || playerID < 0);
 
@@ -217,19 +217,19 @@ void Game::performPlayersTurn(int pId) {
 					redo = pollForRetry();
 					break;
 				}
-				else {
-					receivingHand = playerlist[playerID]->getHand();
-				}
-
 				do {
-					cout << "\nWhich card would you like to give to the player?" << endl;
+					cout << "Which card would you like to give to the player?" << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex < 1 || cardIndex > playerlist[pId]->getNumOfCards());
 				success = playerlist[pId]->share_knowledge(receivingHand, cardIndex-1);
 
-				//Balance the receiving player's hand, in case they've acquired too many cards
-				playerlist[playerID]->balanceHand();
-
+				if (success > 0) {
+					//If you get here, it means the sharing knowledge is valid
+					PlayerCard givingCard = playerlist[pId]->getHand()[cardIndex - 1];
+					playerlist[playerID]->drawCard(givingCard);
+					playerlist[pId]->discardCard(cardIndex - 1);
+					std::cout << "Player " << playerlist[pId]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[pId]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
+				}
 				break;
 			case 8: //cure a disease
 				cout << "\nYou chose to cure a diease." << endl;
@@ -331,7 +331,7 @@ void Game::drawPlayerCards(int pId) {
 	else {
 		InfectionDeck->infectEpidemic(&map);
 	}
-	if (card1.getType() != "epidemic") {
+	if (card2.getType() != "epidemic") {
 		playerlist[pId]->drawCard(card2);
 	}
 	else {

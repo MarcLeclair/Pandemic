@@ -64,7 +64,7 @@ void Player::balanceHand() {
 		cout << "Card to discard (number): " << endl;
 		cin >> cardToDiscard;
 
-		while (cardToDiscard > cardsInHand.size() - 1 || cardToDiscard < 1) {
+		while (cardToDiscard > cardsInHand.size() || cardToDiscard < 1) {
 			cout << "Invalid card number. Please try again." << endl;
 			cin >> cardToDiscard;
 		}
