@@ -246,7 +246,7 @@ int Scientist::discoverCure(Pawn* pawn, vector<PlayerCard> cure) {
 		return 0;
 	}
 
-	char zone = getMapRef()->getCityByID(currentLocationID).zone;
+	char zone = getMapRef()->getCityByID(cure[0].getCityId()).zone;
 
 	getMapRef()->cureDisease(zone);
 
