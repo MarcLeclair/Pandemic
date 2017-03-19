@@ -6,6 +6,7 @@
 #include <iterator>
 #include <random>
 #include <queue>
+#include <fstream>
 
 /***************************************************************
 /This template class allows the game to create multiple deck of different kind.
@@ -26,8 +27,10 @@ public:
 	 T getTopCard();
 	 void storeInQue(std::vector<T> initialDeck);
 	 void shuffleInInfection(DeckOfCard<T> &cardDeck, int numberOfEpidemic);
-	 /*std::vector<T> returnVector();
-	 std::vector<int> indices();*/
+	 void saveDeck(std::vector<int> idToSave);
+	 std::vector<int> loadDeck();
+	 std::vector<T> returnVector();
+	 //std::vector<int> indices();*/
 
 private:
 
@@ -68,7 +71,7 @@ template <class T> void DeckOfCard<T>::shufflePlayerCard(std::vector<T> &cardDec
 
 																  // iterator is used to have a pointer to certain place in vector to insert epidemic card 
 	std::vector<int>::iterator it;
-	it = v.begin()+ ((epidemicRate + 1) * position);
+	it = cardDeck.begin()+ ((epidemicRate + 1) * position);
 
 	cardDeck.insert(it, epidemic);
 	// same algo as above, but this one will iterate only between two points. I.e if we have 4 epidemic it is suppose to do this assuming we have 48 city + 7 event
@@ -130,11 +133,41 @@ template <class T> void DeckOfCard<T>::shuffleDeck(std::vector<T> &cardDeck) {
 
 };
 
+template <class T> void DeckOfCard<T>::saveDeck(std::vector<int> idToSave) {
+		ofstream myfile;
+		myfile.open("savedDeck.txt");
+		for (int ids : idToSave) {
+			myfile << ids << "\n";
+		};
+
+		myfile.close();
+
+}
+
+template <class T> std::vector<int> DeckOfCard<T>::loadDeck() {
+	ifstream fileToRead;
+
+	std::vector<int> savedIds;
+	fileToRead.open("savedDeck.txt");
+	if (fileToRead.is_open())
+	{
+		while (getline(fileToRead, line))
+		{
+			int currentId = savedIds.push_back(atoi(line.c_str()));
+		}
+		myfile.close();
+	}
+	return savedIds;
+}
+
+
+
 //template <class T> std::vector<int> DeckOfCard<T>::indices() {
 //	return some;
 //};
-//template <class T> std::vector<T> DeckOfCard<T>::returnVector() {
-//	return vectorDeck;
+template <class T> std::vector<T> DeckOfCard<T>::returnVector() {
+	return vectorDeck;
+}
 // TESTING FUNCTIONS}
 
 
