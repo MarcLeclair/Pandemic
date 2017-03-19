@@ -167,9 +167,12 @@ void Infection::startInfect(Map* map) {
 }
 
 void Infection :: infectEpidemic(Map* map) {
-	map->addDisease(InfectionDeck[48].getInfectionID());
-	map->addDisease(InfectionDeck[48].getInfectionID());
-	map->addDisease(InfectionDeck[48].getInfectionID());
+	cout << "\nOh no! An epidemic card has been drawn!" << endl;
+	map->addDisease(InfectionDeck[47].getInfectionID());
+	map->addDisease(InfectionDeck[47].getInfectionID());
+	map->addDisease(InfectionDeck[47].getInfectionID());
+	int cityID = InfectionDeck[47].getInfectionID();
+	cout << map->getCityByID(cityID).name << " has been infected." << endl;
 	//move it to front
 	std::vector<Infection>::iterator it;
 	//it = vector<InfectionDeck>.rend();
@@ -193,4 +196,5 @@ void Infection :: infectEpidemic(Map* map) {
 
 	//increase epidemic value
 	epidemicVal++;
+	cout << "Epidemic Infection finished." << endl;
 }

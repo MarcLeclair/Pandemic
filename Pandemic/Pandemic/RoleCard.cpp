@@ -62,9 +62,6 @@ int Researcher::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHa
 		return 0;
 	}
 
-	//If you get here, it means the sharing knowledge is valid
-	receivingHand.push_back(givingCard);
-	cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << getMapRef()->getCityByID(giverPawn->get_location()).name << ". " << endl;
 	return 1;
 }
 /*************************

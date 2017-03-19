@@ -175,9 +175,7 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::v
 		return 0;
 	}
 
-	//If you get here, it means the sharing knowledge is valid
-	receivingHand.push_back(givingCard);
-	std::cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << mapRef->getCityByID(giverPawn->get_location()).name << "(" << giverPawn->get_location() << "). " << std::endl;
+	//If you get here, it means all checks have passed and the game class can perform the share of knowledge
 	return 1;
 }
 
