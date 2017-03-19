@@ -85,7 +85,7 @@ int Game::pollForCards(int pId) {
 }
 
 int Game::pollForRetry() {
-	int redo = 1;
+	int redo = -1;
 	cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
 	cin >> redo;
 	return redo;
@@ -299,6 +299,9 @@ void Game::performPlayersTurn(int pId) {
 
 			if (success == 0) { //If the action didn't work
 				redo = pollForRetry();
+			}
+			else {
+				redo = 1;
 			}
 		} while (redo == 0);
 
