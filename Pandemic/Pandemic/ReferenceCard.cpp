@@ -23,8 +23,6 @@ int ReferenceCard::drive(Pawn* pawn, int newCityID){
 	int currentLocationID = pawn->get_location();
 	City current = mapRef->getCityByID(currentLocationID);
 
-	cout << "Obtained current city " << endl;
-
 	//Check if the cities are connected
 	if( !(current.connectsTo(newCityID))){
 		std::cout << "Sorry, cannot drive there; cities not connected." << std::endl;
@@ -34,7 +32,7 @@ int ReferenceCard::drive(Pawn* pawn, int newCityID){
 	//Set the pawn's location to the new city ID
 	mapRef->movePawn(pawn, newCityID);
 
-	std::cout << "Player " << pawn->get_playerId() << " drove to " << mapRef->getCityByID(pawn->get_location()).name  << ". " << std::endl;
+	std::cout << "Player " << pawn->get_playerId() << " drove to " << mapRef->getCityByID(pawn->get_location()).name  << "(" << pawn->get_location() << "). " << std::endl;
 	return 1;
 }
 
@@ -54,7 +52,7 @@ int ReferenceCard::directFlight(Pawn* pawn, PlayerCard dest) {
 	//Cannot perform this without city cards and city object full implementation
 	int newCityID = dest.getCityId();
 	mapRef->movePawn(pawn, newCityID);
-	std::cout << "Player " << pawn->get_playerId() << " took a direct flight to " << mapRef->getCityByID(pawn->get_location()).name << ". " << std::endl;
+	std::cout << "Player " << pawn->get_playerId() << " took a direct flight to " << mapRef->getCityByID(pawn->get_location()).name << "(" << pawn->get_location() << "). " << std::endl;
 	return 1;
 }
 
@@ -81,7 +79,7 @@ int ReferenceCard::charterFlight(Pawn* pawn, PlayerCard dest, int newCityID) {
 
 	mapRef->movePawn(pawn, newCityID);
 
-	std::cout << "Player " << pawn->get_playerId() << " took a charter flight to " << mapRef->getCityByID(pawn->get_location()).name << ". " << std::endl;
+	std::cout << "Player " << pawn->get_playerId() << " took a charter flight to " << mapRef->getCityByID(pawn->get_location()).name << "(" << pawn->get_location() << "). " << std::endl;
 	return 1;
 }
 
@@ -104,7 +102,7 @@ int ReferenceCard::shuttleFlight(Pawn* pawn, int newCityID) {
 	//If both places have research stations, change the player's location
 	mapRef->movePawn(pawn, newCityID);
 
-	std::cout << "Player " << pawn->get_playerId() << " took a shuttle flight to " << mapRef->getCityByID(pawn->get_location()).name << ". " << std::endl;
+	std::cout << "Player " << pawn->get_playerId() << " took a shuttle flight to " << mapRef->getCityByID(pawn->get_location()).name << "(" << pawn->get_location() << "). " << std::endl;
 	return 1;
 }
 
@@ -151,7 +149,7 @@ int ReferenceCard::treatDisease(Pawn* pawn) {
 	
 	mapRef->treatDisease(currentLocationID);
 
-	std::cout << "Player " << pawn->get_playerId() << " has helped treat a disease in " << mapRef->getCityByID(pawn->get_location()).name << ". " << std::endl;
+	std::cout << "Player " << pawn->get_playerId() << " has helped treat a disease in " << mapRef->getCityByID(pawn->get_location()).name << "(" << pawn->get_location() << "). " << std::endl;
 	return 1;
 }
 
@@ -179,7 +177,7 @@ int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::v
 
 	//If you get here, it means the sharing knowledge is valid
 	receivingHand.push_back(givingCard);
-	std::cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << mapRef->getCityByID(giverPawn->get_location()).name << ". " << std::endl;
+	std::cout << "Player " << giverPawn->get_playerId() << " has given a card to another player in " << mapRef->getCityByID(giverPawn->get_location()).name << "(" << giverPawn->get_location() << "). " << std::endl;
 	return 1;
 }
 

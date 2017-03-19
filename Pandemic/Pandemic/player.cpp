@@ -57,7 +57,7 @@ Player::~Player()
 ****************************************************************************/
 void Player::balanceHand() {
 	if (numOfCards > maxCardsInHand) {
-		cout << "Too many cards in hand, please choose one to discard." << endl;
+		cout << "\nToo many cards in hand, please choose one to discard." << endl;
 		displayCardsInHand();
 
 		int cardToDiscard;
@@ -93,7 +93,7 @@ void Player::drawCard(PlayerCard plc) {
 void Player::displayCardsInHand() {
 	int cardNum = 1;
 	for (PlayerCard card : cardsInHand) {
-		cout << "\t" << cardNum << ". " << card.getType() << " card: " << card.getValue() << "(" << card.getCityId() << ")" <<endl;
+		cout << "\t" << cardNum << ". " << card.getType() << " card "<< card.getColour() << ": " << card.getValue() << "(" << card.getCityId() << ")" <<endl;
 		cardNum++;
 	}
 }
@@ -128,7 +128,7 @@ void Player::outputPossibleActions() {
 / Will return a number corresponding to the action the user wants to perform
 *******************************************************************************/
 int Player::requestAction() {
-	cout << "Specify by number which action you wish to perform:" << endl;
+	cout << "\nSpecify by number which action you wish to perform:" << endl;
 	outputPossibleActions();
 	int newAction;
 	cin >> newAction;
@@ -140,7 +140,7 @@ int Player::requestAction() {
 }
 
 void Player::display_player_info() {
-	cout << "Player " << getPlayerID() << "'s status: " << endl;
+	cout << "\nPlayer " << getPlayerID() << "'s status: " << endl;
 
 	//1) Pawn information
 	cout << "\tPawn status: " << endl;
