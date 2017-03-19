@@ -210,7 +210,7 @@ void Game::performPlayersTurn(int pId) {
 				do {
 					cout << "\nWhich player would you like to share knowledge with?" << endl;
 					cin >> playerID;
-				} while (playerID > playerlist.size() || playerID < 1);
+				} while (playerID > playerlist.size() || playerID < 0);
 
 				if (find(pawnsInCity.begin(), pawnsInCity.end(), playerID) == pawnsInCity.end()) {
 					cout << "\nCannot share knowledge, player " << playerID << " is not in the current location with you." << endl;
