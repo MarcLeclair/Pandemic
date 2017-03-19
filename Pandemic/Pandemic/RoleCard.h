@@ -75,7 +75,7 @@ public:
 	Researcher(Map* mp);
 	Researcher(const Researcher& res);
 	virtual ~Researcher();
-	virtual int shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard);
+	virtual int shareKnowledge(Pawn* giverPawn, PlayerCard givingCard);
 };
 
 

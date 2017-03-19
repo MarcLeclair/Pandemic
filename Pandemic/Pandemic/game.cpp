@@ -87,8 +87,10 @@ int Game::pollForCards(int pId) {
 
 int Game::pollForRetry() {
 	int redo = -1;
-	cout << "\nOops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-	cin >> redo;
+	do {
+		cout << "\nOops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
+		cin >> redo;
+	} while (redo != 0 && redo != 1);
 	return redo;
 }
 
@@ -227,7 +229,7 @@ void Game::performPlayersTurn(int pId) {
 					//If you get here, it means the sharing knowledge is valid
 					PlayerCard givingCard = playerlist[pId]->getHand()[cardIndex - 1];
 					playerlist[playerID]->drawCard(givingCard);
-					playerlist[pId]->discardCard(cardIndex - 1);
+					//playerlist[pId]->discardCard(cardIndex - 1);
 					std::cout << "Player " << playerlist[pId]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[pId]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;

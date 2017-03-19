@@ -222,7 +222,7 @@ int Player::treat_disease() {
 *************************************************************/
 int Player::share_knowledge( vector<PlayerCard> receivingHand, int exchangeCard) {
 	PlayerCard givingCard = cardsInHand[exchangeCard];
-	return role->shareKnowledge(&playerPawn, givingCard, receivingHand);
+	return role->shareKnowledge(&playerPawn, givingCard);
 }
 
 /******************************

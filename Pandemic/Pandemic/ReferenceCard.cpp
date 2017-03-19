@@ -161,7 +161,7 @@ int ReferenceCard::treatDisease(Pawn* pawn) {
 / We are constraining functionality so that the current player is the giving player. Only the current player
 / can give a card to the player of their choosing.
 ***********************************************************************************************************/
-int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard, std::vector<PlayerCard> receivingHand) {
+int ReferenceCard::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard) {
 	std::string cardType = givingCard.getType();
 
 	if (!(cardType == "city")) {
