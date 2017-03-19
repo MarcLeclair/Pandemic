@@ -53,8 +53,7 @@ Researcher::~Researcher()
 / However, it must still be a city card
 / This is an override of the inherited function from ReferenceCard
 ************************************************************************************/
-int Researcher::shareKnowledge(Pawn* giverPawn, std::vector<PlayerCard> givingHand, std::vector<PlayerCard> receivingHand, int exchangeCard) {
-	PlayerCard givingCard = givingHand.at(exchangeCard);
+int Researcher::shareKnowledge(Pawn* giverPawn, PlayerCard givingCard) {
 	std::string cardType = givingCard.getType();
 
 	if (!(cardType == "city")) {

@@ -32,7 +32,7 @@ public:
 
 	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
 	virtual int treatDisease(Pawn* pawn);
-	virtual int shareKnowledge(Pawn* pawn, PlayerCard givingCard, vector<PlayerCard> receivingHand);
+	virtual int shareKnowledge(Pawn* pawn, PlayerCard givingCard);
 	virtual int discoverCure(Pawn* pawn, vector<PlayerCard> cure);
 
 	Map* getMapRef() {
