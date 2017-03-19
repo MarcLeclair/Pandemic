@@ -104,6 +104,7 @@ void Player::displayCardsInHand() {
 *******************************************************************************/
 void Player::discardCard(int disc) {
 	cardsInHand.erase(cardsInHand.begin() + disc);
+	setNumOfCards();
 }
 
 /**********************************************************************

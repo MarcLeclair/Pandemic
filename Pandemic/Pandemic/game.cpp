@@ -112,6 +112,7 @@ void Game::performPlayersTurn(int pId) {
 		City currentCity = map.getCityByID(currentCityID);
 		vector<int> pawnsInCity = currentCity.pawnList;
 		int displayaction = -1;
+		vector<City> allCities = map.getCities();
 		bool redoDisplay = true;
 		do {
 			cout << endl;
@@ -130,7 +131,9 @@ void Game::performPlayersTurn(int pId) {
 				}
 				break;
 			case 3:
-				map.display_information();
+				for (int i = 0; i < allCities.size(); i++) {
+					allCities[i].display_information();
+				}
 				break;
 			case 4:
 				map.display_status();
@@ -251,7 +254,8 @@ void Game::performPlayersTurn(int pId) {
 				success = playerlist[pId]->discover_cure(cure);
 				if (success != 0) { //If it worked, we need to discard the cards used
 					for (int i = 0; i < cure.size(); i++) {
-						playerlist[pId]->discardCard(cure[i]);
+						int relativeIndex = (cure[i]-i)% playerlist[pId]->getNumOfCards();
+						playerlist[pId]->discardCard(relativeIndex);
 					}
 					cardIndex = -1;
 				}
