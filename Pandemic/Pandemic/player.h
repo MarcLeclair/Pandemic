@@ -15,6 +15,7 @@
 #include "possession.h"
 #include "PlayerCard.h"
 #include "map.h"
+#include "Subject.h"
 
 /********************************************************************************************************
 / Class that encapsulates all the functionality for a single player
@@ -22,7 +23,7 @@
 / Also holds a reference to a generic RoleCard, which can be a role card of any type
 / This allows the role card to execute subclass-specific virtual functions inherited from ReferenceCard
 ********************************************************************************************************/
-class Player
+class Player : public Subject
 {
 public:
 	Player();

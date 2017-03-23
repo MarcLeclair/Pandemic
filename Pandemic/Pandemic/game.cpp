@@ -18,6 +18,7 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new Dispatcher(&map));
 	for (int i = 0; i < numberPlayers; i++) {
 		Player* player = new Player(i, rolelist[i], &map);
+		PlayerView* playerview = new PlayerView(player);
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
 			if (card.getType() != "epidemic") {

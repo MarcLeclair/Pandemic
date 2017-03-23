@@ -12,7 +12,7 @@ Player::Player() {
 }
 
 
-Player::Player(int pid, RoleCard* rolec, Map* mp)
+Player::Player(int pid, RoleCard* rolec, Map* mp) : Subject()
 {
 	playerID = pid;
 	ReferenceCard* myReference = new ReferenceCard(mp);
@@ -28,7 +28,7 @@ Player::Player(int pid, RoleCard* rolec, Map* mp)
 }
 
 //Copy Constructor
-Player::Player(const Player& plr) {
+Player::Player(const Player& plr) : Subject(){
 	playerID = plr.playerID;
 	role = plr.role;
 
@@ -141,34 +141,13 @@ int Player::requestAction() {
 }
 
 void Player::display_player_info() {
-	cout << "\nPlayer " << getPlayerID() << "'s status: " << endl;
+	cout << "\nPlayer " << getPlayerID() << "'s info: " << endl;
 
 	//1) Pawn information
-	cout << "\tPawn status: " << endl;
-	cout << "\t\tPawn color: " << getPawnColor() << endl;;
-	cout << "\t\tLocation id: " << getCurrentLocation() << endl;
+	cout << "    Player is a " << getRole() << " in Location " << getCurrentLocation() << endl;
 
-	//2) Role information
-	cout << "\tRole Status: " << endl;
-	cout << "\t\tRole: " << getRole() << endl;
-	cout << "\t\tSpecial Role Actions: " << endl;
-	vector<string> roleActions = getRoleCard()->getSpecialActions();
-	if (roleActions.size() == 0) cout << "\t\t\tNone" << endl;
-	else {
-		for (int i = 0; i < roleActions.size(); i++)
-			cout << "\t\t\t" << roleActions[i] << endl;
-	}
-
-	//3) Reference Card information
-	cout << "\tReference Card and Player turn status: " << endl;
-	cout << "\t\tAvailable actions: " << endl;
-	vector<string> refActions = getRefCard()->getAllActions();
-	for (int i = 0; i < refActions.size(); i++) {
-		cout << "\t\t\t" << i + 1 << ". " << refActions[i] << endl;
-	}
-
-	//4 PlayerCards information
-	cout << "\tPlayer's hand status: " << endl;
+	//3 PlayerCards information
+	cout << "    Player's hand status: " << endl;
 	displayCardsInHand();
 
 }
@@ -177,7 +156,10 @@ void Player::display_player_info() {
 / Function to execute the drive function on this player's pawn
 ***************************************************************/
 int Player::drive(int newCityID) {
-	return role->drive(&playerPawn, newCityID);
+	int success= role->drive(&playerPawn, newCityID);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /********************************************************************
@@ -185,7 +167,10 @@ int Player::drive(int newCityID) {
 *********************************************************************/
 int Player::direct_flight(int cardIndex) {
 	PlayerCard destination = cardsInHand[cardIndex];
-	return role->directFlight(&playerPawn, destination);
+	int success =  role->directFlight(&playerPawn, destination);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /*********************************************************
@@ -193,14 +178,20 @@ int Player::direct_flight(int cardIndex) {
 *********************************************************/
 int Player::charter_flight(int cardIndex, int newCityID) {
 	PlayerCard destination = cardsInHand[cardIndex];
-	return role->charterFlight(&playerPawn, destination, newCityID);
+	int success = role->charterFlight(&playerPawn, destination, newCityID);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /******************************************************************************
 / Function to execute a shuttle flight to another city with a research station
 *******************************************************************************/
 int Player::shuttle_flight(int newCityID) {
-	return role->shuttleFlight(&playerPawn, newCityID);
+	int success = role->shuttleFlight(&playerPawn, newCityID);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /***********************************************************
@@ -208,14 +199,20 @@ int Player::shuttle_flight(int newCityID) {
 ************************************************************/
 int Player::build_research_station(int cardIndex) {
 	PlayerCard currentCity = cardsInHand[cardIndex];
-	return role->buildResearchStation(&playerPawn, currentCity);
+	int success = role->buildResearchStation(&playerPawn, currentCity);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /******************************************************
 / Function to treat a disease cube in the current city
 *******************************************************/
 int Player::treat_disease() {
-	return role->treatDisease(&playerPawn);
+	int success = role->treatDisease(&playerPawn);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /************************************************************
@@ -223,7 +220,10 @@ int Player::treat_disease() {
 *************************************************************/
 int Player::share_knowledge( vector<PlayerCard> receivingHand, int exchangeCard) {
 	PlayerCard givingCard = cardsInHand[exchangeCard];
-	return role->shareKnowledge(&playerPawn, givingCard);
+	int success = role->shareKnowledge(&playerPawn, givingCard);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
 
 /******************************
@@ -234,250 +234,8 @@ int Player::discover_cure(vector<int> cure) {
 	for (int i = 0; i < cure.size(); i++) {
 		cureCards.push_back(cardsInHand[cure[i]]);
 	}
-	return role->discoverCure(&playerPawn, cureCards);
+	int success = role->discoverCure(&playerPawn, cureCards);
+	if (success > 0)
+		notify(); //If the action worked, notify all the observers
+	return success;
 }
-
-
-
-///*******************************************************************************************
-/// Function to perform an action
-/// Will get the user's requested action and call this action from the reference card class
-/// Functions are called from the Role card classes as these are subclasses of reference cards
-/// Through polymorphism, roles will execute certain functions differently
-//********************************************************************************************/
-//int Player::performAction() {
-//	int action = requestAction();
-//	int success = 0;
-//	int redo = 0;
-//	int newCityID;
-//	int cardIndex;
-//	vector<int> cure;
-//
-//	While the reference card should be executing these commands, the role cards are the ones that do the job
-//	This is due to the fact that the role cards have special implementations of some of the functions defined in ReferenceCard
-//	ReferenceCard* ref = getRoleCard();
-//	switch (action) {
-//	case 1: //drive
-//		do {
-//			Poll the user for the city they want to drive to
-//			cout << "Please indicate the city ID you wish to drive to." << endl;
-//			cin >> newCityID;
-//			success = ref->drive(getMyPawn(), newCityID);
-//
-//			if (success == 0) { //If the drive didn't work, i.e. if the city requested isn't connected
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //if the drive worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//		break;
-//
-//	case 2: //direct flight
-//		do {
-//			do {
-//				cout << "Please choose the city you wish to fly to." << endl;
-//				displayCardsInHand();
-//				cin >> cardIndex;
-//			} while (cardIndex > cardsInHand.size() - 1 || cardIndex < 1);
-//
-//			success = ref->directFlight(getMyPawn(), getHand(), cardIndex);
-//
-//			if (success == 0) { //If the flight didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//
-//		break;
-//	case 3: //charter flight
-//		do {
-//			do { //Poll the user for the city they'd like to go to, and the city card they'd like to discard
-//				cout << "Please choose the city you wish to take a Charter flight to." << endl;
-//				cin >> newCityID;
-//				cout << "Please choose the city card you wish to discard." << endl;
-//				displayCardsInHand();
-//				cin >> cardIndex;
-//			} while (cardIndex > cardsInHand.size() - 1 || cardIndex < 1 || newCityID >48 || newCityID < 1);
-//
-//			success = ref->charterFlight(getMyPawn(), getHand(), cardIndex, newCityID);
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//		break;
-//	case 4: //shuttle flight
-//		do {
-//			do {
-//				cout << "Please indicate the city ID you wish to shuttle." << endl;
-//				cin >> newCityID;
-//			} while (newCityID > 48 || newCityID < 1);
-//
-//			success = ref->shuttleFlight(getMyPawn(), newCityID);
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//		break;
-//	case 5: //build research station
-//		do {
-//			do {
-//				cout << "Please select the city card for this city. If you are an Operations Expert, choose any card! " << endl;
-//				displayCardsInHand();
-//				cin >> cardIndex;
-//			} while (cardIndex > cardsInHand.size() - 1 || cardIndex < 1);
-//
-//			success = ref->buildResearchStation(getMyPawn(), getHand(), cardIndex);
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//
-//		if (success != 0 && getRole() != "Operations Expert") { //if we succeeded and we are not an Operations Expert
-//			discardCard(cardIndex);
-//		}
-//		break;
-//	case 6: //treat disease
-//		do {
-//			cout << "Treating disease in current city." << endl;
-//			success = ref->treatDisease(getMyPawn());
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//		break;
-//	case 7: //share knowledge
-//		do {
-//			int playerID;
-//			Player* receiver;
-//			vector<PlayerCard> receivingHand;
-//
-//			cout << "Which player would you like to share knowledge with?" << endl;
-//			cin >> playerID;
-//
-//			This part requires properly implemented City class
-//			/*if (!(getCurrentLocation().playerIsInCity(playerID))) {
-//			cout << "Cannot share knowledge, player " << playerID << " is not in the current location with you." << endl;
-//			}
-//			else {
-//			receiver = getCurrentLocation().getPlayer(playerID);
-//			receivingHand = receiver.getHand();
-//			}*/
-//
-//			cout << "Which card would you like to give to the player?" << endl;
-//			displayCardsInHand();
-//			cin >> cardIndex;
-//			success = ref->shareKnowledge(getMyPawn(), getHand(), receivingHand, cardIndex);
-//
-//			Balance the receiving player's hand, in case they've acquired too many cards
-//			receiver.balanceHand();
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//
-//		if (success != 0) { //if we succeeded, the giver needs to get rid of the card they gave
-//			discardCard(cardIndex);
-//		}
-//		break;
-//	case 8: //cure a disease
-//		do {
-//			int count = 0;
-//			while (count < 5) {
-//				cout << "Indicate card " << count + 1 << " of cure cards." << endl;
-//				displayCardsInHand();
-//				cin >> cardIndex;
-//				cure.push_back(cardIndex);
-//			}
-//			success = (*ref).discoverCure(getMyPawn(), getHand(), cure);
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//
-//		if (success != 0) { //If it worked, we need to discard the cards used
-//			for (int i = 0; i < cure.size(); i++) {
-//				discardCard(cure[i]);
-//			}
-//		}
-//		break;
-//	case 9:
-//		do {
-//			This case can constitute a different action, as Contingency Planner, Operations Expert, and Dispatcher all have different extra actions
-//			if (getRole() == "Operations Expert") {//We are going to execute a special move from a city with a researc station to any city
-//				cout << "Please indicate a city card you wish to discard to make this move. Note, it does not have to match the city you are moving to!" << endl;
-//				displayCardsInHand();
-//				cin >> cardIndex;
-//				We are statically casting the role to an OperationsExpert type because we know it is an Operations Expert
-//				success = static_cast<OperationsExpert&>(*ref).specialOperationsMove(getMyPawn(), getHand(), cardIndex);
-//			}
-//			else if (getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
-//														   Since we do not have a discard pile at the moment, we will pass any arbitrary card to the function
-//				cout << "Passing an arbitrary PlayerCard to the function " << endl;
-//				PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");
-//				success = static_cast<ContingencyPlanner&>(*ref).pickUpSpecialEvent(arbitrary);
-//			}
-//			else { //We will be moving ourselves to any other city with a player in it
-//				   Poll the player for a city
-//				cout << "Please choose a city with another player in it to travel to." << endl;
-//				cin >> newCityID;
-//				success = static_cast<Dispatcher&>(*ref).specialMoveAnotherPlayer(getMyPawn(), newCityID);
-//			}
-//
-//			if (success == 0) { //If the action didn't work
-//				cout << "Oops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
-//				cin >> redo;
-//			}
-//			else { //it worked, we don't want to retry
-//				redo = 1;
-//			}
-//		} while (redo == 0);
-//
-//		if (success != 0 && getRole() == "Contingency Planner") {
-//			We need to delete the special event
-//			static_cast<ContingencyPlanner&>(*ref).discardSpecialEvent();
-//		}
-//		break;
-//	}
-//
-//	if (success != 0) {
-//		useAction();
-//		return 1;
-//	}
-//	else
-//		return 0;
-//}
