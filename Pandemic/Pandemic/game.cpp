@@ -307,7 +307,7 @@ void Game::performPlayersTurn(int pId) {
 				}
 				else {
 					cout << "\nYour role does not have any special moves." << endl;
-					redo = pollForRetry();
+					redo = 1;
 					break;
 				}
 				if (success != 0 && playerlist[pId]->getRole() == "Contingency Planner") {
@@ -316,9 +316,12 @@ void Game::performPlayersTurn(int pId) {
 					dynamic_cast<ContingencyPlanner&>(*rc).discardSpecialEvent();
 				}
 				break;
+			default:
+				cout << "Invalid ID, please retry." << endl;
+				redo = 0;
 			}
 
-			if (success == 0) { //If the action didn't work
+			if (success != 1) { //If the action didn't work
 				redo = pollForRetry();
 			}
 			else {

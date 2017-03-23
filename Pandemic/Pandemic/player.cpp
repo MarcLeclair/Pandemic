@@ -133,10 +133,6 @@ int Player::requestAction() {
 	outputPossibleActions();
 	int newAction;
 	cin >> newAction;
-	while (newAction > refcard.getAllActions().size()) {
-		cout << "Invalid action ID. Please Try Again." << endl;
-		cin >> newAction;
-	}
 	return newAction;
 }
 
