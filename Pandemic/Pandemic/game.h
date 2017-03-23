@@ -18,6 +18,7 @@ class Game {
 	vector<RoleCard*> rolelist;
 	DeckOfCard<PlayerCard>* deck;
 	Infection* InfectionDeck;
+	
 public:
 	Game();
 	Game(int);

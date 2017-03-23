@@ -61,7 +61,7 @@ template <class T> T DeckOfCard<T>::getTopCard() {
 //go through the arraylist and store it in a queue for easy top and bottom access. A deck wouldn't work as a vector 
 // because we don't have access to ALL of its copmonent, only to top and bottom ,  at occasions.
 template <class T> void DeckOfCard<T>::storeInQue(std::vector<T> initialDeck) {
-	for (PlayerCard card : initialDeck) {
+	for (T card : initialDeck) {
 		deck.emplace_back(card);
 	}
 };

@@ -16,8 +16,13 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new ContingencyPlanner(&map));
 	rolelist.push_back(new QuarantineSpecialist(&map));
 	rolelist.push_back(new Dispatcher(&map));
+
+	cout << "Creating role deck" << endl;
+	DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
+	
+
 	for (int i = 0; i < numberPlayers; i++) {
-		Player* player = new Player(i, rolelist[i], &map);
+		Player* player = new Player(i, roledeck->getTopCard(), &map);
 		PlayerView* playerview = new PlayerView(player);
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
