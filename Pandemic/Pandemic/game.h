@@ -9,7 +9,7 @@
 #include "Infection.h"
 #include "map.h"
 #include "player.h"
-//#include "PlayerCards.h"
+#include "PlayerView.h"
 #include "ReferenceCard.h"
 using namespace std;
 class Game {
@@ -18,6 +18,7 @@ class Game {
 	vector<RoleCard*> rolelist;
 	DeckOfCard<PlayerCard>* deck;
 	Infection* InfectionDeck;
+	
 public:
 	Game();
 	Game(int);

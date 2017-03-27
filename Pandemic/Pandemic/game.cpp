@@ -22,8 +22,14 @@ Game::Game(int numberPlayers) {
 	rolelist.push_back(new ContingencyPlanner(&map));
 	rolelist.push_back(new QuarantineSpecialist(&map));
 	rolelist.push_back(new Dispatcher(&map));
+
+	cout << "Creating role deck" << endl;
+	DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
+	
+
 	for (int i = 0; i < numberPlayers; i++) {
-		Player* player = new Player(i, rolelist[i], &map);
+		Player* player = new Player(i, roledeck->getTopCard(), &map);
+		PlayerView* playerview = new PlayerView(player);
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
 			if (card.getType() != "epidemic") {
@@ -307,7 +313,7 @@ void Game::performPlayersTurn(int pId) {
 				}
 				else {
 					cout << "\nYour role does not have any special moves." << endl;
-					redo = pollForRetry();
+					redo = 1;
 					break;
 				}
 				if (success != 0 && playerlist[pId]->getRole() == "Contingency Planner") {
@@ -316,9 +322,12 @@ void Game::performPlayersTurn(int pId) {
 					dynamic_cast<ContingencyPlanner&>(*rc).discardSpecialEvent();
 				}
 				break;
+			default:
+				cout << "Invalid ID, please retry." << endl;
+				redo = 0;
 			}
 
-			if (success == 0) { //If the action didn't work
+			if (success != 1) { //If the action didn't work
 				redo = pollForRetry();
 			}
 			else {
