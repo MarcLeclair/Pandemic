@@ -1,3 +1,9 @@
+#include "stdafx.h"
+
+#include "..\glew\glew.h"	// include GL Extension Wrangler
+#include "..\glfw\glfw3.h"	// include GLFW helper library
+#include <stdio.h>
+
 #include "game.h"
 using namespace std;
 
