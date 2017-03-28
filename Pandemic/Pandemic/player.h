@@ -57,7 +57,8 @@ public:
 
 	std::string getPawnColor() { return playerPawn.get_color(); }
 
-	std::string getRole() { return (*role).getRoleName(); }
+	std::string getRole() { return role->getRoleName(); }
+	std::string getRoleDescription() { return role->getRoleDescription(); }
 
 	int getAction() { return actions; }
 

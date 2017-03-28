@@ -113,6 +113,7 @@ void Game::performPlayersTurn(int pId) {
 	int redo = 1;
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 		//Preliminary initializations
+		City current = map.getCityByID(playerlist[pId]->getCurrentLocation());
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
@@ -160,7 +161,6 @@ void Game::performPlayersTurn(int pId) {
 				for (int i = 0; i < playerlist.size(); i++) {
 					playerlist[i]->display_player_info();
 				}
-				break;
 
 			}
 
@@ -174,7 +174,10 @@ void Game::performPlayersTurn(int pId) {
 				cout << "\nYou chose to drive." << endl;
 
 				do {
-					cout << "Please choose a city corresponding to the city you want to drive to." << endl;
+					cout << "Please choose a city id corresponding to the city you want to drive to." << endl;
+					for (int i = 0; i < current.connections.size(); i++) {
+						cout << "\t" << map.getCityByID(current.connections[i]).name << " (" << current.connections[i] << ")" << endl;
+					}
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
 				success = playerlist[pId]->drive(newCityID);
@@ -300,6 +303,9 @@ void Game::performPlayersTurn(int pId) {
 					cout << "\nYou chose the Dispatcher's special move!" << endl;
 					do {
 						cout << "Which player's pawn would you like to move? " << endl;
+						for (int i = 0; i < playerlist.size(); i++) {
+							cout << "Player " << playerlist[i]->getPlayerID() << " in " << playerlist[i]->getCurrentLocation() << endl;
+						}
 						cin >> playerID;
 					} while (playerID > playerlist.size() || playerID < 0);
 
@@ -487,8 +493,8 @@ void Game::displayDisplayOptions() {
 	cout << "3) Display information of all cites" << endl;
 	cout << "4) Display game status"<< endl;
 	cout << "5) Display cards in hand"<< endl;
-	cout << "6) Display current player settings" << endl;
-	cout << "7) Display all players settings" << endl;
+	cout << "6) Display current player status" << endl;
+	cout << "7) Display all players status" << endl;
 }
 
 bool Game::isGameOver() {

@@ -141,9 +141,10 @@ void Player::display_player_info() {
 
 	//1) Pawn information
 	cout << "    Player is a " << getRole() << " in Location " << getCurrentLocation() << endl;
+	cout << "    Player's role description: " << role->getRoleDescription() << endl;
 
 	//3 PlayerCards information
-	cout << "    Player's hand status: " << endl;
+	cout << "    Player's current hand: " << endl;
 	displayCardsInHand();
 
 }
