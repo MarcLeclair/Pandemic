@@ -134,7 +134,7 @@ OperationsExpert::OperationsExpert(Map* mp) : RoleCard(mp)
 	setRoleName("Operations Expert");
 	setRoleColor("lime");
 	setRoleDescription("As an action, build a research station in the city you are in (no city card needed)");
-	addSpecialAction("specialOperationsMove");
+	addSpecialAction("Research Station to Any City Move");
 }
 
 OperationsExpert::OperationsExpert(const OperationsExpert &ops) : RoleCard(ops) {
@@ -265,7 +265,7 @@ ContingencyPlanner::ContingencyPlanner(Map* mp) : RoleCard(mp)
 	setRoleName("Contingency Planner");
 	setRoleColor("Blue");
 	setRoleDescription("As an action, take any discarded event card and store it on this card");
-	addSpecialAction("useSpecialEvent");
+	addSpecialAction("Pick up Special Event Card");
 }
 
 ContingencyPlanner::ContingencyPlanner(const ContingencyPlanner& cp) : RoleCard(cp) {
@@ -367,9 +367,8 @@ Dispatcher::~Dispatcher()
 / Function to move to a city with another pawn already in it
 ********************************************************************************/
 int Dispatcher::specialMoveAnotherPlayer(Pawn* otherPlayer, int newCityID) {
-	//Cannot implement without proper City and Map classes
 	City newCity = getMapRef()->getCityByID(newCityID);
-	if (newCity.pawnList.size()) {
+	if (newCity.pawnRefList.size() < 1) {
 		cout << "Cannot move to a city without Players in it." << endl;
 		return 0;
 	}
