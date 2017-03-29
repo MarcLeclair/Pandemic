@@ -112,18 +112,25 @@ void Game::performPlayersTurn(int pId) {
 	int success = 0;
 	int redo = 1;
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
+
 		//Preliminary initializations
 		City current = map.getCityByID(playerlist[pId]->getCurrentLocation());
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
 		vector<int> cure;
-		int playerID;
-		vector<PlayerCard> receivingHand;
+		int otherPlayerID;
+
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
 		City currentCity = map.getCityByID(currentCityID);
 		vector<int> pawnsInCity = currentCity.pawnList;
+		int giver = 0;
+		int receiver = 0;
+		int giverstatus = 0;
+		vector<PlayerCard> receivingHand;
+		vector<PlayerCard> givingHand;
+
 		int displayaction = -1;
 		vector<City> allCities = map.getCities();
 		bool redoDisplay = true;
@@ -226,29 +233,59 @@ void Game::performPlayersTurn(int pId) {
 				success = playerlist[pId]->treat_disease();
 				break;
 			case 7: //share knowledge
+				/*
+				/ This method is actually executed in this class, as references to each player's hands are required, and such references are not accessible through reference or role card classes
+				/ However, the reference and role cards still perform the proper checks to ensure sharing knowledge is valid
+				*/
 				cout << "\nYou chose to share knowledge!" << endl;
+
 				do {
 					cout << "Which player would you like to share knowledge with?" << endl;
-					cin >> playerID;
-				} while (playerID > playerlist.size() || playerID < 0);
+					for (int i = 0; i < playerlist.size(); i++) {
+						cout << "\tPlayer " << playerlist[i]->getPlayerID() << endl;
+					}
+					cin >> otherPlayerID;
+				} while (otherPlayerID > playerlist.size() || otherPlayerID < 0);
 
-				if (find(pawnsInCity.begin(), pawnsInCity.end(), playerID) == pawnsInCity.end()) {
-					cout << "\nCannot share knowledge, player " << playerID << " is not in the current location with you." << endl;
+				do {
+					//Decide whether you want to give or receive a card
+					cout << "Choose 1 to give a card to another player, or 2 to receive a card from another player." << endl;
+					cin >> giverstatus;
+				} while (giverstatus < 1 || giverstatus>2);
+
+				//Set who will be the giver and receiver
+				if (giverstatus == 1) {
+					giver = pId;
+					receiver = otherPlayerID;
+				}
+				else {
+					giver = otherPlayerID;
+					receiver = pId;
+				}
+
+				if (find(pawnsInCity.begin(), pawnsInCity.end(), otherPlayerID) == pawnsInCity.end()) {
+					cout << "\nCannot share knowledge, player " << otherPlayerID << " is not in the current location with you." << endl;
 					redo = pollForRetry();
 					break;
 				}
+			
 				do {
 					cout << "Which card would you like to give to the player?" << endl;
-					cardIndex = pollForCards(pId);
-				} while (cardIndex < 1 || cardIndex > playerlist[pId]->getNumOfCards());
-				success = playerlist[pId]->share_knowledge(receivingHand, cardIndex-1);
+					cardIndex = pollForCards(giver);
+
+					receivingHand = playerlist[receiver]->getHand();
+					givingHand = playerlist[giver]->getHand();
+
+					//For semantics, the reference/role card performs the proper checks for exchange validity
+					success = playerlist[pId]->share_knowledge(givingHand, cardIndex-1);
+				} while (cardIndex < 1 || cardIndex > playerlist[giver]->getNumOfCards());
+				
 
 				if (success > 0) {
-					//If you get here, it means the sharing knowledge is valid
-					PlayerCard givingCard = playerlist[pId]->getHand()[cardIndex - 1];
-					playerlist[playerID]->drawCard(givingCard);
-					//playerlist[pId]->discardCard(cardIndex - 1);
-					std::cout << "Player " << playerlist[pId]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[pId]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
+					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
+					PlayerCard givingCard =givingHand[cardIndex - 1];
+					playerlist[receiver]->drawCard(givingCard);
+					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;
 			case 8: //cure a disease
@@ -306,8 +343,8 @@ void Game::performPlayersTurn(int pId) {
 						for (int i = 0; i < playerlist.size(); i++) {
 							cout << "Player " << playerlist[i]->getPlayerID() << " in " << playerlist[i]->getCurrentLocation() << endl;
 						}
-						cin >> playerID;
-					} while (playerID > playerlist.size() || playerID < 0);
+						cin >> otherPlayerID;
+					} while (otherPlayerID > playerlist.size() || otherPlayerID < 0);
 
 					do {
 						cout << "\nPlease choose a city with another player in it to travel to." << endl;
@@ -315,7 +352,7 @@ void Game::performPlayersTurn(int pId) {
 					} while (newCityID > 48 || newCityID < 1);
 
 					RoleCard* rc = playerlist[pId]->getRoleCard();
-					success = dynamic_cast<Dispatcher&>(*rc).specialMoveAnotherPlayer(playerlist[playerID]->getMyPawn(), newCityID);
+					success = dynamic_cast<Dispatcher&>(*rc).specialMoveAnotherPlayer(playerlist[otherPlayerID]->getMyPawn(), newCityID);
 				}
 				else {
 					cout << "\nYour role does not have any special moves." << endl;

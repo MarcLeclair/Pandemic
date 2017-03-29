@@ -215,8 +215,8 @@ int Player::treat_disease() {
 /************************************************************
 / Function to give one of your city cards to another player
 *************************************************************/
-int Player::share_knowledge( vector<PlayerCard> receivingHand, int exchangeCard) {
-	PlayerCard givingCard = cardsInHand[exchangeCard];
+int Player::share_knowledge( vector<PlayerCard> givingHand, int exchangeCard) {
+	PlayerCard givingCard = givingHand[exchangeCard];
 	int success = role->shareKnowledge(&playerPawn, givingCard);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
