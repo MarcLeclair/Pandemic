@@ -622,10 +622,28 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	PlayerCard epidemic = PlayerCard(PlayerCard::EPIDEMIC, -1, "1-INCREASE \n move the infection rate marker forward 1 space \n"
 													 "\t 2-INFECT \n draw the bottom card from the infection deck  and put 3 cubes  on that city. Discard that card \n"
 													 "\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
-	//stringstream colourConversion;
+	
 
+	stringstream colourConversion;
+	string colour;
 
 	vector<PlayerCard> playerCards;
+	vector<City> temp = map.getCities();
+	for (City city : temp) {
+		int id = city.id;
+		string name = city.name;
+		colourConversion << (city.zone);
+		colourConversion >> colour;
+
+		PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, name, colour);
+		playerCards.push_back(cardToPush);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		playerCards.push_back(epidemic);
+	}
+
+	
 
 	//for (int i = 1; i <= 48; ++i) {
 
