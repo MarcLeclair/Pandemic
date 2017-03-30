@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 
+#include "ODBC.h"
 #include "possession.h"
 #include "DeckOfCard.h"
 #include "Infection.h"
@@ -13,6 +14,7 @@
 #include "ReferenceCard.h"
 using namespace std;
 class Game {
+	ODBC_Class Example;
 	Map map;
 	vector<Player*> playerlist;
 	vector<RoleCard*> rolelist;
@@ -32,6 +34,7 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
+	void sqlConnection(const char* select);
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
 	void StartGame();

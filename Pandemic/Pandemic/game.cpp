@@ -11,6 +11,7 @@ Game::Game() {
 
 }
 Game::Game(int numberPlayers) {
+
 	map = Map();
 	map.load_starting_map();
 	deck = instantiatePlayerCards(map, 4);
@@ -331,9 +332,9 @@ void Game::performPlayersTurn(int pId) {
 					cout << "\nYou chose the Contingency Planner's special move!" << endl;
 					//Since we do not have a discard pile at the moment, we will pass any arbitrary card to the function
 					cout << "Passing an arbitrary PlayerCard to the function " << endl;
-					PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");
+					/*PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");*/
 					RoleCard* rc = playerlist[pId]->getRoleCard();
-					success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(arbitrary);
+					/*success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(arbitrary);*/
 				}
 
 				else if (playerlist[pId]->getRole() == "Dispatcher") { //We will be moving any other pawn as if it is our own
@@ -386,6 +387,72 @@ void Game::performPlayersTurn(int pId) {
 	}
 }
 
+void Game::sqlConnection(const char *select) {
+	
+	SQLCHAR DBName[] = "Pandemic";
+    SQLCHAR SQLStmt[255] = { 0 };
+	
+	SQLRETURN rc = SQL_SUCCESS;
+
+	if (Example.ConHandle != NULL)
+
+	{
+
+		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "", SQL_NTS, (SQLCHAR *) "", SQL_NTS);
+		
+		// Allocate An SQL Statement Handle 
+
+		rc = SQLAllocHandle(SQL_HANDLE_STMT, Example.ConHandle,  &Example.StmtHandle);
+
+		rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+
+		if (rc == SQL_SUCCESS)
+
+		{
+
+			// Define A SELECT SQL Statement  
+
+			strcpy((char *)SQLStmt,  select);
+
+			// Prepare And Execute The SQL Statement  
+
+			rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+
+			// Display The Results Of The SQL Query  
+			if (!rc == SQL_SUCCESS) {
+				cout << "*************************** failed ***************" << endl;
+			}
+			if (rc == SQL_SUCCESS)
+
+			{
+				
+				 Example.GetResultset();
+				
+
+			
+			
+				// At this point you would want to do something  
+
+				// with the resultset, such as display it.  
+
+			}
+
+		}
+
+		// Free The SQL Statement Handle  
+
+		if (Example.StmtHandle != NULL)
+
+			SQLFreeHandle(SQL_HANDLE_STMT, Example.StmtHandle);
+
+		// Disconnect From The Northwind Sample Database  
+		rc = SQLDisconnect(Example.ConHandle);
+
+	}
+
+
+
+}
 void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
@@ -480,13 +547,13 @@ void Game::load_players() {
 				string cardType = cardVals[i];
 				if (cardType == "City") {
 					//If it's a city card, load it one way (by including the color)
-					PlayerCard* card = new PlayerCard(cardType, stoi(cardVals[i + 1]), cardVals[i + 2], cardVals[i + 3]);
+					PlayerCard* card = new PlayerCard(PlayerCard::CITY, stoi(cardVals[i + 1]), cardVals[i + 2], cardVals[i + 3]);
 					i += 3;
 					hand.push_back(*card);
 				}
 				else {
 					//if it's a player card, load it with other values
-					PlayerCard* card = new PlayerCard(cardType, stoi(cardVals[i + 1]), cardVals[i+2]);
+					PlayerCard* card = new PlayerCard(PlayerCard::EPIDEMIC, cardVals[i + 1], cardVals[i+2]);
 					i+= 2;
 					hand.push_back(*card);
 				}
@@ -550,24 +617,64 @@ bool Game::isGameOver() {
 
 DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic) {
 
-
-	PlayerCard epidemic = PlayerCard("epidemic", -1, "1-INCREASE \n move the infection rate marker forward 1 space \n"
+	/*  char *select = "select * from PlayerCards WHERE pcID = 0";
+	sqlConnection(select);*/
+	PlayerCard epidemic = PlayerCard(PlayerCard::EPIDEMIC, -1, "1-INCREASE \n move the infection rate marker forward 1 space \n"
 													 "\t 2-INFECT \n draw the bottom card from the infection deck  and put 3 cubes  on that city. Discard that card \n"
 													 "\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
 	//stringstream colourConversion;
-	string colour;
+
 
 	vector<PlayerCard> playerCards;
-	vector<City> temp = map.getCities();
-	for (City city : temp) {
-		int id = city.id;
-		string name = city.name;
-		colour = string(1, city.zone);
 
-		PlayerCard cardToPush = PlayerCard("city", id, name, colour);
-		playerCards.push_back(cardToPush);
-	}
+	//for (int i = 1; i <= 48; ++i) {
 
+	//	int id;
+	//	string value, colour;
+
+	//	char integer_string[64];
+	//	sprintf(integer_string, "%d", i);
+
+
+	//	 char select[90] = "select PlayerCards.pcValue, PlayerCards.pcColor from PlayerCards WHERE pcID = ";
+
+	//	strncat(select, integer_string,sizeof(52));
+	//	sqlConnection(select);
+
+	//	for (vector<string> row : Example.colData) {
+	//		id = i;
+	//		value = row.at(0);
+	//		colour = row.at(1);
+	//		
+	//	}
+
+	//	PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, value, colour);
+	//	playerCards.push_back(cardToPush);
+	//}
+
+	//char select[50] = "select count(eventId) from EventCards";
+	//sqlConnection(select);
+	//int amountOfEvents = atoi(Example.colData.at(0).at(0).c_str());
+	//for (--amountOfEvents; amountOfEvents >= 0; --amountOfEvents) {
+
+	//	string eventName, eventValue;
+	//	char integer_string[32];
+	//	sprintf(integer_string, "%d", amountOfEvents);
+
+
+	//	char select[80] = "select eventName, eventValues from EventCards WHERE eventID = ";
+
+	//	strncat(select, integer_string, sizeof(1000000));
+	//	sqlConnection(select);
+
+	//	for (vector<string> row : Example.colData) {
+	//		eventName = row.at(0);
+	//		eventValue = row.at(1);
+
+	//	}
+	//	PlayerCard cardToPush = PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+	//	playerCards.push_back(cardToPush);
+	//}
 	for (int i = 0; i < 4; i++) {
 		playerCards.push_back(epidemic);
 	}
@@ -579,11 +686,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	for (PlayerCard player : t) {
 		cout << player.getValue() << endl;
 	}
-	//vector<int> x = playerDeck->indices();
 
-	//for (int w : x) {
-	//	cout << w << endl;
-	//Testing}
 	return playerDeck;
 }
 
