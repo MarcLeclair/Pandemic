@@ -141,9 +141,10 @@ void Player::display_player_info() {
 
 	//1) Pawn information
 	cout << "    Player is a " << getRole() << " in Location " << getCurrentLocation() << endl;
+	cout << "    Player's role description: " << role->getRoleDescription() << endl;
 
 	//3 PlayerCards information
-	cout << "    Player's hand status: " << endl;
+	cout << "    Player's current hand: " << endl;
 	displayCardsInHand();
 
 }
@@ -214,8 +215,8 @@ int Player::treat_disease() {
 /************************************************************
 / Function to give one of your city cards to another player
 *************************************************************/
-int Player::share_knowledge( vector<PlayerCard> receivingHand, int exchangeCard) {
-	PlayerCard givingCard = cardsInHand[exchangeCard];
+int Player::share_knowledge( vector<PlayerCard> givingHand, int exchangeCard) {
+	PlayerCard givingCard = givingHand[exchangeCard];
 	int success = role->shareKnowledge(&playerPawn, givingCard);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
