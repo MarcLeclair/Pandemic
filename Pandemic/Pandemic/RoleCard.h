@@ -106,15 +106,22 @@ public:
 /	As an action, build a research station in the city you are in (no city card needed)
 /	Once per turn, as an action, move from a research station to any city by discarding any City card
 *****************************************************************************************************/
-class OperationsExpert :
-	public RoleCard
+class OperationsExpert : public RoleCard
 {
+	bool specialUsedThisTurn = false;
 public:
 	OperationsExpert(Map* mp);
 	OperationsExpert(const OperationsExpert &ops);
 	virtual ~OperationsExpert();
 	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
 	int specialOperationsMove(Pawn* pawn, PlayerCard moveCard);
+	void specialWasUsed() {
+		specialUsedThisTurn = true;
+	}
+
+	void resetSpecialUsed() {
+		specialUsedThisTurn = false;
+	}
 };
 
 

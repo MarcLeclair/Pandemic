@@ -70,6 +70,12 @@ void Game::StartGame() {
 			cout << "Saving the game" << endl;
 			SaveGame();
 		}
+
+		//If the player is an operations expert, reset their use of special operation so they can use it the next turn
+		if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
+			RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
+			dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
+		}
 		currentPlayersId++;
 	}
 
