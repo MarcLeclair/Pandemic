@@ -160,7 +160,7 @@ int OperationsExpert::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
 	}
 
 	//if all the proper conditions are met, build a research center in the current city
-	currentLocation.buildResearchStation();
+	getMapRef()->addResearchStation(currentLocationID);
 	
 	cout << "Research station has been built! \nGood news: You are an operations expert, you do not lose a city card!" << endl;
 	return 1;
@@ -171,6 +171,11 @@ int OperationsExpert::buildResearchStation(Pawn* pawn, PlayerCard currentCity) {
 / given that they have a city card (does not have to match the destination city).
 *********************************************************************************************************/
 int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
+	if (specialUsedThisTurn) {
+		cout << "Sorry, you can only use this action once per turn!" << endl;
+		return 0;
+	}
+
 	std::string cardType = moveCard.getType();
 
 	if (cardType != "city") {
@@ -189,6 +194,7 @@ int OperationsExpert::specialOperationsMove(Pawn* pawn, PlayerCard moveCard) {
 	int newCityID = moveCard.getCityId();
 	getMapRef()->movePawn(pawn, newCityID);
 	cout << "You have executed your Special Move! Your current location is now " << getMapRef()->getCityByID(pawn->get_location()).name << endl;
+	specialWasUsed();
 	return 1;
 
 
