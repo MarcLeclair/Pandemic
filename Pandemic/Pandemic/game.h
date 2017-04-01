@@ -47,6 +47,7 @@ public:
 	int pollForRetry();
 	void save_players();
 	void load_players();
+	int pollDispatcherPawn();
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
 	void displayPlayers();
 };
