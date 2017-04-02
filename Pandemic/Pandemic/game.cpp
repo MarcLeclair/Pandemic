@@ -747,6 +747,42 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	return playerDeck;
 }
 
+DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
+
+	stringstream colourConversion;
+	string colour;
+
+	vector<Infection> InfectionCards;
+	vector<City> temp = map.getCities();
+
+	for (City city : temp) {
+		int id = city.id;
+		string name = city.name;
+		colourConversion << (city.zone);
+		colourConversion >> colour;
+
+		Infection cardToPush = Infection(id);
+		InfectionCards.push_back(cardToPush);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//InfectionCards.push_back(epidemic);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//InfectionCards.push_back(epidemic);
+	}
+	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(InfectionCards);
+
+	vector<Infection> t = InfectionDeck->returnVector();
+	for (Infection player : t) {
+		cout << player.getInfectionID() << endl;
+	}
+
+	return InfectionDeck;
+}
+
+
 int main() {
 	Game* game = new Game(2);
 	DeckOfCard<PlayerCard>* deck = game->getDeck();
