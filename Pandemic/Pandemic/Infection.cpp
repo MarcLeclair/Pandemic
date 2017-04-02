@@ -99,14 +99,6 @@ void Infection::endTurnInfection(Map* map) {
 
 }
 
-void Infection::shuffleInfection() {
-	int N = InfectionDeck.size();
-	for (int i = N - 1; i > 0; i--) {
-		int r = rand() % (i + 1);
-		swap(InfectionDeck[i], InfectionDeck[r]);
-	}
-}
-
 void Infection::startInfect(Map* map) {
 	//infect 3 cities with 3 cubes
 	map->addDisease(InfectionDeck[ctr].getInfectionID());
