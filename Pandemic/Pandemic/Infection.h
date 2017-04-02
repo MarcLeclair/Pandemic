@@ -33,6 +33,8 @@ public:
 	void saveInfectionDeck(); //saves deck
 	void loadInfectionDeck(); //loads it
 
+	void Infection::shuffleInfection();
+
 	/*void startInfect() {
 	int counter = 0;
 	while (counter < 3) {
