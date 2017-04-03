@@ -5,9 +5,11 @@
 #include "possession.h"
 #include "map.h"
 
+using namespace std;
+
 /*************************************************************************************************************
 / Class responsible for the definition of all actions players can take
-/ While this gives the basic functioning of actions, some functions may be overridden in RoleCard subclasses
+/ Base class for all role cards, which inherit and override these functions
 / For the most part, functions defined here are inherited and untouched.
 **************************************************************************************************************/
 class ReferenceCard
@@ -29,7 +31,7 @@ public:
 	virtual int charterFlight(Pawn* pawn, PlayerCard dest, int newCityID);
 	virtual int shuttleFlight(Pawn* pawn, int newCityID);
 
-
+	//These functions allow a player to change things on their current city, or interact with other players
 	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
 	virtual int treatDisease(Pawn* pawn);
 	virtual int shareKnowledge(Pawn* pawn, PlayerCard givingCard);

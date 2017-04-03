@@ -1,9 +1,3 @@
-/*
-/ Claudia Della Serra, 26766048
-/ COMP 345, Advanced Programming with C++
-/
-/ Assignment 1 Player Class
-*/
 
 #pragma once
 
@@ -17,6 +11,7 @@
 #include "map.h"
 #include "Subject.h"
 
+using namespace std;
 /********************************************************************************************************
 / Class that encapsulates all the functionality for a single player
 / Holds a pawn, a reference card, and a hand of player cards.
@@ -35,41 +30,29 @@ public:
 		return playerID;
 	}
 
+	//Setters
 	void setPlayerID(int pid) { playerID = pid; }
-
-	Pawn* getMyPawn() { return &playerPawn; }
-
-	void setMyPawn(Pawn mp) { playerPawn = mp; }
-
-	ReferenceCard* getRefCard() { return &refcard; }
-
-	void setReferenceCard(ReferenceCard refc) { refcard = refc; }
-
-	RoleCard* getRoleCard() { return role; }
-
+	void setMyPawn(Pawn* mp) { playerPawn = mp; }
+	void setReferenceCard(ReferenceCard* refc) { refcard = refc; }
 	void setRoleCard(RoleCard* rc) { role = rc; }
-
-	int getNumOfCards() { return numOfCards; }
-
 	void setNumOfCards() { numOfCards = cardsInHand.size(); }
-
-	int getCurrentLocation() { return playerPawn.get_location();}
-
-	std::string getPawnColor() { return playerPawn.get_color(); }
-
-	std::string getRole() { return role->getRoleName(); }
-	std::string getRoleDescription() { return role->getRoleDescription(); }
-
-	int getAction() { return actions; }
-
 	void setActions(int ac) { actions = ac; }
 
-	void useAction() { --actions; }
-
+	//Getters
+	Pawn* getMyPawn() { return playerPawn; }
+	ReferenceCard* getRefCard() { return refcard; }
+	RoleCard* getRoleCard() { return role; }
+	int getNumOfCards() { return numOfCards; }
+	int getCurrentLocation() { return playerPawn->get_location();}
+	string getPawnColor() { return playerPawn->get_color(); }
+	string getRole() { return role->getRoleName(); }
+	string getRoleDescription() { return role->getRoleDescription(); }
+	int getAction() { return actions; }
 	std::vector<PlayerCard> getHand() { return cardsInHand; }
 
 
-	int performAction();
+	void useAction() { --actions; }
+
 	//Functions to operate on the player's hand of PlayerCards
 	void drawCard(PlayerCard plc);
 	void displayCardsInHand();
@@ -93,8 +76,8 @@ public:
 	int share_knowledge(vector<PlayerCard> receivingHand, int exchangeCard);
 	int discover_cure(vector<int> cure);
 private:
-	Pawn playerPawn;
-	ReferenceCard refcard;
+	Pawn* playerPawn;
+	ReferenceCard* refcard;
 
 	//Holds a reference to a role card for polymorphism purposes, as role cards have multiple subtypes
 	RoleCard* role;
@@ -104,4 +87,5 @@ private:
 	int actions;
 };
 
+//Constant variable defining the max amount of cards allowed in hand
 const static int maxCardsInHand = 7;
