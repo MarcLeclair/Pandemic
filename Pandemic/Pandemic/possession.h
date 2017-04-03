@@ -9,10 +9,7 @@
 #define POSSESSION_H
 using namespace std;
 class Possession{
-	string title;
-  public:
-  	virtual void display_information();
- 
+	string title; 
 };
 class Pawn: public Possession{
 	string colour;
