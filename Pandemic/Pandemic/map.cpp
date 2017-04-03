@@ -68,7 +68,7 @@ void Map::load_map(){
   ifstream mapFile ("links.csv");
   if (mapFile.is_open())
   {
-    while ( getline (mapFile,line) )
+    while ( getline (mapFile,line) ) //while not at the end of the file
     {
       vector<string> values;
       string s=line;
@@ -89,6 +89,7 @@ void Map::load_map(){
         researchCenter=true;
       }
       //Creates New City
+	  //arguments: cityid, name, city connections, locationx, locationy, infectioncounters, researchstation
       City newCity=City(stoi(values[0]),values[1],values[3][0],0.0,0.0,infectionCounters,researchCenter);
       //Parses and adds connections
       s=values[2];
@@ -161,21 +162,32 @@ void Map::display_status() {
 void Map::save_map(){
   ofstream mapFile;
   mapFile.open ("links.csv",ofstream::out | ofstream::trunc);
+
+  //For each city in the city list, save the city's id, name, and all connections
   for(int i=0;i<citylist.size();i++){
     mapFile << citylist[i].id <<"," <<citylist[i].name<<",";
+	//Save that city's connections
     for(int j=0;j<citylist[i].connections.size()-1;j++){
       mapFile << citylist[i].connections[j]<<"-";
     }
+	//save the last connection
     mapFile << citylist[i].connections[citylist[i].connections.size()-1]<<",";
+	//save the city's zone
     mapFile<<citylist[i].zone<<",";
+
+	//save all the pawns in that city
     for(int j=0;j<citylist[i].pawnList.size()-1;j++){
       mapFile << citylist[i].pawnList[j]<<"-";
     }
     mapFile << citylist[i].pawnList[citylist[i].pawnList.size()-1]<<",";
+
+	//save the state of the infection counters
     for(int j=0;j<3;j++){
       mapFile<< citylist[i].infectionCounters[j]<<"-";
     }
     mapFile<< citylist[i].infectionCounters[3]<<",";
+
+	//save the research center state
     if(citylist[i].researchCenter==true){
     mapFile<<"1"<<endl;
     }else{

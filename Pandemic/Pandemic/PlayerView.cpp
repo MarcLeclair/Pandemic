@@ -44,6 +44,11 @@ void PlayerView::update() {
 	displayPlayer();
 }
 
+/***************************************************************************************************
+/ Functio to display the player's information when something about their state is changed
+/ Includes information about their pawn, location, role, how many actions are left in their turn
+/ Also outputs their hand of cards
+****************************************************************************************************/
 void PlayerView::displayPlayer() {
 	cout << "\nDisplaying Player " << subject->getPlayerID() << "'s status: " << endl;
 	

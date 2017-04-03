@@ -8,35 +8,45 @@
 
 using namespace std;
 
+/*************************************************
+/ Default Player function for basic functionality
+***************************************************/
 Player::Player() {
+
 }
 
-
+/********************************************************************************
+/ Player Constructor
+/ Assigns the input player ID, and creates a new reference card for the player
+/ Creates the player's pawn based on the role card passed
+/ Requires a map reference for the reference card and role cards
+*********************************************************************************/
 Player::Player(int pid, RoleCard* rolec, Map* mp) : Subject()
 {
 	playerID = pid;
-	ReferenceCard* myReference = new ReferenceCard(mp);
-	setReferenceCard(*myReference);
+	setReferenceCard(new ReferenceCard(mp));
 
 	setRoleCard(rolec);
 
-	Pawn* myPawn = new Pawn(role->getRoleColor(), playerID);
-	setMyPawn(*myPawn);
+	setMyPawn(new Pawn(role->getRoleColor(), playerID));
 
-	//All players start out in Bridge of Eldin. This corresponds to cityID 0
-	getMyPawn()->set_location(1);
+	//All players start out in Castle Town
+	getMyPawn()->set_location(4);
 }
 
-//Copy Constructor
+/**********************************************************************************
+/ Copy Constructor
+/ Important for the copying of player objects, since they hold multiple pointers
+***********************************************************************************/
 Player::Player(const Player& plr) : Subject(){
 	playerID = plr.playerID;
 	role = plr.role;
 
-	ReferenceCard* tempRef = new ReferenceCard(plr.refcard);
-	refcard = *tempRef;
+	ReferenceCard* tempRef = new ReferenceCard(*plr.refcard);
+	refcard = tempRef;
 
-	Pawn* tempPawn = new Pawn(plr.playerPawn);
-	playerPawn = *tempPawn;
+	Pawn* tempPawn = new Pawn(*plr.playerPawn);
+	playerPawn = tempPawn;
 
 	for (PlayerCard pc : plr.cardsInHand) {
 		PlayerCard* tempPC = new PlayerCard(pc);
@@ -44,10 +54,15 @@ Player::Player(const Player& plr) : Subject(){
 	}
 }
 
-//Don't need to explicitly delete the objects being held as they are allocated on the heap, only the RoleCard, which is a pointer
+/***************************************************************************************************
+/ Player destructor
+/ Takes care of deleting all the pointers held by the player, including the pawn and reference card
+***************************************************************************************************/
 Player::~Player()
 {
 	delete role;
+	delete playerPawn;
+	delete refcard;
 	(getHand()).clear();
 }
 
@@ -64,13 +79,14 @@ void Player::balanceHand() {
 		cout << "Card to discard (number): " << endl;
 		cin >> cardToDiscard;
 
+		//Make sure the proper index was given
 		while (cardToDiscard > cardsInHand.size() || cardToDiscard < 1) {
 			cout << "Invalid card number. Please try again." << endl;
 			cin >> cardToDiscard;
 		}
 
 		discardCard((cardToDiscard - 1));
-
+		//Always set the number of cards in the player's hand
 		setNumOfCards();
 	}
 }
@@ -89,19 +105,24 @@ void Player::drawCard(PlayerCard plc) {
 /********************************************************************
 / Function to display all of the cards held
 / Iterates through the player's hand and gets the title of the card
+/ along with the color, and the card's ID if it is a city card
 *********************************************************************/
 void Player::displayCardsInHand() {
 	int cardNum = 1;
 	for (PlayerCard card : cardsInHand) {
-		cout << "\t" << cardNum << ". " << card.getType() << " card "<< card.getColour() << ": " << card.getValue() << "(" << card.getCityId() << ")" <<endl;
+		if(card.getType() == "city")
+			cout << "\t" << cardNum << ". " << card.getType() << " card "<< card.getColour() << ": " << card.getValue() << "(" << card.getCityId() << ")" <<endl;
+		else
+			cout << "\t" << cardNum << ". " << card.getType() << " card : " << card.getValue() << endl;
 		cardNum++;
 	}
 }
 
-/*******************************************************************************
+/***********************************************************************************
 / Function to remove a card from the player's hand
 / Simply accesses the player's hand and deletes the card at the index indicated
-*******************************************************************************/
+/ Does not actually delete the card, just the copy of the card in the player's hand
+************************************************************************************/
 void Player::discardCard(int disc) {
 	cardsInHand.erase(cardsInHand.begin() + disc);
 	setNumOfCards();
@@ -112,7 +133,7 @@ void Player::discardCard(int disc) {
 / Corresponds to the actions found in the Reference Card class
 **********************************************************************/
 void Player::outputPossibleActions() {
-	vector<string> allActions = refcard.getAllActions();
+	vector<string> allActions = refcard->getAllActions();
 	int actionNum = 1;
 	for (string action : allActions) {
 		cout << actionNum << ". " << action << endl;
@@ -136,6 +157,10 @@ int Player::requestAction() {
 	return newAction;
 }
 
+/*******************************************************************************
+/ Function to output all relevant information about the player
+/ Will output the player's role and current location, and their hand of cards
+********************************************************************************/
 void Player::display_player_info() {
 	cout << "\nPlayer " << getPlayerID() << "'s info: " << endl;
 
@@ -151,9 +176,12 @@ void Player::display_player_info() {
 
 /**************************************************************
 / Function to execute the drive function on this player's pawn
+/ The player's pawn and the new city ID are passed to the
+/ function executed by the role card.
+/ If the function is successful, the playerview will be updated
 ***************************************************************/
 int Player::drive(int newCityID) {
-	int success= role->drive(&playerPawn, newCityID);
+	int success= role->drive(playerPawn, newCityID);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
@@ -161,31 +189,39 @@ int Player::drive(int newCityID) {
 
 /********************************************************************
 / Function to execute a direct flight function on this player's pawn
+/ The card from the player's hand that the player wishes to play
+/ is found and passed to the function from role card.
+/ If the function is a success, the playerview will be updated
 *********************************************************************/
 int Player::direct_flight(int cardIndex) {
 	PlayerCard destination = cardsInHand[cardIndex];
-	int success =  role->directFlight(&playerPawn, destination);
+	int success =  role->directFlight(playerPawn, destination);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
 }
 
-/*********************************************************
+/********************************************************************************
 / Function to execute a charter flight to another city
-*********************************************************/
+/ The card the player wishes to play will be selected from their hand
+/ This card and the player's pawn will be passed to the function from role card
+/ If the function succeeds, the playerview will be notified
+*******************************************************************************/
 int Player::charter_flight(int cardIndex, int newCityID) {
 	PlayerCard destination = cardsInHand[cardIndex];
-	int success = role->charterFlight(&playerPawn, destination, newCityID);
+	int success = role->charterFlight(playerPawn, destination, newCityID);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
 }
 
-/******************************************************************************
+/***********************************************************************************
 / Function to execute a shuttle flight to another city with a research station
-*******************************************************************************/
+/ The player's pawn and a new city id will be passed to the function from role card
+/ Upon success the playerview will be notified
+************************************************************************************/
 int Player::shuttle_flight(int newCityID) {
-	int success = role->shuttleFlight(&playerPawn, newCityID);
+	int success = role->shuttleFlight(playerPawn, newCityID);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
@@ -193,10 +229,13 @@ int Player::shuttle_flight(int newCityID) {
 
 /***********************************************************
 / Function to build a research station in your current city
+/ Retrieves the card the from the player's hand that they wish to play
+/ Passes this card and the player's pawn to the function in role card
+/ If the function succeeds, the playerview is updated
 ************************************************************/
 int Player::build_research_station(int cardIndex) {
 	PlayerCard currentCity = cardsInHand[cardIndex];
-	int success = role->buildResearchStation(&playerPawn, currentCity);
+	int success = role->buildResearchStation(playerPawn, currentCity);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
@@ -204,34 +243,39 @@ int Player::build_research_station(int cardIndex) {
 
 /******************************************************
 / Function to treat a disease cube in the current city
+/ Passes the player's pawn to the function in role card
 *******************************************************/
 int Player::treat_disease() {
-	int success = role->treatDisease(&playerPawn);
-	if (success > 0)
-		notify(); //If the action worked, notify all the observers
+	int success = role->treatDisease(playerPawn);
 	return success;
 }
 
-/************************************************************
+/********************************************************************************************
 / Function to give one of your city cards to another player
-*************************************************************/
+/ Takes the hand passed to the function and finds the card that the players wish to exchange
+/ Then passes this card and the player's pawn to the function in role card
+/ Upon success, the playerview is notified
+*********************************************************************************************/
 int Player::share_knowledge( vector<PlayerCard> givingHand, int exchangeCard) {
 	PlayerCard givingCard = givingHand[exchangeCard];
-	int success = role->shareKnowledge(&playerPawn, givingCard);
+	int success = role->shareKnowledge(playerPawn, givingCard);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
 }
 
-/******************************
+/**************************************************************************
 / Function to cure a disease
-******************************/
+/ Finds all indicated cards that the player wishes to pass to the function
+/ Then passes all cards plus the player's pawn to the function in role card
+/ Upon success, the playerview is notified
+*****************************************************************************/
 int Player::discover_cure(vector<int> cure) {
 	vector<PlayerCard> cureCards;
 	for (int i = 0; i < cure.size(); i++) {
 		cureCards.push_back(cardsInHand[cure[i]]);
 	}
-	int success = role->discoverCure(&playerPawn, cureCards);
+	int success = role->discoverCure(playerPawn, cureCards);
 	if (success > 0)
 		notify(); //If the action worked, notify all the observers
 	return success;
