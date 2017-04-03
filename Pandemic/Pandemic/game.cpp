@@ -11,7 +11,7 @@ Game::Game() {
 
 }
 Game::Game(int numberPlayers) {
-
+	this->hasGameStarted = true;
 	map = Map();
 	map.load_starting_map();
 	deck = instantiatePlayerCards(map, 4);
@@ -75,8 +75,12 @@ void Game::StartGame() {
 
 }
 void Game::SaveGame() {
-	map.save_map();
-	save_players();
+	if (hasGameStarted == true) {
+		map.save_map();
+		save_players();
+	}
+	else
+		cout << "Game has not started" << endl;
 
 }
 
@@ -387,72 +391,6 @@ void Game::performPlayersTurn(int pId) {
 	}
 }
 
-void Game::sqlConnection(const char *select) {
-	
-	SQLCHAR DBName[] = "PandemicMain";
-    SQLCHAR SQLStmt[255] = { 0 };
-	
-	SQLRETURN rc = SQL_SUCCESS;
-
-	if (Example.ConHandle != NULL)
-
-	{
-
-		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "concordia", SQL_NTS, (SQLCHAR *) "University4", SQL_NTS);
-		
-		// Allocate An SQL Statement Handle 
-
-		rc = SQLAllocHandle(SQL_HANDLE_STMT, Example.ConHandle,  &Example.StmtHandle);
-
-		rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
-
-		if (rc == SQL_SUCCESS)
-
-		{
-
-			// Define A SELECT SQL Statement  
-
-			strcpy((char *)SQLStmt,  select);
-
-			// Prepare And Execute The SQL Statement  
-
-			rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
-
-			// Display The Results Of The SQL Query  
-			if (!rc == SQL_SUCCESS) {
-				cout << "*************************** failed ***************" << endl;
-			}
-			if (rc == SQL_SUCCESS)
-
-			{
-				
-				 Example.GetResultset();
-				
-
-			
-			
-				// At this point you would want to do something  
-
-				// with the resultset, such as display it.  
-
-			}
-
-		}
-
-		// Free The SQL Statement Handle  
-
-		if (Example.StmtHandle != NULL)
-
-			SQLFreeHandle(SQL_HANDLE_STMT, Example.StmtHandle);
-
-		// Disconnect From The Northwind Sample Database  
-		rc = SQLDisconnect(Example.ConHandle);
-
-	}
-
-
-
-}
 void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
@@ -628,7 +566,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	//string colour;
 
 	vector<PlayerCard> playerCards;
-
+	SqlConnection PlayerCardsConnect,EventCardsConnect;
 
 	/*******************Back-Up *****************************/
 	//vector<City> temp = map.getCities();
@@ -651,9 +589,9 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 
 	
 	char select[30] = "select * from PlayerCards";
-	sqlConnection(select);
+	PlayerCardsConnect.sqlExecuteSelect(select);
 
-	vector<vector<string>> results = Example.colData;
+	vector<vector<string>> results = PlayerCardsConnect.Connection.colData;
 	
 	for (vector<string> rows : results) {
 
@@ -669,13 +607,13 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	}
 
 
-
+	
 	strcpy(select, "select * from EventCards");
-	sqlConnection(select);
+	EventCardsConnect.sqlExecuteSelect(select);
 
-	vector<vector<string>> resultsEvent = Example.colData;
+	vector<vector<string>> resultsEvent = EventCardsConnect.Connection.colData;
 
-	for (vector<string> rows : results) {
+	for (vector<string> rows : resultsEvent) {
 
 		int id;
 

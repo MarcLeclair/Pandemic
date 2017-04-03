@@ -12,8 +12,10 @@
 #include "player.h"
 #include "PlayerView.h"
 #include "ReferenceCard.h"
+#include "SqlConnection.h"
 using namespace std;
 class Game {
+	bool hasGameStarted;
 	ODBC_Class Example;
 	Map map;
 	vector<Player*> playerlist;
@@ -34,9 +36,6 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
-	void freeConnection();
-	void createConnection();
-	void sqlConnection(const char* select);
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
 	void StartGame();
