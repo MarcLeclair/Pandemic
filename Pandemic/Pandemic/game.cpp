@@ -389,7 +389,7 @@ void Game::performPlayersTurn(int pId) {
 
 void Game::sqlConnection(const char *select) {
 	
-	SQLCHAR DBName[] = "Pandemic";
+	SQLCHAR DBName[] = "PandemicMain";
     SQLCHAR SQLStmt[255] = { 0 };
 	
 	SQLRETURN rc = SQL_SUCCESS;
@@ -398,7 +398,7 @@ void Game::sqlConnection(const char *select) {
 
 	{
 
-		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "", SQL_NTS, (SQLCHAR *) "", SQL_NTS);
+		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "concordia", SQL_NTS, (SQLCHAR *) "University4", SQL_NTS);
 		
 		// Allocate An SQL Statement Handle 
 
@@ -624,75 +624,71 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 													 "\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
 	
 
-	stringstream colourConversion;
-	string colour;
+	//stringstream colourConversion;
+	//string colour;
 
 	vector<PlayerCard> playerCards;
-	vector<City> temp = map.getCities();
-	for (City city : temp) {
-		int id = city.id;
-		string name = city.name;
-		colourConversion << (city.zone);
-		colourConversion >> colour;
 
-		PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, name, colour);
+
+	/*******************Back-Up *****************************/
+	//vector<City> temp = map.getCities();
+	//for (City city : temp) {
+	//	int id = city.id;
+	//	string name = city.name;
+	//	colourConversion << (city.zone);
+	//	colourConversion >> colour;
+
+	//	PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, name, colour);
+	//	playerCards.push_back(cardToPush);
+	//}
+
+	//for (int i = 0; i < 4; i++) {
+	//	playerCards.push_back(epidemic);
+	//}
+	/**/
+	
+	
+
+	
+	char select[30] = "select * from PlayerCards";
+	sqlConnection(select);
+
+	vector<vector<string>> results = Example.colData;
+	
+	for (vector<string> rows : results) {
+
+		int id;
+		string value, colour;
+
+		id = atoi(rows.at(0).c_str());
+		value = rows.at(1);
+		colour = rows.at(2);
+
+		PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, value, colour);
 		playerCards.push_back(cardToPush);
 	}
 
-	for (int i = 0; i < 4; i++) {
-		playerCards.push_back(epidemic);
+
+
+	strcpy(select, "select * from EventCards");
+	sqlConnection(select);
+
+	vector<vector<string>> resultsEvent = Example.colData;
+
+	for (vector<string> rows : results) {
+
+		int id;
+
+		string eventName, eventValue;
+
+		id = atoi(rows.at(0).c_str());
+		eventName = rows.at(1);
+		eventValue = rows.at(2);
+
+		PlayerCard cardToPush = PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+		playerCards.push_back(cardToPush);
 	}
-
 	
-
-	//for (int i = 1; i <= 48; ++i) {
-
-	//	int id;
-	//	string value, colour;
-
-	//	char integer_string[64];
-	//	sprintf(integer_string, "%d", i);
-
-
-	//	 char select[90] = "select PlayerCards.pcValue, PlayerCards.pcColor from PlayerCards WHERE pcID = ";
-
-	//	strncat(select, integer_string,sizeof(52));
-	//	sqlConnection(select);
-
-	//	for (vector<string> row : Example.colData) {
-	//		id = i;
-	//		value = row.at(0);
-	//		colour = row.at(1);
-	//		
-	//	}
-
-	//	PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, value, colour);
-	//	playerCards.push_back(cardToPush);
-	//}
-
-	//char select[50] = "select count(eventId) from EventCards";
-	//sqlConnection(select);
-	//int amountOfEvents = atoi(Example.colData.at(0).at(0).c_str());
-	//for (--amountOfEvents; amountOfEvents >= 0; --amountOfEvents) {
-
-	//	string eventName, eventValue;
-	//	char integer_string[32];
-	//	sprintf(integer_string, "%d", amountOfEvents);
-
-
-	//	char select[80] = "select eventName, eventValues from EventCards WHERE eventID = ";
-
-	//	strncat(select, integer_string, sizeof(1000000));
-	//	sqlConnection(select);
-
-	//	for (vector<string> row : Example.colData) {
-	//		eventName = row.at(0);
-	//		eventValue = row.at(1);
-
-	//	}
-	//	PlayerCard cardToPush = PlayerCard(PlayerCard::EVENT, eventName, eventValue);
-	//	playerCards.push_back(cardToPush);
-	//}
 	for (int i = 0; i < 4; i++) {
 		playerCards.push_back(epidemic);
 	}

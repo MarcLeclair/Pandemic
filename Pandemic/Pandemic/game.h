@@ -34,6 +34,8 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
+	void freeConnection();
+	void createConnection();
 	void sqlConnection(const char* select);
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
