@@ -616,13 +616,14 @@ bool City::hasDisease(){
 	return false;
 }
 
-///********************************************************************
-/// Function that checks for a disease of a specific type in the city
-//*********************************************************************/
-//bool City::hasDisease(char disease){
-//	if(infectionCounters[])
-//  return false;
-//}
+/********************************************************************
+ Function that checks for a disease of a specific type in the city
+*********************************************************************/
+bool City::hasDisease(char disease){
+	if (infectionCounters[zoneIndex[disease]] > 0)
+		return true;
+  return false;
+}
 
 /******************************************************************
 / Function that checks whether this city Connects to another city

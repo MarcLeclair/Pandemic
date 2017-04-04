@@ -36,7 +36,7 @@ class City {
   	  void display_information(); //displays information about the city
       bool hasDisease();//checks if a city has any disease
 	  //void treatDisease(char); //treats disease of specific color on city
-     // bool hasDisease(char); //checks if a city has a disease of specific type
+	  bool hasDisease(char); //checks if a city has a disease of specific type
       bool connectsTo(int);  //currentCity checks if it connects to a city with the ID newCity
 	  void treatDisease(); //treats disease on city
    
@@ -74,7 +74,6 @@ class  Map{
 	vector<Pawn*> pawnlist; //list of pawns
  	int width, height;
 	int numberOutbreaks;
-	map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 
 public:
 	void addResearchStation(int);
@@ -102,6 +101,7 @@ private:
 	void outbreak(int, char); //handles outbreaks
 };
 
+map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 
 #endif
 
