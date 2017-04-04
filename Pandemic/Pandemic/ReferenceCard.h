@@ -18,6 +18,7 @@ public:
 	ReferenceCard();
 	ReferenceCard(Map* mp);
 	ReferenceCard(const ReferenceCard& rc);
+	const ReferenceCard& operator=(const ReferenceCard& rc);
 	~ReferenceCard();
 
 	std::vector<std::string> getAllActions() {

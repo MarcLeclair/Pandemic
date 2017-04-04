@@ -20,6 +20,7 @@ public:
 	RoleCard(Map* mp);
 	RoleCard(const RoleCard& rolec);
 	~RoleCard();
+	const RoleCard& operator=(const RoleCard& rc);
 
 	void RoleCard::setRoleName(string name) {	roleName = name; }
 

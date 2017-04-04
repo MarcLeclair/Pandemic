@@ -20,12 +20,12 @@ class Pawn: public Possession{
 	Pawn();
 	Pawn(const Pawn&);
 
-    void set_location(int);
-	void set_player_id(int);
-	int get_location();
-    int get_playerId();
+    void set_location(int locationId) {	this->locationId = locationId;	}
+	void set_player_id(int pid) { this->playerId = pid; }
+	int get_location() {return this->locationId;}
+    int get_playerId() {return this->playerId;}
     void display_information();
-	string get_color();
+	string get_color() {	return this->colour;	}
  
 };
 
