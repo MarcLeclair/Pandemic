@@ -50,7 +50,9 @@ public:
 	void save_playerCards();
 	void save_players();
 	void load_players();
+	int pollDispatcherPawn();
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
+	DeckOfCard<Infection>* instantiateInfectionCards(Map map);
 	void displayPlayers();
 };
 

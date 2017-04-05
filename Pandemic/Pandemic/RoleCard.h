@@ -11,9 +11,8 @@ using namespace std;
 
 /************************************************************************************************************************************************************************
 / RoleCard class, base class for all roles
-/ Designed this as a hierarchy in order to be able to hold a deck of Role Cards
-/ I.e. This will allow all types of role cards to be held in the same data structure
-/ Also allows for the abstraction of the role cards players can hold (i.e. they can hold a generic RoleCard pointer, but through polymorphism perform specific role tasks
+/ This will allow all types of role cards to be held in the same data structure for initial distribution
+/ Also allows for the abstraction of the role cards players can hold (i.e. they can hold a generic RoleCard pointer, but through polymorphism perform specific role tasks)
 **************************************************************************************************************************************************************************/
 class RoleCard : public ReferenceCard
 {
@@ -22,42 +21,27 @@ public:
 	RoleCard(const RoleCard& rolec);
 	~RoleCard();
 
-	void RoleCard::setRoleName(string name) {
-		roleName = name;
-	}
+	void RoleCard::setRoleName(string name) {	roleName = name; }
 
-	string RoleCard::getRoleName() {
-		return roleName;
-	}
+	string RoleCard::getRoleName() { return roleName;	}
 
-	void RoleCard::setRoleColor(string color) {
-		roleColor = color;
-	}
+	void RoleCard::setRoleColor(string color) { roleColor = color;	}
 
-	string RoleCard::getRoleColor() {
-		return roleColor;
-	}
+	string RoleCard::getRoleColor() { return roleColor; }
 
-	void addSpecialAction(string sp){
-		specialActions.push_back(sp);
-	}
+	void addSpecialAction(string sp){ specialActions.push_back(sp);	}
 
-	vector<string> getSpecialActions() {
-		return specialActions;
-	}
+	vector<string> getSpecialActions() { return specialActions;	}
 
-	string getRoleDescription(){
-		return roleDescription;
-	}
+	string getRoleDescription(){ return roleDescription; }
 
-	void setRoleDescription(string desc) {
-		roleDescription = desc;
-	}
+	void setRoleDescription(string desc) { 	roleDescription = desc;	}
 
 private:
 	string roleName;
 	string roleColor;
 	string roleDescription;
+	//Each role may have a special action that they can add to the list of actions they can perform
 	vector<string> specialActions;
 };
 
@@ -66,7 +50,6 @@ private:
 / Researcher Role Card Specifications:
 /	You may give any 1 of your City cards when you share knowledge. It need not match your city.
 /	A player who shares knowledge with you on their turn can take any 1 of your city cards.
-/	This functionality is currently not implemented, as sharing knowledge is limited to only giving cards, and not taking.
 ********************************************************************************************************************************/
 class Researcher :
 	public RoleCard
@@ -83,13 +66,7 @@ public:
 /*********************************************************************************************************************************************************
 / Medic Role Card Specifications:
 /	Remove ALL cubes of one color when doing Treat Disease.
-/	Currently, functionality has the medic removing all cubes of any disease from the city. This will be updated when disease objects are implemented
 /	Automatically remove cubes of cured diseases from the city you are in (and prevent them from being placed there)
-/
-/ The second part of this Role's functionality should be implemented in the Map class
-/ If a disease has been cured, and the player's current city has disease cubes of that color, then all of those disease cubes must be taken out
-/ Such an action will happen every time the player holding the Medic RoleCard changes location.
-/ Also, if the medic's current city is infected with a cured disease, he will prevent cubes from being placed there
 **********************************************************************************************************************************************************/
 class Medic :
 	public RoleCard
@@ -106,15 +83,20 @@ public:
 /	As an action, build a research station in the city you are in (no city card needed)
 /	Once per turn, as an action, move from a research station to any city by discarding any City card
 *****************************************************************************************************/
-class OperationsExpert :
-	public RoleCard
+class OperationsExpert : public RoleCard
 {
+	//Special boolean for the operations expert to keep track of if his action was used
+	bool specialUsedThisTurn = false;
 public:
 	OperationsExpert(Map* mp);
 	OperationsExpert(const OperationsExpert &ops);
 	virtual ~OperationsExpert();
 	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
 	int specialOperationsMove(Pawn* pawn, PlayerCard moveCard);
+
+	void specialWasUsed() {	specialUsedThisTurn = true;	}
+
+	void resetSpecialUsed() {	specialUsedThisTurn = false;}
 };
 
 
@@ -147,7 +129,6 @@ public:
 	virtual ~ContingencyPlanner();
 	int pickUpSpecialEvent(PlayerCard* sp);
 	void discardSpecialEvent();
-	void playSpecialEvent();
 private:
 	PlayerCard* specialEvent;
 };

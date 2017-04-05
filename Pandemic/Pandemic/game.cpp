@@ -72,6 +72,12 @@ void Game::StartGame() {
 			cout << "Saving the game" << endl;
 			SaveGame();
 		}
+
+		//If the player is an operations expert, reset their use of special operation so they can use it the next turn
+		if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
+			RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
+			dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
+		}
 		currentPlayersId++;
 	}
 
@@ -114,6 +120,19 @@ int Game::pollForRetry() {
 	return redo;
 }
 
+int Game::pollDispatcherPawn() {
+	int otherPlayerID = -1;
+	cout << "You are a Dispatcher, you can move any player's pawn as if it were your own.\nPlease choose the ID of the player whose pawn you'd like to move." << endl;
+	cout << "If you would like to move your own pawn, choose your own player ID." << endl;
+	do {
+		for (int i = 0; i < playerlist.size(); i++) {
+			cout << "\t" << i + 1 << ". Player " << i << endl;
+		}
+		cin >> otherPlayerID;
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0);
+	return otherPlayerID-1;
+}
+
 
 void Game::performPlayersTurn(int pId) {
 	playerlist[pId]->setActions(4);
@@ -122,12 +141,13 @@ void Game::performPlayersTurn(int pId) {
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 
 		//Preliminary initializations
-		City current = map.getCityByID(playerlist[pId]->getCurrentLocation());
+		City current;
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
 		vector<int> cure;
 		int otherPlayerID;
+		int pawnID = pId; //Used to specify who's pawn is being moved (specially for the dispatcher role)
 
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
@@ -188,27 +208,41 @@ void Game::performPlayersTurn(int pId) {
 			case 1: //drive
 				cout << "\nYou chose to drive." << endl;
 
+				if (playerlist[pId]->getRole() == "Dispatcher") {
+					pawnID = pollDispatcherPawn();
+				}
 				do {
 					cout << "Please choose a city id corresponding to the city you want to drive to." << endl;
+					current = map.getCityByID(playerlist[pawnID]->getCurrentLocation());
 					for (int i = 0; i < current.connections.size(); i++) {
 						cout << "\t" << map.getCityByID(current.connections[i]).name << " (" << current.connections[i] << ")" << endl;
 					}
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
-				success = playerlist[pId]->drive(newCityID);
+				success = playerlist[pawnID]->drive(newCityID);
 				break;
 
 			case 2: //direct flight
 				cout << "\nYou chose to take a direct flight." << endl;
+
+				if (playerlist[pId]->getRole() == "Dispatcher") {
+					pawnID = pollDispatcherPawn();
+				}
+				else pawnID = pId;
+
 				do {
 					cout << "\nPlease choose a city card in your hand corresponding to the city you want to fly to." << endl;
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
-				success = playerlist[pId]->direct_flight(cardIndex-1);
+				success = playerlist[pawnID]->direct_flight(cardIndex-1);
 				break;
 			case 3: //charter flight
 				cout << "\nYou chose to take a charter flight." << endl;
+
+				if (playerlist[pId]->getRole() == "Dispatcher") {
+					pawnID = pollDispatcherPawn();
+				}
 
 				do { //Poll the user for the city they'd like to go to, and the city card they'd like to discard
 					cout << "\nPlease choose the city you would like to fly to" << endl;
@@ -217,16 +251,21 @@ void Game::performPlayersTurn(int pId) {
 					cardIndex = pollForCards(pId);
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1 || newCityID >48 || newCityID < 1);
 
-				success = playerlist[pId]->charter_flight(cardIndex-1, newCityID);
+				success = playerlist[pawnID]->charter_flight(cardIndex-1, newCityID);
 				break;
 			case 4: //shuttle flight
 				cout << "\nYou chose to take a shuttle flight." << endl;
+
+				if (playerlist[pId]->getRole() == "Dispatcher") {
+					pawnID = pollDispatcherPawn();
+				}
+
 				do {
 					cout << "\nPlease choose the city you'd like to fly to." << endl;
 					newCityID = pollForCity();
 				} while (newCityID > 48 || newCityID < 1);
 
-				success = playerlist[pId]->shuttle_flight(newCityID);
+				success = playerlist[pawnID]->shuttle_flight(newCityID);
 				break;
 			case 5: //build research station
 				do {
@@ -711,6 +750,42 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	return playerDeck;
 }
 
+DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
+
+	stringstream colourConversion;
+	string colour;
+
+	vector<Infection> InfectionCards;
+	vector<City> temp = map.getCities();
+
+	for (City city : temp) {
+		int id = city.id;
+		string name = city.name;
+		colourConversion << (city.zone);
+		colourConversion >> colour;
+
+		Infection cardToPush = Infection(id);
+		InfectionCards.push_back(cardToPush);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//InfectionCards.push_back(epidemic);
+	}
+
+	for (int i = 0; i < 4; i++) {
+		//InfectionCards.push_back(epidemic);
+	}
+	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(InfectionCards);
+
+	vector<Infection> t = InfectionDeck->returnVector();
+	for (Infection player : t) {
+		cout << player.getInfectionID() << endl;
+	}
+
+	return InfectionDeck;
+}
+
+
 int main() {
 	Game* game = new Game(2);
 	DeckOfCard<PlayerCard>* deck = game->getDeck();
@@ -719,7 +794,7 @@ int main() {
 	vector<Player*> players = game->getPlayerlist();
 	cout << players[0]->getCurrentLocation() << endl;
 	//game->getMap().display_information();
-	players[1]->drive(26);
+	//players[1]->drive(26);
 
 	system("PAUSE");
 	delete game;
