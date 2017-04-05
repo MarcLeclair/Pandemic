@@ -747,12 +747,13 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	return playerDeck;
 }
 
-DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
+
+DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 
 	stringstream colourConversion;
 	string colour;
 
-	vector<Infection> InfectionCards;
+	vector<Infection> InfectionDeck;
 	vector<City> temp = map.getCities();
 
 	for (City city : temp) {
@@ -781,7 +782,6 @@ DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
 
 	return InfectionDeck;
 }
-
 
 int main() {
 	Game* game = new Game(2);
