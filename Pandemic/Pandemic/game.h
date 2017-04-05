@@ -15,6 +15,7 @@
 #include "SqlConnection.h"
 using namespace std;
 class Game {
+
 	bool hasGameStarted;
 	ODBC_Class Example;
 	Map map;
@@ -22,6 +23,7 @@ class Game {
 	vector<RoleCard*> rolelist;
 	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
+	vector<PlayerCard>* discardPile;
 	Infection* InfectionDeck;
 	
 public:
@@ -50,7 +52,11 @@ public:
 	void save_playerCards();
 	void save_players();
 	void load_players();
+
 	int pollDispatcherPawn();
+
+	void load_deck();
+
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
 	DeckOfCard<Infection>* instantiateInfectionDeck(Map map);
 	void displayPlayers();

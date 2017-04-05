@@ -70,7 +70,7 @@ Player::~Player()
 / Function to balance the player's hand when they've drawn too many cards
 / Will result in the chosen card being discarded from the player's hand
 ****************************************************************************/
-void Player::balanceHand() {
+void Player::balanceHand(vector<PlayerCard> &discardPile) {
 	if (numOfCards > maxCardsInHand) {
 		cout << "\nToo many cards in hand, please choose one to discard." << endl;
 		displayCardsInHand();
@@ -85,7 +85,7 @@ void Player::balanceHand() {
 			cin >> cardToDiscard;
 		}
 
-		discardCard((cardToDiscard - 1));
+		discardCard((cardToDiscard - 1), discardPile);
 		//Always set the number of cards in the player's hand
 		setNumOfCards();
 	}
@@ -96,10 +96,10 @@ void Player::balanceHand() {
 / If the player draws a card and ends up with more than the allowed number of cards in his hand,
 / he will automtically be asked to discard a card
 ************************************************************************************************/
-void Player::drawCard(PlayerCard plc) {
+void Player::drawCard(PlayerCard plc, vector<PlayerCard> &discardPile) {
 	cardsInHand.push_back(plc);
 	setNumOfCards();
-	balanceHand();
+	balanceHand(discardPile);
 }
 
 /********************************************************************
@@ -121,11 +121,17 @@ void Player::displayCardsInHand() {
 /***********************************************************************************
 / Function to remove a card from the player's hand
 / Simply accesses the player's hand and deletes the card at the index indicated
+<<<<<<< Updated upstream
 / Does not actually delete the card, just the copy of the card in the player's hand
 ************************************************************************************/
-void Player::discardCard(int disc) {
-	cardsInHand.erase(cardsInHand.begin() + disc);
-	setNumOfCards();
+
+void Player::discardCard(int disc, vector<PlayerCard> &discardPile) {
+	if (cardsInHand.at(disc).getValue() == "event"){
+		PlayerCard card = cardsInHand.at(disc);
+		cardsInHand.erase(cardsInHand.begin() + disc);
+		setNumOfCards();
+		discardPile.push_back(card);
+	}
 }
 
 /**********************************************************************
