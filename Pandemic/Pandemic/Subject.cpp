@@ -14,6 +14,10 @@ Subject::~Subject()
 	delete observers;
 }
 
+/****************************************************************
+/ Function to attach an observer to the subject
+/ Pushes the input observer reference onto a vector of observers
+*******************************************************************/
 void Subject::attach(Observer* obs) {
 	observers->push_back(obs);
 }

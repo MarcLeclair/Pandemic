@@ -310,20 +310,6 @@ void ContingencyPlanner::discardSpecialEvent() {
 		return;
 	}
 }
-
-/************************************************
-/ Function to execute the special event being held
-*************************************************/
-void ContingencyPlanner::playSpecialEvent() {
-	//Cannot execute without proper PlayerCard implementation
-	if (specialEvent) {
-		//specialEvent.executeEvent();
-	}
-	else {
-		cout << "No special Event card is currently being held." << endl;
-		return;
-	}
-}
 /********************************
 / End of ContingencyPlanner Class
 *********************************/
@@ -371,6 +357,8 @@ Dispatcher::~Dispatcher()
 
 /*******************************************************************************
 / Function to move to a city with another pawn already in it
+/ Checks if there is at least one other pawn in the destination city
+/ If yes, it moves the player to that city
 ********************************************************************************/
 int Dispatcher::specialMoveAnotherPlayer(Pawn* otherPlayer, int newCityID) {
 	City newCity = getMapRef()->getCityByID(newCityID);

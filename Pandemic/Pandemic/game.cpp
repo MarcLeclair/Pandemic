@@ -11,7 +11,7 @@ Game::Game() {
 
 }
 Game::Game(int numberPlayers) {
-
+	this->hasGameStarted = true;
 	map = Map();
 	map.load_starting_map();
 	deck = instantiatePlayerCards(map, 4);
@@ -56,6 +56,7 @@ Game::Game(int numberPlayers) {
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
+		SaveGame();
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
@@ -66,6 +67,7 @@ void Game::StartGame() {
 
 		cout << "\nDrawing cards finished. Infecting Cities." << endl;
 		InfectionDeck->endTurnInfection(&map);
+	
 		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 			cout << "Saving the game" << endl;
 			SaveGame();
@@ -81,8 +83,13 @@ void Game::StartGame() {
 
 }
 void Game::SaveGame() {
-	map.save_map();
-	save_players();
+	if (hasGameStarted == true) {
+		map.save_map();
+		save_players();
+		save_playerCards();
+	}
+	else
+		cout << "Game has not started" << endl;
 
 }
 
@@ -426,72 +433,6 @@ void Game::performPlayersTurn(int pId) {
 	}
 }
 
-void Game::sqlConnection(const char *select) {
-	
-	SQLCHAR DBName[] = "Pandemic";
-    SQLCHAR SQLStmt[255] = { 0 };
-	
-	SQLRETURN rc = SQL_SUCCESS;
-
-	if (Example.ConHandle != NULL)
-
-	{
-
-		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "", SQL_NTS, (SQLCHAR *) "", SQL_NTS);
-		
-		// Allocate An SQL Statement Handle 
-
-		rc = SQLAllocHandle(SQL_HANDLE_STMT, Example.ConHandle,  &Example.StmtHandle);
-
-		rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
-
-		if (rc == SQL_SUCCESS)
-
-		{
-
-			// Define A SELECT SQL Statement  
-
-			strcpy((char *)SQLStmt,  select);
-
-			// Prepare And Execute The SQL Statement  
-
-			rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
-
-			// Display The Results Of The SQL Query  
-			if (!rc == SQL_SUCCESS) {
-				cout << "*************************** failed ***************" << endl;
-			}
-			if (rc == SQL_SUCCESS)
-
-			{
-				
-				 Example.GetResultset();
-				
-
-			
-			
-				// At this point you would want to do something  
-
-				// with the resultset, such as display it.  
-
-			}
-
-		}
-
-		// Free The SQL Statement Handle  
-
-		if (Example.StmtHandle != NULL)
-
-			SQLFreeHandle(SQL_HANDLE_STMT, Example.StmtHandle);
-
-		// Disconnect From The Northwind Sample Database  
-		rc = SQLDisconnect(Example.ConHandle);
-
-	}
-
-
-
-}
 void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
@@ -513,33 +454,100 @@ void Game::drawPlayerCards(int pId) {
 }
 
 void Game::save_players() {
-	ofstream playerFile;
-	playerFile.open("players.csv", ofstream::out | ofstream::trunc);
+	vector<string> playersToSave;
+	vector<string> playersCardToSave;
+
+
+	SqlConnection savePlayer;
+	
+	
+	
 	for (int i = 0; i < playerlist.size(); i++) {
-		playerFile << playerlist[i]->getPlayerID() << ",";
-		playerFile << playerlist[i]->getRole() << ",";
-		playerFile << playerlist[i]->getCurrentLocation() << ",";
-		playerFile << playerlist[i]->getNumOfCards() << endl;
+
+		string id = to_string(playerlist[i]->getPlayerID());
+		string location = to_string(playerlist[i]->getCurrentLocation());
+		string numOfCards = to_string(playerlist[i]->getNumOfCards());
+
+		//SavePlayers table --> pcID, pcValue, pcColor , eventName, type, deckOrPlayerId
+		string player = id + " , " + " ' " + playerlist[i]->getRole() + " ' " + " , " + location + " , " + numOfCards;
+		playersToSave.push_back(player);
 
 
 		for (int j = 0; j < playerlist[i]->getNumOfCards(); j++) {
-			string cardType = playerlist[i]->getHand().at(i).getType();
-			playerFile << cardType << ",";
-			if (cardType == "City") {
-				playerFile << playerlist[i]->getHand().at(i).getCityId() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getValue() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getColour()  << endl;
+			string cardType = playerlist[i]->getHand().at(j).getType();
+			
+			if (cardType == "city") {
+
+				string cityId = to_string(playerlist[i]->getHand().at(j).getCityId());
+				
+
+				string card = cityId + " ,  ' " + playerlist[i]->getHand().at(j).getValue() + " ' ,  ' " + playerlist[i]->getHand().at(j).getColour() + " ' ,  null , ' " + cardType + "' ," + id;
+				toSave.push_back(card);
 			}
-			if (cardType == "Event") {
-				playerFile << playerlist[i]->getHand().at(i).getCityId() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getValue() << endl;
+			if (cardType == "event") {
+
+				string card = "null, ' " + playerlist[i]->getHand().at(j).getValue() + " '   , null , ' " + playerlist[i]->getHand().at(j).getName() + " '  ,  ' " +
+																	playerlist[i]->getHand().at(j).getType() + " '  , "+ id ;
+				toSave.push_back(card);
 			}
 		}
 	}
-	cout << "Players saved successfully!" << endl;
-	playerFile.close();
-}
+	string* select = new string("INSERT INTO SavePlayerInfo(playerId,playerRole, playerLoc, numOfCards) VALUES  ");
 
+	for (string str : playersToSave) {
+		if ((str) != playersToSave.back()) {
+			select->append("( " + str + " ),");
+		}
+		else
+			select->append("( " + str + " )");
+	}
+	cout << *select << endl;
+	savePlayer.sqlExecuteSelect(select);
+	cout << "Players saved successfully!" << endl;
+	
+}
+void Game::save_playerCards() {
+
+	
+
+
+	SqlConnection saveCard;
+	deque<PlayerCard>::iterator playerCardIt;
+	int counter = 0;
+	for (playerCardIt = deck->deck.begin(); playerCardIt != deck->deck.end(); playerCardIt++) {
+			string cardType = playerCardIt->getType();
+			string deckId = to_string(-1);
+			if (cardType == "city") {
+
+				string cityId = to_string(playerCardIt->getCityId());
+				string deckId = to_string(-1);
+				string card = cityId + " ,  ' " + playerCardIt->getValue() + " ' ,  ' " + playerCardIt->getColour() + " ' ,  null , ' " + cardType + "' ," + deckId;
+				toSave.push_back(card);
+			}
+			if (cardType == "event") {
+				string card = "null, ' " + playerCardIt->getValue() + " '   , null , ' " + playerCardIt->getName() + " '  ,  ' " +
+					playerCardIt->getType() + " '  , " + deckId;
+				toSave.push_back(card);
+			}
+			if (cardType == "epidemic") {
+				//TODO
+			}
+		}
+	string* select = new string("INSERT INTO SavePlayerCards(pcID,pcValue, pcColor, eventName,type,deckOrPlayerId) VALUES ");
+
+	for (string str : toSave) {
+		if ((str) != toSave.back()) {
+			select->append("( " + str + " ),");
+		}
+		else
+			select->append("( " + str + " )");
+	}
+
+	saveCard.sqlExecuteSelect(select);
+
+	cout << "Players saved successfully!" << endl;
+
+}
 void Game::load_players() {
 	string line;
 	ifstream playerFile("players.csv");
@@ -663,75 +671,70 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 													 "\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
 	
 
-	stringstream colourConversion;
-	string colour;
+	//stringstream colourConversion;
+	//string colour;
 
 	vector<PlayerCard> playerCards;
-	vector<City> temp = map.getCities();
-	for (City city : temp) {
-		int id = city.id;
-		string name = city.name;
-		colourConversion << (city.zone);
-		colourConversion >> colour;
+	SqlConnection PlayerCardsConnect,EventCardsConnect;
 
-		PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, name, colour);
+	/*******************Back-Up *****************************/
+	//vector<City> temp = map.getCities();
+	//for (City city : temp) {
+	//	int id = city.id;
+	//	string name = city.name;
+	//	colourConversion << (city.zone);
+	//	colourConversion >> colour;
+
+	//	PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, name, colour);
+	//	playerCards.push_back(cardToPush);
+	//}
+
+	//for (int i = 0; i < 4; i++) {
+	//	playerCards.push_back(epidemic);
+	//}
+	/**/
+	
+	
+
+	string* select =new string("select * from PlayerCards");
+	PlayerCardsConnect.sqlExecuteSelect(select);
+
+	vector<vector<string>> results = PlayerCardsConnect.Connection.colData;
+	
+	for (vector<string> rows : results) {
+
+		int id;
+		string value, colour;
+
+		id = atoi(rows.at(0).c_str());
+		value = rows.at(1);
+		colour = rows.at(2);
+
+		PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, value, colour);
 		playerCards.push_back(cardToPush);
 	}
 
-	for (int i = 0; i < 4; i++) {
-		playerCards.push_back(epidemic);
-	}
 
 	
+	*select = "select * from EventCards";
+	EventCardsConnect.sqlExecuteSelect(select);
 
-	//for (int i = 1; i <= 48; ++i) {
+	vector<vector<string>> resultsEvent = EventCardsConnect.Connection.colData;
 
-	//	int id;
-	//	string value, colour;
+	for (vector<string> rows : resultsEvent) {
 
-	//	char integer_string[64];
-	//	sprintf(integer_string, "%d", i);
+		int id;
 
+		string eventName, eventValue;
 
-	//	 char select[90] = "select PlayerCards.pcValue, PlayerCards.pcColor from PlayerCards WHERE pcID = ";
+		id = atoi(rows.at(0).c_str());
+		eventName = rows.at(1);
+		eventValue = rows.at(2);
 
-	//	strncat(select, integer_string,sizeof(52));
-	//	sqlConnection(select);
-
-	//	for (vector<string> row : Example.colData) {
-	//		id = i;
-	//		value = row.at(0);
-	//		colour = row.at(1);
-	//		
-	//	}
-
-	//	PlayerCard cardToPush = PlayerCard(PlayerCard::CITY, id, value, colour);
-	//	playerCards.push_back(cardToPush);
-	//}
-
-	//char select[50] = "select count(eventId) from EventCards";
-	//sqlConnection(select);
-	//int amountOfEvents = atoi(Example.colData.at(0).at(0).c_str());
-	//for (--amountOfEvents; amountOfEvents >= 0; --amountOfEvents) {
-
-	//	string eventName, eventValue;
-	//	char integer_string[32];
-	//	sprintf(integer_string, "%d", amountOfEvents);
-
-
-	//	char select[80] = "select eventName, eventValues from EventCards WHERE eventID = ";
-
-	//	strncat(select, integer_string, sizeof(1000000));
-	//	sqlConnection(select);
-
-	//	for (vector<string> row : Example.colData) {
-	//		eventName = row.at(0);
-	//		eventValue = row.at(1);
-
-	//	}
-	//	PlayerCard cardToPush = PlayerCard(PlayerCard::EVENT, eventName, eventValue);
-	//	playerCards.push_back(cardToPush);
-	//}
+		PlayerCard cardToPush = PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+		playerCards.push_back(cardToPush);
+	}
+	
 	for (int i = 0; i < 4; i++) {
 		playerCards.push_back(epidemic);
 	}

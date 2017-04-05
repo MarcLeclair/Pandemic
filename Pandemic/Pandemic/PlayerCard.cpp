@@ -18,3 +18,13 @@ PlayerCard::PlayerCard(cardType type, std::string name, std::string value) { // 
 	this->type = type;
 };
 
+void PlayerCard::setName(cardType type, std::string str) {
+	if (type == EVENT) 
+		name = str; 
+	else if(type == CITY) {
+		cardValue = str;
+	}
+
+
+};
+
