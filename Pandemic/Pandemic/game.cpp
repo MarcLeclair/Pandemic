@@ -11,6 +11,7 @@ Game::Game() {
 
 }
 Game::Game(int numberPlayers) {
+
 	this->hasGameStarted = true;
 	map = Map();
 	map.load_starting_map();
@@ -34,7 +35,7 @@ Game::Game(int numberPlayers) {
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
 			if (card.getType() != "epidemic") {
-				player->drawCard(card);
+				player->drawCard(card,*discardPile);
 			}
 			else {
 				j--;
@@ -56,7 +57,6 @@ Game::Game(int numberPlayers) {
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
-		SaveGame();
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
@@ -96,6 +96,7 @@ void Game::SaveGame() {
 void Game::LoadGame() {
 	map.load_map();
 	load_players();
+	load_deck();
 
 }
 int Game::pollForCity() {
@@ -331,7 +332,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success > 0) {
 					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
 					PlayerCard givingCard =givingHand[cardIndex - 1];
-					playerlist[receiver]->drawCard(givingCard);
+					playerlist[receiver]->drawCard(givingCard, *discardPile);
 					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;
@@ -354,7 +355,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success != 0) { //If it worked, we need to discard the cards used
 					for (int i = 0; i < cure.size(); i++) {
 						int relativeIndex = (cure[i]-i)% playerlist[pId]->getNumOfCards();
-						playerlist[pId]->discardCard(relativeIndex);
+						playerlist[pId]->discardCard(relativeIndex, *discardPile);
 					}
 					cardIndex = -1;
 				}
@@ -428,7 +429,7 @@ void Game::performPlayersTurn(int pId) {
 		if (success != 0) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
-			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1);
+			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  *discardPile);
 		}
 	}
 }
@@ -437,13 +438,13 @@ void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
 	if (card1.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card1);
+		playerlist[pId]->drawCard(card1, *discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
 	}
 	if (card2.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card2);
+		playerlist[pId]->drawCard(card2, *discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
@@ -549,84 +550,100 @@ void Game::save_playerCards() {
 
 }
 void Game::load_players() {
-	string line;
-	ifstream playerFile("players.csv");
-	if (playerFile.is_open())
-	{
-		while (getline(playerFile, line))
-		{
-			vector<string> vals;
-			string s = line;
-			int position = 0;
-			while ((position = s.find(",")) != string::npos) {
-				vals.push_back(s.substr(0, position));
-				s.erase(0, position + 1);
-			}
-			vals.push_back(s.substr(0, position));
 
-			//Read in the player's ID
-			int pId = stoi(vals[0]);
-			cout << pId << endl;
+	SqlConnection loadPlayers,playerCount, loadCards;
+	// playerId , playerRole , playerLoc , numOfCards
+	int id, currentLoc, numOfCards;
+	string role;
+	vector<PlayerCard> hand;
 
-			//Load the player's role
-			string role = vals[1];
-			cout << role << endl;
+	string *select = new string("select * from SavePlayerInfo");
+	string *count = new string("select count(playerId) from SavePlayerInfo");
+	string *cardSelect = new string("select ISNULL(pcID, -1), ISNULL(pcValue, 'null'), ISNULL(pcColor, 'null'), ISNULL(eventName, 'null'), type, deckOrPlayerId from[SavePlayerCards] where[deckOrPlayerId] > -1");
+	
+	loadPlayers.sqlExecuteSelect(select);
+	
+	playerCount.sqlExecuteSelect(count);
+	loadCards .sqlExecuteSelect(cardSelect);
+	
+	vector<vector<string>> results = loadPlayers.Connection.colData;
+	vector<vector<string>> resultsCards = loadCards.Connection.colData;
+	
+	for (vector<string> rows : results) {
+
+		id = stoi(rows.at(0));
+		role = rows.at(1);
+
+		RoleCard* rc;
+		if (role == "Medic") rc = new Medic(&map);
+		else if (role == "Contingency Planner") rc = new ContingencyPlanner(&map);
+		else if (role == "Researcher") rc = new Researcher(&map);
+		else if (role == "Dispatcher") rc = new Dispatcher(&map);
+		else if (role == "Operations Expert") rc = new OperationsExpert(&map);
+		else if (role == "Quarantine Specialist") rc = new QuarantineSpecialist(&map);
+		else rc = new Scientist(&map);
+
+		currentLoc = stoi(rows.at(2));
+		numOfCards = stoi(rows.at(3));
+
+		for (vector<string>rows2 : resultsCards) {
+			if (id == stoi(rows2.at(5))) {
+				if (rows2.at(4).compare("city")) {
+					int cityId = stoi(rows2.at(0));
+					string cityName = rows2.at(1);
+					string pcColor = rows2.at(2);
+
+					PlayerCard* card = new PlayerCard(PlayerCard::CITY, cityId, cityName, pcColor);
+					hand.push_back(*card);
+				}
+				else if (rows2.at(4).compare("event")) {
+					string eventValue = rows2.at(1);
+					string eventName = rows2.at(3);
+					
+					PlayerCard* card = new PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+					
+					hand.push_back(*card);
+				}
 			
-			//Load the player's last location
-			int currentLocation = stoi(vals[2]);
-			cout << currentLocation << endl;
-
-			//Load the amount of cards the player was holding
-			int numOfCards = stoi(vals[3]);
-			cout << numOfCards << endl;
-
-			vector<string> cardVals;
-			vector<PlayerCard> hand;
-			for (int i = 0; i < numOfCards; i++) {
-				position = 0;
-				//Read in one line, for a card
-				while ((position = s.find(",")) != string::npos) {
-					cardVals.push_back(s.substr(0, position));
-					s.erase(0, position + 1);
-				}
-				cardVals.push_back(s.substr(0, position));
-
-				string cardType = cardVals[i];
-				if (cardType == "City") {
-					//If it's a city card, load it one way (by including the color)
-					PlayerCard* card = new PlayerCard(PlayerCard::CITY, stoi(cardVals[i + 1]), cardVals[i + 2], cardVals[i + 3]);
-					i += 3;
-					hand.push_back(*card);
-				}
-				else {
-					//if it's a player card, load it with other values
-					PlayerCard* card = new PlayerCard(PlayerCard::EPIDEMIC, cardVals[i + 1], cardVals[i+2]);
-					i+= 2;
-					hand.push_back(*card);
-				}
 			}
 
-			RoleCard* rc;
-			if (role == "Medic") rc = new Medic(&map);
-			else if (role == "Contingency Planner") rc = new ContingencyPlanner(&map);
-			else if (role == "Researcher") rc = new Researcher(&map);
-			else if (role == "Dispatcher") rc = new Dispatcher(&map);
-			else if (role == "Operations Expert") rc = new OperationsExpert(&map);
-			else if (role == "Quarantine Specialist") rc = new QuarantineSpecialist(&map);
-			else rc = new Scientist(&map);
-
-			Player* player1 = new Player(pId, rc, &map);
-
-			for (int i = 0; i < numOfCards; i++) {
-				player1->drawCard(hand[i]);
-			}
-			//set the player's location to their previous location, as the constructor sets them back at the start by default
-			player1->getMyPawn()->set_location(currentLocation);
-
-			playerlist.push_back(player1);
 		}
-		playerFile.close();
+	
+		Player* player1 = new Player(id, rc, &map);
+		player1->setCardsInHnad(hand);
+		player1->getMyPawn()->set_location(currentLoc);
+		playerlist.push_back(player1);
+		hand.clear();
 	}
+}
+
+void Game::load_deck() {
+	SqlConnection loadDeck;
+
+	string* select = new string("select ISNULL(pcID, -1),pcValue, ISNULL(pcColor,'null'),ISNULL(eventName,'null'),type from SavePlayerCards");
+
+	loadDeck.sqlExecuteSelect(select);
+
+	vector<vector<string>> results = loadDeck.Connection.colData;
+	vector<PlayerCard> resultSet;
+	for (vector<string> rows : results) {
+		if (rows.at(4).compare("city")) {
+			int cityId = stoi(rows.at(0));
+			string cityName = rows.at(1);
+			string pcColor = rows.at(2);
+
+			PlayerCard* card = new PlayerCard(PlayerCard::CITY, cityId, cityName, pcColor);
+			resultSet.push_back(*card);
+		}
+		else if (rows.at(4).compare("event")) {
+			string eventValue = rows.at(1);
+			string eventName = rows.at(3);
+
+			PlayerCard* card = new PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+			resultSet.push_back(*card);
+		}
+	}
+	deck = new DeckOfCard<PlayerCard>(resultSet);
 }
 
 void Game::displayPlayers() {

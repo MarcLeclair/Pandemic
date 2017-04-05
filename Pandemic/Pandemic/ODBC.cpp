@@ -39,9 +39,18 @@ ODBC_Class::~ODBC_Class()
 // a VARIANT object to hold the data.
 SQLRETURN ODBC_Class::GetColData(int colnum, string& str)
 {
+	SQLCHAR   SqlState[6], Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLCHAR test[20] = { "22002" };
+	SQLINTEGER    NativeError;
+	SQLRETURN rc2;
+	SQLSMALLINT   i, MsgLen;
 	SQLCHAR buf[255] = { 0 };
 	if ((rc = SQLGetData(StmtHandle, colnum, SQL_CHAR, buf, sizeof(buf), NULL)) == SQL_SUCCESS)
+	{
 		str = reinterpret_cast<char*>(buf);
+
+	}
+		
 	return rc;
 }
 
