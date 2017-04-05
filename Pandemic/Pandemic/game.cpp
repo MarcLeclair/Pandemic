@@ -753,7 +753,7 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	stringstream colourConversion;
 	string colour;
 
-	vector<Infection> InfectionDeck;
+	vector<Infection> InfectionCards;
 	vector<City> temp = map.getCities();
 
 	for (City city : temp) {
