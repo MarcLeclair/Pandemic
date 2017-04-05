@@ -31,14 +31,16 @@ public:
 	PlayerCard(cardType type, std::string name, std::string value);
 	
 	std::string getValue() { return cardValue; }
-	
+	std::string getName() { return name; }
 	std::string getType() { return ToString(this->type); } 
 	
 	int getCityId() { return id; }
 
 	std::string getColour(){ return color; }
-
+	void setName(cardType type, std::string str);
 	private:
+
+		
 		cardType type;
 
 		std::string name, cardValue, color;

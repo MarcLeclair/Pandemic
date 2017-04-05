@@ -56,6 +56,7 @@ Game::Game(int numberPlayers) {
 void Game::StartGame() {
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
+		SaveGame();
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 		performPlayersTurn(currentPlayersId%playerlist.size());
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
@@ -66,6 +67,7 @@ void Game::StartGame() {
 
 		cout << "\nDrawing cards finished. Infecting Cities." << endl;
 		InfectionDeck->endTurnInfection(&map);
+	
 		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 			cout << "Saving the game" << endl;
 			SaveGame();
@@ -78,6 +80,7 @@ void Game::SaveGame() {
 	if (hasGameStarted == true) {
 		map.save_map();
 		save_players();
+		save_playerCards();
 	}
 	else
 		cout << "Game has not started" << endl;
@@ -412,33 +415,100 @@ void Game::drawPlayerCards(int pId) {
 }
 
 void Game::save_players() {
-	ofstream playerFile;
-	playerFile.open("players.csv", ofstream::out | ofstream::trunc);
+	vector<string> playersToSave;
+	vector<string> playersCardToSave;
+
+
+	SqlConnection savePlayer;
+	
+	
+	
 	for (int i = 0; i < playerlist.size(); i++) {
-		playerFile << playerlist[i]->getPlayerID() << ",";
-		playerFile << playerlist[i]->getRole() << ",";
-		playerFile << playerlist[i]->getCurrentLocation() << ",";
-		playerFile << playerlist[i]->getNumOfCards() << endl;
+
+		string id = to_string(playerlist[i]->getPlayerID());
+		string location = to_string(playerlist[i]->getCurrentLocation());
+		string numOfCards = to_string(playerlist[i]->getNumOfCards());
+
+		//SavePlayers table --> pcID, pcValue, pcColor , eventName, type, deckOrPlayerId
+		string player = id + " , " + " ' " + playerlist[i]->getRole() + " ' " + " , " + location + " , " + numOfCards;
+		playersToSave.push_back(player);
 
 
 		for (int j = 0; j < playerlist[i]->getNumOfCards(); j++) {
-			string cardType = playerlist[i]->getHand().at(i).getType();
-			playerFile << cardType << ",";
-			if (cardType == "City") {
-				playerFile << playerlist[i]->getHand().at(i).getCityId() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getValue() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getColour()  << endl;
+			string cardType = playerlist[i]->getHand().at(j).getType();
+			
+			if (cardType == "city") {
+
+				string cityId = to_string(playerlist[i]->getHand().at(j).getCityId());
+				
+
+				string card = cityId + " ,  ' " + playerlist[i]->getHand().at(j).getValue() + " ' ,  ' " + playerlist[i]->getHand().at(j).getColour() + " ' ,  null , ' " + cardType + "' ," + id;
+				toSave.push_back(card);
 			}
-			if (cardType == "Event") {
-				playerFile << playerlist[i]->getHand().at(i).getCityId() << ",";
-				playerFile << playerlist[i]->getHand().at(i).getValue() << endl;
+			if (cardType == "event") {
+
+				string card = "null, ' " + playerlist[i]->getHand().at(j).getValue() + " '   , null , ' " + playerlist[i]->getHand().at(j).getName() + " '  ,  ' " +
+																	playerlist[i]->getHand().at(j).getType() + " '  , "+ id ;
+				toSave.push_back(card);
 			}
 		}
 	}
-	cout << "Players saved successfully!" << endl;
-	playerFile.close();
-}
+	string* select = new string("INSERT INTO SavePlayerInfo(playerId,playerRole, playerLoc, numOfCards) VALUES  ");
 
+	for (string str : playersToSave) {
+		if ((str) != playersToSave.back()) {
+			select->append("( " + str + " ),");
+		}
+		else
+			select->append("( " + str + " )");
+	}
+	cout << *select << endl;
+	savePlayer.sqlExecuteSelect(select);
+	cout << "Players saved successfully!" << endl;
+	
+}
+void Game::save_playerCards() {
+
+	
+
+
+	SqlConnection saveCard;
+	deque<PlayerCard>::iterator playerCardIt;
+	int counter = 0;
+	for (playerCardIt = deck->deck.begin(); playerCardIt != deck->deck.end(); playerCardIt++) {
+			string cardType = playerCardIt->getType();
+			string deckId = to_string(-1);
+			if (cardType == "city") {
+
+				string cityId = to_string(playerCardIt->getCityId());
+				string deckId = to_string(-1);
+				string card = cityId + " ,  ' " + playerCardIt->getValue() + " ' ,  ' " + playerCardIt->getColour() + " ' ,  null , ' " + cardType + "' ," + deckId;
+				toSave.push_back(card);
+			}
+			if (cardType == "event") {
+				string card = "null, ' " + playerCardIt->getValue() + " '   , null , ' " + playerCardIt->getName() + " '  ,  ' " +
+					playerCardIt->getType() + " '  , " + deckId;
+				toSave.push_back(card);
+			}
+			if (cardType == "epidemic") {
+				//TODO
+			}
+		}
+	string* select = new string("INSERT INTO SavePlayerCards(pcID,pcValue, pcColor, eventName,type,deckOrPlayerId) VALUES ");
+
+	for (string str : toSave) {
+		if ((str) != toSave.back()) {
+			select->append("( " + str + " ),");
+		}
+		else
+			select->append("( " + str + " )");
+	}
+
+	saveCard.sqlExecuteSelect(select);
+
+	cout << "Players saved successfully!" << endl;
+
+}
 void Game::load_players() {
 	string line;
 	ifstream playerFile("players.csv");
@@ -587,8 +657,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	
 	
 
-	
-	char select[30] = "select * from PlayerCards";
+	string* select =new string("select * from PlayerCards");
 	PlayerCardsConnect.sqlExecuteSelect(select);
 
 	vector<vector<string>> results = PlayerCardsConnect.Connection.colData;
@@ -608,7 +677,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 
 
 	
-	strcpy(select, "select * from EventCards");
+	*select = "select * from EventCards";
 	EventCardsConnect.sqlExecuteSelect(select);
 
 	vector<vector<string>> resultsEvent = EventCardsConnect.Connection.colData;

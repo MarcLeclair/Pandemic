@@ -7,10 +7,10 @@ void SqlConnection::saveGame() {
 
 }
 
-void SqlConnection::sqlExecuteSelect(const char *select) {
+void SqlConnection::sqlExecuteSelect(string *select) {
 
 	SQLCHAR DBName[20] = "PandemicMain";
-	SQLCHAR SQLStmt[255] = { 0 };
+	SQLCHAR SQLStmt[4000] = { 0 };
 	SQLRETURN rc = SQL_SUCCESS;
 	ODBC_Class Example;
 	if (Example.ConHandle != NULL)
@@ -30,12 +30,14 @@ void SqlConnection::sqlExecuteSelect(const char *select) {
 		{
 
 			// Define A SELECT SQL Statement  
+			char* finalSelect = new char[select->length() + 1];
+			std::strcpy(finalSelect, select->c_str());
 
-			strcpy((char *)SQLStmt, select);
+			strcpy((char *)SQLStmt, finalSelect);
 
 			// Prepare And Execute The SQL Statement  
 
-			rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+				rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
 
 			// Display The Results Of The SQL Query  
 			if (!rc == SQL_SUCCESS) {

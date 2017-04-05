@@ -7,7 +7,7 @@
 7,City in the Sky,15-28-33,r,0,0-3-0-0,0
 8,Coro's Hut,36-37-38-11-12-23-10,u,0,0-0-0-0,0
 9,Death Mountain,16-29-1,b,0,0-0-0-0,0
-10,Eldin Spring,16-29-8-26,b,0,1-0-0-0,0
+10,Eldin Spring,16-29-8-26,b,0,0-0-0-0,0
 11,Faron Spring,12-8-37,u,0,0-0-3-0,0
 12,Faron Woods,11-8-13-40,u,0,0-0-0-0,0
 13,Forest Temple,12-40-43,u,0,0-0-0-0,0
@@ -15,10 +15,10 @@
 15,Gerudo Desert,43-7-2-6,r,0,0-1-0-0,0
 16,Goron Mines,10-29-9,b,0,0-0-0-0,0
 17,Great Bridge of Hylia,18-25-32-33-31,r,0,0-3-0-0,0
-18,Great Spinner Path,14-27-25-17-3,y,0,0-0-0-1,0
+18,Great Spinner Path,14-27-25-17-3,y,0,0-0-0-0,0
 19,Hena's Fishing Hole,44-5-46,b,0,0-0-0-0,0
 20,Hidden Village,44-1-27-4,b,0,0-0-0-0,0
-21,Hyrule Castle,4,y,0,0-0-0-1,0
+21,Hyrule Castle,4,y,0,0-0-0-0,0
 22,Hyrule Field: Central,32-4-48-30-23,y,0,0-0-0-2,0
 23,Hyrule Field: Faron,8-43-33-22-30-26,u,0,0-0-2-0,0
 24,Hyrule Field: Lower Eldin,10-29-26-30-23,u,0,0-0-0-0,0
@@ -45,4 +45,4 @@
 45,Yeti Den,41-47,y,0,0-0-0-0,0
 46,Zora's Domain,19-35-47,y,0,0-0-0-1,0
 47,Zora's Fountain,42-45-46-35-14,y,0,0-0-0-0,0
-48,Zora's River,22-26-1,b,0,1-0-0-0,0
+48,Zora's River,22-26-1,b,0,0-0-0-0,0

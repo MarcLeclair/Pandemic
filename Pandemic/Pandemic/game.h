@@ -20,6 +20,7 @@ class Game {
 	Map map;
 	vector<Player*> playerlist;
 	vector<RoleCard*> rolelist;
+	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
 	Infection* InfectionDeck;
 	
@@ -46,6 +47,7 @@ public:
 	int pollForCity();
 	int pollForCards(int);
 	int pollForRetry();
+	void save_playerCards();
 	void save_players();
 	void load_players();
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);

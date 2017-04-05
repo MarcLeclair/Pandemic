@@ -9,6 +9,6 @@ public:
 	void saveGame();
 	SqlConnection();
 	~SqlConnection();
-	void sqlExecuteSelect(const char *select);
+	void sqlExecuteSelect(string *select);
 };
 
