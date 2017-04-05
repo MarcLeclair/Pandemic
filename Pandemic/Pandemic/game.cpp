@@ -769,13 +769,6 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 		InfectionCards.push_back(cardToPush);
 	}
 
-	for (int i = 0; i < 4; i++) {
-		//InfectionCards.push_back(epidemic);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//InfectionCards.push_back(epidemic);
-	}
 	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(InfectionCards);
 
 	vector<Infection> t = InfectionDeck->returnVector();
