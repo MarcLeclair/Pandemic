@@ -52,7 +52,7 @@ public:
 	void load_players();
 	int pollDispatcherPawn();
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
-	DeckOfCard<Infection>* instantiateInfectionCards(Map map);
+	DeckOfCard<Infection>* instantiateInfectionDeck(Map map);
 	void displayPlayers();
 };
 

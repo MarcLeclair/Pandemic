@@ -750,7 +750,8 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 	return playerDeck;
 }
 
-DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
+
+DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 
 	stringstream colourConversion;
 	string colour;
@@ -768,13 +769,6 @@ DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
 		InfectionCards.push_back(cardToPush);
 	}
 
-	for (int i = 0; i < 4; i++) {
-		//InfectionCards.push_back(epidemic);
-	}
-
-	for (int i = 0; i < 4; i++) {
-		//InfectionCards.push_back(epidemic);
-	}
 	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(InfectionCards);
 
 	vector<Infection> t = InfectionDeck->returnVector();
@@ -784,7 +778,6 @@ DeckOfCard<Infection>* Game::instantiateInfectionCards(Map map) {
 
 	return InfectionDeck;
 }
-
 
 int main() {
 	Game* game = new Game(2);
