@@ -6,6 +6,7 @@
 #include "PlayerCard.h"
 #include "ReferenceCard.h"
 #include "map.h"
+#include "Strategy.h"
 
 using namespace std;
 
@@ -14,35 +15,69 @@ using namespace std;
 / This will allow all types of role cards to be held in the same data structure for initial distribution
 / Also allows for the abstraction of the role cards players can hold (i.e. they can hold a generic RoleCard pointer, but through polymorphism perform specific role tasks)
 **************************************************************************************************************************************************************************/
-class RoleCard : public ReferenceCard
+class RoleCard : public Strategy
 {
 public:
 	RoleCard(Map* mp);
 	RoleCard(const RoleCard& rolec);
 	~RoleCard();
 
-	void RoleCard::setRoleName(string name) {	roleName = name; }
+	//These four functions will change the player's location to the new city, if preconditions are met
+	//they will return integers based on whether they have succeeded or not
+	int drive(Pawn* pawn, int newCityID);
+	virtual int directFlight(Pawn* pawn, PlayerCard dest);
+	virtual int charterFlight(Pawn* pawn, PlayerCard dest, int newCityID);
+	virtual int shuttleFlight(Pawn* pawn, int newCityID);
 
-	string RoleCard::getRoleName() { return roleName;	}
 
-	void RoleCard::setRoleColor(string color) { roleColor = color;	}
+	virtual int buildResearchStation(Pawn* pawn, PlayerCard currentCity);
+	virtual int treatDisease(Pawn* pawn);
+	virtual int shareKnowledge(Pawn* pawn, PlayerCard givingCard);
+	virtual int discoverCure(Pawn* pawn, vector<PlayerCard> cure);
 
-	string RoleCard::getRoleColor() { return roleColor; }
 
-	void addSpecialAction(string sp){ specialActions.push_back(sp);	}
+	Map* getMapRef() {
+		return mapRef;
+	}
 
-	vector<string> getSpecialActions() { return specialActions;	}
+	string RoleCard::getRoleName() {
+		return roleName;
+	}
 
-	string getRoleDescription(){ return roleDescription; }
+	string RoleCard::getRoleColor() {
+		return roleColor;
+	}
 
-	void setRoleDescription(string desc) { 	roleDescription = desc;	}
+	vector<string> getSpecialActions() {
+		return specialActions;
+	}
+
+	string getRoleDescription() {
+		return roleDescription;
+	}
+
+	void RoleCard::setRoleName(string name) {
+		roleName = name;
+	}
+
+	void RoleCard::setRoleColor(string color) {
+		roleColor = color;
+	}
+
+	void addSpecialAction(string sp) {
+		specialActions.push_back(sp);
+	}
+
+	void setRoleDescription(string desc) {
+		roleDescription = desc;
+	}
 
 private:
 	string roleName;
 	string roleColor;
 	string roleDescription;
-	//Each role may have a special action that they can add to the list of actions they can perform
 	vector<string> specialActions;
+	Map* mapRef;
 };
 
 

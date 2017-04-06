@@ -30,7 +30,7 @@ Game::Game(int numberPlayers) {
 	
 
 	for (int i = 0; i < numberPlayers; i++) {
-		Player* player = new Player(i, roledeck->getTopCard(), &map);
+		Player* player = new Player(i, roledeck->getTopCard());
 		PlayerView* playerview = new PlayerView(player);
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
@@ -609,7 +609,7 @@ void Game::load_players() {
 
 		}
 	
-		Player* player1 = new Player(id, rc, &map);
+		Player* player1 = new Player(id, rc);
 		player1->setCardsInHnad(hand);
 		player1->getMyPawn()->set_location(currentLoc);
 		playerlist.push_back(player1);
