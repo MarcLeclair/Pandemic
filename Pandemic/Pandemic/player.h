@@ -33,7 +33,7 @@ public:
 
 	//Setters
 
-	void setCardsInHnad(vector<PlayerCard> vec) { cardsInHand = vec; }
+	void setCardsInHand(vector<PlayerCard> vec) { cardsInHand = vec; }
 
 	void setPlayerID(int pid) { playerID = pid; }
 	void setMyPawn(Pawn* mp) { playerPawn = mp; }

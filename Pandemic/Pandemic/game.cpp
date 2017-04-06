@@ -610,7 +610,7 @@ void Game::load_players() {
 		}
 	
 		Player* player1 = new Player(id, rc);
-		player1->setCardsInHnad(hand);
+		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
 		playerlist.push_back(player1);
 		hand.clear();
