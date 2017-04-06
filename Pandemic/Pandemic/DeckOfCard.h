@@ -15,13 +15,14 @@
 template <class T> class DeckOfCard {
 	
 	std::vector<int> some;
-	std::deque<T> deck;
+
 	std::vector<T> vectorDeck;
 	T *card;
 	int numberOfInfection;
 	bool isDeckShuffled = false;
 
 public:
+	std::deque<T> deck;
 	 DeckOfCard();
 	 DeckOfCard(std::vector<T> arrayOfCard);
 	 T getTopCard();
@@ -39,6 +40,7 @@ private:
 	void shuffleDeck(std::vector<T> &cardDeck);
 
 };
+
 
 template <class T> DeckOfCard<T>::DeckOfCard() {
 

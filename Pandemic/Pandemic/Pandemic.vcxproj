@@ -30,6 +30,8 @@
     <ClCompile Include="possession.cpp" />
     <ClCompile Include="ReferenceCard.cpp" />
     <ClCompile Include="RoleCard.cpp" />
+    <ClCompile Include="SqlConnection.cpp" />
+    <ClCompile Include="Strategy.cpp" />
     <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -45,6 +47,8 @@
     <ClInclude Include="possession.h" />
     <ClInclude Include="ReferenceCard.h" />
     <ClInclude Include="RoleCard.h" />
+    <ClInclude Include="SqlConnection.h" />
+    <ClInclude Include="Strategy.h" />
     <ClInclude Include="Subject.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

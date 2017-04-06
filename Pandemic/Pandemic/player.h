@@ -23,14 +23,18 @@ class Player : public Subject
 public:
 	Player();
 	Player(const Player& plr);
-	Player(int pid, RoleCard* rolec, Map* mp);
+	Player(int pid, RoleCard* rolec);
 	~Player();
 
 	int getPlayerID() {
 		return playerID;
 	}
 
+
 	//Setters
+
+	void setCardsInHnad(vector<PlayerCard> vec) { cardsInHand = vec; }
+
 	void setPlayerID(int pid) { playerID = pid; }
 	void setMyPawn(Pawn* mp) { playerPawn = mp; }
 	void setReferenceCard(ReferenceCard* refc) { refcard = refc; }
@@ -54,10 +58,10 @@ public:
 	void useAction() { --actions; }
 
 	//Functions to operate on the player's hand of PlayerCards
-	void drawCard(PlayerCard plc);
+	void drawCard(PlayerCard plc, vector<PlayerCard> &discardPile);
 	void displayCardsInHand();
-	void discardCard(int disc);
-	void balanceHand();
+	void discardCard(int disc, vector<PlayerCard> &discardPile);
+	void balanceHand(vector<PlayerCard> &discardPile);
 	void display_player_info();
 
 	//Functions to execute actions during a player's turn
