@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <map>
 
 #include "possession.h"
 #ifndef MAP_H
@@ -16,11 +17,11 @@ using namespace std;
 ********************************************************************/
 class City {
   public:
+	  map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 	  //member variables
 	  string name;// name of city
 	  int id; // id of city
       char zone; //color of city
-      double location[2];// location of city 
       int infectionCounters[4]; //number of infection counters of each type
 	  bool researchCenter; //if city has a research station
 	  bool outbreakHappened; //if an outbreak happened this turn
@@ -30,7 +31,7 @@ class City {
       vector<City*> connectionsRef; //list of connected city references
 
 
-  	  City (int,string,char,double,double,int[],bool);//id,name,zone,locationx,locationy,infection counters, if rearch station
+  	  City (int, string, char, int[],bool);//id,name,zone,locationx,locationy,infection counters, if rearch station
    	  City ();
 
   	  void display_information(); //displays information about the city
@@ -55,11 +56,6 @@ class City {
 	  //Adds a connection to a city
       void add_connection(int cityID) {  this->connections.push_back(cityID);  }
 
-	  //Sets the physical location of the city
-      void set_location(int xCoord, int yCoord) {
-		  location[0] = xCoord;
-		  location[1] = yCoord;
-	  }
 };
 
 /********************************************************************************************************************
@@ -76,6 +72,7 @@ class  Map{
 	int numberOutbreaks;
 
 public:
+	map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 	void addResearchStation(int);
 	void addDisease(int);//adds a single disease cube to a specified city 
 	void checkEradication(); //checks if a disease is iradicated
@@ -101,7 +98,6 @@ private:
 	void outbreak(int, char); //handles outbreaks
 };
 
-map<char, int> zoneIndex = { { 'b', 0 },{ 'r', 1 },{ 'u', 2 },{ 'y', 3 } };
 
 #endif
 

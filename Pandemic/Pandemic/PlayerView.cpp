@@ -45,6 +45,7 @@ const PlayerView& PlayerView::operator=(const PlayerView& pv) {
 		subject = new Player(*pv.subject);
 		subject->attach(this);
 	}
+	return *this;
 }
 
 /***************************************************************

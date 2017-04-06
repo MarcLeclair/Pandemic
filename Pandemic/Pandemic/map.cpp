@@ -3,7 +3,6 @@
 #include <fstream>
 #include <string>
 #include <vector>
-#include <map>
 #include "map.h"
 using namespace std;
 
@@ -57,7 +56,7 @@ void Map::load_starting_map(){
 	  int cityID = stoi(values[0]);
 	  string cityName = values[1];
 	  char zone = values[3][0];
-      City* newCity= new City(cityID, cityName, zone, 0.0, 0.0, infectionCounters,researchCenter);
+      City* newCity= new City(cityID, cityName, zone, infectionCounters,researchCenter);
 
       //Parses and adds connections
       cityInfo=values[2];
@@ -118,7 +117,7 @@ void Map::load_map(){
 	  int cityID = stoi(values[0]);
 	  string cityName = values[1];
 	  char zone = values[3][0];
-      City* newCity = new City(cityID, cityName, zone, 0.0, 0.0, infectionCounters, researchCenter);
+      City* newCity = new City(cityID, cityName, zone, infectionCounters, researchCenter);
 
       //Parses and adds connections
       cityInfo = values[2];
@@ -509,8 +508,6 @@ City::City(){
 	id = -1;
 	zone = 'n';
 	name = "no name";
-	location[0] = 0;
-	location[1] = 0;
 
 	for (int i = 0; i<4; i++) {
 		this->infectionCounters[i] = 0;
@@ -524,12 +521,10 @@ City::City(){
 / City Constructor
 / Used when a previous game has been loaded, or when loading saved city values
 ********************************************************************************/
-City::City (int id, string name,char zone,double x, double y,int iC[], bool researchCenter ) {
+City::City (int id, string name, char zone, int iC[], bool researchCenter ) {
   this->id = id;
   this->name = name;
   this->zone = zone;
-  this->location[0] = x;
-  this->location[1] = y;
 
   for(int infectionIndex = 0; infectionIndex < 4; infectionIndex++){
 	  this->infectionCounters[infectionIndex]=(int)iC[infectionIndex]- '0';
@@ -565,17 +560,6 @@ void City::display_information(){
 	 }
 
 	 cout<< endl <<endl;
-}
-
-/*****************************************
-/ Set the city's coordinates on the map
-/ These are physical x and y coordinates
-/ that correspond to the city's physical
-/ location on the map
-******************************************/
-void City::set_location (int x, int y) {
-  location[0] = x;
-  location[1] = y;
 }
 
 //void City::treatDisease(char type) {
