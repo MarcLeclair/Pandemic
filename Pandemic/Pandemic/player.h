@@ -23,7 +23,7 @@ class Player : public Subject
 public:
 	Player();
 	Player(const Player& plr);
-	Player(int pid, RoleCard* rolec, Map* mp);
+	Player(int pid, RoleCard* rolec);
 	~Player();
 
 	int getPlayerID() {

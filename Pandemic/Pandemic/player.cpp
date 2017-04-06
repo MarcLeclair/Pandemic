@@ -21,10 +21,10 @@ Player::Player() {
 / Creates the player's pawn based on the role card passed
 / Requires a map reference for the reference card and role cards
 *********************************************************************************/
-Player::Player(int pid, RoleCard* rolec, Map* mp) : Subject()
+Player::Player(int pid, RoleCard* rolec) : Subject()
 {
 	playerID = pid;
-	setReferenceCard(new ReferenceCard(mp));
+	setReferenceCard(new ReferenceCard());
 
 	setRoleCard(rolec);
 
