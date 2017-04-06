@@ -102,6 +102,14 @@ void Game::LoadGame() {
 int Game::pollForCity() {
 	int newCityID = 0;
 	cin >> newCityID;
+
+	//If the user enters a character other than a number, or greater than/less than the number of cities
+	while (std::cin.fail()) {
+		std::cout << "\nPlease only input a number! Try again.\n" << std::endl;
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> newCityID;
+	}
 	return newCityID;
 }
 
@@ -109,15 +117,26 @@ int Game::pollForCards(int pId) {
 	int cardIndex = 0;
 	playerlist[pId]->displayCardsInHand();
 	cin >> cardIndex;
+
+	//If the user enters a character other than a number
+	while (cin.fail()) {
+		std::cout << "\nPlease only input a number! Try again.\n" << std::endl;
+		playerlist[pId]->displayCardsInHand();
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> cardIndex;
+	}
 	return cardIndex;
 }
 
 int Game::pollForRetry() {
 	int redo = -1;
 	do {
+		cin.clear();
+		cin.ignore(256, '\n');
 		cout << "\nOops! Looks like your action didn't work. Press 0 to retry the action, or 1 to pick another action." << endl;
 		cin >> redo;
-	} while (redo != 0 && redo != 1);
+	} while (redo != 0 && redo != 1 || cin.fail());
 	return redo;
 }
 
@@ -126,11 +145,13 @@ int Game::pollDispatcherPawn() {
 	cout << "You are a Dispatcher, you can move any player's pawn as if it were your own.\nPlease choose the ID of the player whose pawn you'd like to move." << endl;
 	cout << "If you would like to move your own pawn, choose your own player ID." << endl;
 	do {
+		cin.clear();
+		cin.ignore(256, '\n');
 		for (int i = 0; i < playerlist.size(); i++) {
 			cout << "\t" << i + 1 << ". Player " << i << endl;
 		}
 		cin >> otherPlayerID;
-	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0);
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
 	return otherPlayerID-1;
 }
 
@@ -165,8 +186,19 @@ void Game::performPlayersTurn(int pId) {
 		bool redoDisplay = true;
 		do {
 			cout << endl;
+			
 			displayDisplayOptions();
 			cin >> displayaction;
+
+			//If the user enters a character other than a number
+			while (std::cin.fail()) {
+				std::cout << "\nInvalid Choice. Please choose again\n" << std::endl;
+				displayDisplayOptions();
+				std::cin.clear();
+				std::cin.ignore(256, '\n');
+				std::cin >> displayaction;
+			}
+
 			switch (displayaction) {
 			case 0:
 				redoDisplay = false;
@@ -200,7 +232,7 @@ void Game::performPlayersTurn(int pId) {
 
 			}
 
-		} while (redoDisplay);
+		} while (redoDisplay || cin.fail());
 
 
 		int action = playerlist[pId]->requestAction();

@@ -104,10 +104,13 @@ void Player::balanceHand(vector<PlayerCard> &discardPile) {
 		cout << "Card to discard (number): " << endl;
 		cin >> cardToDiscard;
 
-		//Make sure the proper index was given
-		while (cardToDiscard > cardsInHand.size() || cardToDiscard < 1) {
-			cout << "Invalid card number. Please try again." << endl;
-			cin >> cardToDiscard;
+		//Make sure the proper index was given and that an integer was passed
+		while (cardToDiscard > cardsInHand.size() || cardToDiscard < 1 || cin.fail()) {
+			std::cout << "\nInvalid Choice. Please choose again\n" << std::endl;
+			displayCardsInHand();
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+			std::cin >> cardToDiscard;
 		}
 
 		discardCard((cardToDiscard - 1), discardPile);
@@ -184,6 +187,15 @@ int Player::requestAction() {
 	outputPossibleActions();
 	int newAction;
 	cin >> newAction;
+
+	//If the user enters a character other than a number
+	while (std::cin.fail()) {
+		std::cout << "\nInvalid Choice. Please choose again\n" << std::endl;
+		outputPossibleActions();
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> newAction;
+	}
 	return newAction;
 }
 
