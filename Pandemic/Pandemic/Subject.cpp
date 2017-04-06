@@ -2,12 +2,39 @@
 #include "Observer.h"
 
 
-
+/***************************************************
+/ Subject default constructor
+/ Instantiates an empty list of observer pointers
+****************************************************/
 Subject::Subject()
 {
 	observers = new list<Observer*>;
 }
 
+/************************************************
+/ Subject copy constructor
+/ constructs a copy of an existing subject
+/ Most importantly is the copy of observers
+/ This must be a shallow copy, for now, since
+/ abstract type Observer can't be instantiated
+*************************************************/
+Subject::Subject(const Subject& sub) {
+	observers = sub.observers;
+}
+
+/*******************************************************
+/ Overloaded assignment operator
+/ Deletes current references to avoid confusion before
+/ copying the passed values
+*******************************************************/
+const Subject& Subject::operator=(const Subject& sub) {
+	if (&sub != this) {
+		delete observers;
+
+		observers = sub.observers;
+	}
+	return *this;
+}
 
 Subject::~Subject()
 {

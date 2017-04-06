@@ -21,6 +21,7 @@ public:
 	RoleCard(Map* mp);
 	RoleCard(const RoleCard& rolec);
 	~RoleCard();
+	const RoleCard& operator=(const RoleCard& rc);
 
 	//These four functions will change the player's location to the new city, if preconditions are met
 	//they will return integers based on whether they have succeeded or not

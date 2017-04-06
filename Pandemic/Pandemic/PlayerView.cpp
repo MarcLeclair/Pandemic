@@ -26,6 +26,28 @@ PlayerView::PlayerView(Player* pl) {
 	pl->attach(this);
 }
 
+/****************************************************
+/ Copy Constructor
+/ Will make a deep copy of the player attached
+*****************************************************/
+PlayerView::PlayerView(const PlayerView& pv) {
+	subject = new Player(*pv.subject);
+	subject->attach(this);
+}
+
+/**********************************
+/ Overloaded assignment operator
+***********************************/
+const PlayerView& PlayerView::operator=(const PlayerView& pv) {
+	if (&pv != this) {
+		delete subject;
+
+		subject = new Player(*pv.subject);
+		subject->attach(this);
+	}
+	return *this;
+}
+
 /***************************************************************
 / Destructor for the Observer
 / Upon going out of scope, it'll detach itself from its subject

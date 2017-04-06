@@ -26,27 +26,12 @@ Pawn::Pawn(const Pawn& copyPawn) {
 	this->playerId = copyPawn.playerId;
 }
 
-int Pawn::get_playerId(){
-  return this->playerId;
-}
-
-int Pawn::get_location() {
-	return this->locationId;
-}
-
 
 /**************************************************
 / Function to display the information for a pawn
 / Displayers the pawn's color and location
 ***************************************************/
 void Pawn::display_information(){
-  cout << "This is a "<<this->colour <<" pawn!" << endl;
-}
-void Pawn::set_location(int locationId){
-  this->locationId=locationId;
-}
-
-string Pawn::get_color() {
-	return this->colour;
+  cout << "This is a "<<this->colour <<" pawn at location " << this->locationId << "." << endl;
 }
 

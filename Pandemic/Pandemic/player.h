@@ -33,7 +33,7 @@ public:
 
 	//Setters
 
-	void setCardsInHnad(vector<PlayerCard> vec) { cardsInHand = vec; }
+	void setCardsInHand(vector<PlayerCard> vec) { cardsInHand = vec; }
 
 	void setPlayerID(int pid) { playerID = pid; }
 	void setMyPawn(Pawn* mp) { playerPawn = mp; }
@@ -79,10 +79,10 @@ public:
 	int treat_disease();
 	int share_knowledge(vector<PlayerCard> receivingHand, int exchangeCard);
 	int discover_cure(vector<int> cure);
+	const Player& operator=(const Player& pl);
 private:
 	Pawn* playerPawn;
 	ReferenceCard* refcard;
-
 	//Holds a reference to a role card for polymorphism purposes, as role cards have multiple subtypes
 	RoleCard* role;
 	std::vector<PlayerCard> cardsInHand;

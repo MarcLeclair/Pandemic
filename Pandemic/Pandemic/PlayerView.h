@@ -16,6 +16,8 @@ class PlayerView : public Observer
 public:
 	PlayerView();
 	PlayerView(Player* pl);
+	PlayerView(const PlayerView& pv);
+	const PlayerView& operator=(const PlayerView& pv);
 	~PlayerView();
 	void update();
 	void displayPlayer();

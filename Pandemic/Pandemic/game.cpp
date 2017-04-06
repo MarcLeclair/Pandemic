@@ -142,7 +142,7 @@ void Game::performPlayersTurn(int pId) {
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 
 		//Preliminary initializations
-		City current;
+		City* current;
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
@@ -152,8 +152,8 @@ void Game::performPlayersTurn(int pId) {
 
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
-		City currentCity = map.getCityByID(currentCityID);
-		vector<int> pawnsInCity = currentCity.pawnList;
+		City* currentCity = map.getCityByID(currentCityID);
+		vector<int> pawnsInCity = currentCity->pawnList;
 		int giver = 0;
 		int receiver = 0;
 		int giverstatus = 0;
@@ -161,7 +161,7 @@ void Game::performPlayersTurn(int pId) {
 		vector<PlayerCard> givingHand;
 
 		int displayaction = -1;
-		vector<City> allCities = map.getCities();
+		vector<City*> allCities = map.getCities();
 		bool redoDisplay = true;
 		do {
 			cout << endl;
@@ -172,16 +172,16 @@ void Game::performPlayersTurn(int pId) {
 				redoDisplay = false;
 				break;
 			case 1:
-				currentCity.display_information();
+				currentCity->display_information();
 				break;
 			case 2:
-				for (int i = 0; i < currentCity.connectionsRef.size(); i++) {
-					currentCity.connectionsRef[i]->display_information();
+				for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
+					currentCity->connectionsRef[i]->display_information();
 				}
 				break;
 			case 3:
 				for (int i = 0; i < allCities.size(); i++) {
-					allCities[i].display_information();
+					allCities[i]->display_information();
 				}
 				break;
 			case 4:
@@ -215,8 +215,8 @@ void Game::performPlayersTurn(int pId) {
 				do {
 					cout << "Please choose a city id corresponding to the city you want to drive to." << endl;
 					current = map.getCityByID(playerlist[pawnID]->getCurrentLocation());
-					for (int i = 0; i < current.connections.size(); i++) {
-						cout << "\t" << map.getCityByID(current.connections[i]).name << " (" << current.connections[i] << ")" << endl;
+					for (int i = 0; i < current->connections.size(); i++) {
+						cout << "\t" << map.getCityByID(current->connections[i])->name << " (" << current->connections[i] << ")" << endl;
 					}
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
@@ -333,7 +333,7 @@ void Game::performPlayersTurn(int pId) {
 					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
 					PlayerCard givingCard =givingHand[cardIndex - 1];
 					playerlist[receiver]->drawCard(givingCard, *discardPile);
-					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation()).name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
+					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation())->name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;
 			case 8: //cure a disease
@@ -610,7 +610,7 @@ void Game::load_players() {
 		}
 	
 		Player* player1 = new Player(id, rc);
-		player1->setCardsInHnad(hand);
+		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
 		playerlist.push_back(player1);
 		hand.clear();
@@ -774,12 +774,12 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	string colour;
 
 	vector<Infection> InfectionCards;
-	vector<City> temp = map.getCities();
+	vector<City*> temp = map.getCities();
 
-	for (City city : temp) {
-		int id = city.id;
-		string name = city.name;
-		colourConversion << (city.zone);
+	for (City* city : temp) {
+		int id = city->id;
+		string name = city->name;
+		colourConversion << (city->zone);
 		colourConversion >> colour;
 
 		Infection cardToPush = Infection(id);

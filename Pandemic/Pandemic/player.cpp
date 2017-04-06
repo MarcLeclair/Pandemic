@@ -66,6 +66,31 @@ Player::~Player()
 	(getHand()).clear();
 }
 
+/******************************************************************************
+/ Assignment operator overload
+/ Takes care of the pointer assignment when copying/assigning a player object
+******************************************************************************/
+const Player& Player::operator=(const Player& pl) {
+	if (&pl != this) {
+		//delete any existing values before assigning new ones to avoid confusion and improper deletion
+		delete role;
+		cardsInHand.clear();
+		delete refcard;
+		delete playerPawn;
+
+		playerPawn = new Pawn(*pl.playerPawn);
+		refcard = new ReferenceCard(*pl.refcard);
+		role = pl.role;
+
+		for (PlayerCard pc : pl.cardsInHand) {
+			cardsInHand.push_back(*(new PlayerCard(pc)));
+		}
+
+	}
+	return *this;
+}
+
+
 /***************************************************************************
 / Function to balance the player's hand when they've drawn too many cards
 / Will result in the chosen card being discarded from the player's hand
@@ -121,7 +146,6 @@ void Player::displayCardsInHand() {
 /***********************************************************************************
 / Function to remove a card from the player's hand
 / Simply accesses the player's hand and deletes the card at the index indicated
-<<<<<<< Updated upstream
 / Does not actually delete the card, just the copy of the card in the player's hand
 ************************************************************************************/
 
