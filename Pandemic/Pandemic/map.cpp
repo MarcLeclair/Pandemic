@@ -169,6 +169,12 @@ void Map::display_status() {
 	}
 }
 
+/*
+  
+
+
+*/
+
 /**********************************************************************
 / Function to save the map's current state to the database
 / Will save the state of the map, plus all of the cities in the map
@@ -501,7 +507,7 @@ City::City (int id, string name, char* zone, int iC[], bool researchCenter ) {
   this->zone = *zone;
 
   for(int infectionIndex = 0; infectionIndex < 4; infectionIndex++){
-	  this->infectionCounters[infectionIndex]=(int)iC[infectionIndex]- '0';
+	  this->infectionCounters[infectionIndex]=(int)iC[infectionIndex];
   }
   this->researchCenter=researchCenter;
   this->outbreakHappened = false;
