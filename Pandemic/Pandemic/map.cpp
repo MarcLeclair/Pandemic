@@ -24,59 +24,33 @@ Map::Map(){
 / loads all basic city information from the database
 **********************************************************/
 void Map::load_starting_map(){
-  string line;
-  ifstream mapFile ("locations-and-links.csv");
-  if (mapFile.is_open())
-  {
-    while ( getline (mapFile,line) )
-    {
-      vector<string> values;
-      string cityInfo=line;
-      int position = 0;
+	SqlConnection connect;
+	string* select = new string("select m.cityId,m.cityName,m.cityColor, isnull(l.link1,-1) as link1, isnull(l.link2,-1) as link2, isnull(l.link3,-1) as link3, isnull(l.link4,-1) as link4, isnull(l.link5,-1) as link5, isnull(l.link6,-1) as link6, isnull(l.link7 ,-1) as link7 from Map as m INNER JOIN MapLinks as l ON m.cityId = l.cityId");
 
-      while ((position = cityInfo.find(",")) != string::npos) {
-		  values.push_back(cityInfo.substr(0, position));
-		  cityInfo.erase(0, position + 1);
-      }
-      values.push_back(cityInfo.substr(0, position));
+	connect.sqlExecuteSelect(select);
 
-      //Parses infection counters
-      int infectionCounters[4];
-      for(int infection=0; infection < 7; infection+=2){
-		  infectionCounters[infection/2]=(int)values[5][infection];
-      }
+	vector<vector<string>> results = connect.Connection.colData;
 
-      //Setting research centers
-      bool researchCenter=false;
-      if(values[6][0]=='1'){
-		  researchCenter=true;
-      }
+	for (vector<string> rows : results)
+	{
+		int cityId = stoi(rows.at(0));
+		string name = rows.at(1);
+		char *color = new char[rows.at(2).length() - 1];
+		strcpy(color, rows.at(2).c_str());
+		int infectionCounter[4] = { 0,0,0,0 };
+		bool startFresh = false;
 
-      //Creates New City
-	  int cityID = stoi(values[0]);
-	  string cityName = values[1];
-	  char zone = values[3][0];
-      City* newCity= new City(cityID, cityName, zone, infectionCounters,researchCenter);
+		City* newCity = new City(cityId, name, color,infectionCounter, startFresh);
 
-      //Parses and adds connections
-      cityInfo=values[2];
-      while ((position = cityInfo.find("-")) != string::npos) {
-		  newCity->add_connection(stoi((cityInfo.substr(0, position))));
-		  cityInfo.erase(0, position + 1);
-      }
-      newCity->add_connection(stoi((cityInfo.substr(0, position))));
+		for (int count = 3; count <= 9; count++) {
+			if (stoi(rows.at(count)) != -1) {
+				newCity->add_connection(stoi(rows.at(count)));
 
-      //Parses and adds connections
-      cityInfo=values[4];
-      while ((position = cityInfo.find("-")) != string::npos) {
-        newCity->add_pawn(stoi((cityInfo.substr(0, position))));
-        cityInfo.erase(0, position + 1);
-      }
-      newCity->add_pawn(stoi((cityInfo.substr(0, position))));
-      citylist.push_back(newCity);
-    }
-    mapFile.close();
-  }
+			}
+
+		}
+		citylist.push_back(newCity);
+	}
   createLinks();
 }
 
@@ -116,7 +90,7 @@ void Map::load_map(){
 	  //arguments: cityid, name, zone, locationx, locationy, infectioncounters, researchstation
 	  int cityID = stoi(values[0]);
 	  string cityName = values[1];
-	  char zone = values[3][0];
+	  char* zone = (char*)values[3][0];
       City* newCity = new City(cityID, cityName, zone, infectionCounters, researchCenter);
 
       //Parses and adds connections
@@ -521,10 +495,10 @@ City::City(){
 / City Constructor
 / Used when a previous game has been loaded, or when loading saved city values
 ********************************************************************************/
-City::City (int id, string name, char zone, int iC[], bool researchCenter ) {
+City::City (int id, string name, char* zone, int iC[], bool researchCenter ) {
   this->id = id;
   this->name = name;
-  this->zone = zone;
+  this->zone = *zone;
 
   for(int infectionIndex = 0; infectionIndex < 4; infectionIndex++){
 	  this->infectionCounters[infectionIndex]=(int)iC[infectionIndex]- '0';
