@@ -19,7 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Driver.cpp" />
     <ClCompile Include="game.cpp" />
+    <ClCompile Include="GameStatistics.cpp" />
     <ClCompile Include="Infection.cpp" />
     <ClCompile Include="map.cpp" />
     <ClCompile Include="Observer.cpp" />
@@ -36,7 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="DeckOfCard.h" />
+    <ClInclude Include="Driver.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="GameStatistics.h" />
     <ClInclude Include="Infection.h" />
     <ClInclude Include="map.h" />
     <ClInclude Include="Observer.h" />

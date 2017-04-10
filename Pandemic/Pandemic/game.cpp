@@ -1,7 +1,4 @@
-#include "stdafx.h"
 
-#include "..\glew\glew.h"	// include GL Extension Wrangler
-#include "..\glfw\glfw3.h"	// include GLFW helper library
 #include <stdio.h>
 
 #include "game.h"
@@ -55,6 +52,7 @@ Game::Game(int numberPlayers) {
 }
 
 void Game::StartGame() {
+	notify(); //If the action worked, notify all the observers
 	int currentPlayersId = 0;
 	while (!(this->isGameOver())) {
 		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
@@ -68,6 +66,7 @@ void Game::StartGame() {
 		cout << "\nDrawing cards finished. Infecting Cities." << endl;
 		InfectionDeck->endTurnInfection(&map);
 	
+		notify(); //If the action worked, notify all the observers
 		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 			cout << "Saving the game" << endl;
 			SaveGame();
@@ -828,17 +827,3 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	return InfectionDeck;
 }
 
-int main() {
-	Game* game = new Game(2);
-	DeckOfCard<PlayerCard>* deck = game->getDeck();
-	game->displayPlayers();
-	game->StartGame();
-	vector<Player*> players = game->getPlayerlist();
-	cout << players[0]->getCurrentLocation() << endl;
-	//game->getMap().display_information();
-	//players[1]->drive(26);
-
-	system("PAUSE");
-	delete game;
-	return 0;
-}

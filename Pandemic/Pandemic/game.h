@@ -13,8 +13,9 @@
 #include "PlayerView.h"
 #include "ReferenceCard.h"
 #include "SqlConnection.h"
+#include "Subject.h"
 using namespace std;
-class Game {
+class Game : public Subject{
 
 	bool hasGameStarted;
 	ODBC_Class Example;
@@ -29,8 +30,8 @@ class Game {
 public:
 	Game();
 	Game(int);
-	Map getMap() {
-		return map;
+	Map* getMap() {
+		return &map;
 	}
 
 	vector<Player*> getPlayerlist() {

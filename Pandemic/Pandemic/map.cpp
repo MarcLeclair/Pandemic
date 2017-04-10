@@ -417,7 +417,72 @@ void Map::addPawn(Pawn* pawn) {
 	citylist[3]->pawnList.push_back(pawn->get_playerId());
 	pawn->set_location(4);
 }
+/*************************************************
+/ Function return an array of the placed cubes
+**************************************************/
 
+int* Map::placedCubes() {
+	int count[4] = { 0,0,0,0 };
+
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		for (int infectionIndex = 0; infectionIndex < 4; infectionIndex++) {
+			count[infectionIndex] += citylist[cityIndex]->infectionCounters[infectionIndex];
+		}
+	}
+	return count;
+}
+/*************************************************
+/ Function returns the number of infected cubes
+**************************************************/
+
+int Map::numberInfectedCities() {
+	int count = 0;
+
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		bool ifCube = false;
+		for (int infectionIndex = 0; infectionIndex < 4; infectionIndex++) {
+			if (citylist[cityIndex]->infectionCounters[infectionIndex]>0) {
+				ifCube = true;
+				break;
+			}
+		}
+		if (ifCube) {
+			count++;
+		}
+	}
+	return count;
+}
+
+/*************************************************
+/ Function returns the number of infected cubes
+**************************************************/
+
+int Map::numberInfectedCubes() {
+	int count = 0;
+
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		bool ifCube = false;
+		for (int infectionIndex = 0; infectionIndex < 4; infectionIndex++) {
+			count += citylist[cityIndex]->infectionCounters[infectionIndex];
+		}
+	}
+	return count;
+}
+
+/*************************************************
+/ Function returns the number of infected cubes
+**************************************************/
+
+int Map::numberResearchStations() {
+	int count = 0;
+
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		if (citylist[cityIndex]->hasResearchStation()) {
+			count++;
+		}
+	}
+	return count;
+}
 /******************************************************************************************
 / Function to move a pawn to a new city
 / The function will take a pawn's reference and insert it into the new city's pawn array
