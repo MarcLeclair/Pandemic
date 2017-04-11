@@ -153,7 +153,7 @@ void Player::displayCardsInHand() {
 ************************************************************************************/
 
 void Player::discardCard(int disc, vector<PlayerCard> &discardPile) {
-	if (cardsInHand.at(disc).getValue() == "event"){
+	if (cardsInHand.at(disc).getType() == "event"){
 		PlayerCard card = cardsInHand.at(disc);
 		cardsInHand.erase(cardsInHand.begin() + disc);
 		setNumOfCards();

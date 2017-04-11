@@ -181,6 +181,26 @@ int Game::pollDispatcherPawn() {
 	return otherPlayerID - 1;
 }
 
+int Game::pollForEvents(int pid) {
+	int cardIndex = 0;
+	playerlist[pid]->displayCardsInHand();
+
+	if (playerlist[pid]->getRole() == "Contingency Planner") {
+		RoleCard* rc = playerlist[pid]->getRoleCard();
+	}
+	cin >> cardIndex;
+
+	//If the user enters a character other than a number
+	while (cin.fail()) {
+		std::cout << "\nPlease only input a number! Try again.\n" << std::endl;
+		playerlist[pid]->displayCardsInHand();
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> cardIndex;
+	}
+	return cardIndex;
+}
+
 void Game::performPlayersTurn(int pId) {
 	playerlist[pId]->setActions(4);
 	int success = 0;
@@ -258,15 +278,10 @@ void Game::performPlayersTurn(int pId) {
 			case 8:
 				cout << "Which player would like to execute an event?" << endl;
 				otherPlayerID = pollPlayers();
-				cout << otherPlayerID << endl;
 
 				//Get that player's event cards only
 				vector<PlayerCard> playerHand = playerlist[otherPlayerID]->getHand();
 				vector<PlayerCard> events = returnEventCards(playerHand);
-
-				for (int i = 0; i < playerHand.size(); i++) {
-					cout << playerHand.at(i).getName() << endl;
-				}
 
 				if (events.size() == 0) { //if the player has no event cards to play
 					cout << "Sorry, you do not have any event cards to play. Please choose another option." << endl;
@@ -274,9 +289,10 @@ void Game::performPlayersTurn(int pId) {
 				}
 
 				cout << "Which card would you like to play?" << endl;
-				cardIndex = pollForCards(otherPlayerID);
+				cardIndex = pollForEvents(otherPlayerID);
 
 				playEvent(cardIndex-1, otherPlayerID);
+				cardIndex = -1;
 				break;
 			}
 
@@ -458,6 +474,7 @@ void Game::performPlayersTurn(int pId) {
 
 				else if (playerlist[pId]->getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
 					cout << "\nYou chose the Contingency Planner's special move!" << endl;
+
 
 					if (discardPile.size() == 0) {
 						cout << "Cannot pick up a discarded event; there are no discarded events to pick up!" << endl;
@@ -1004,7 +1021,7 @@ void Game::playEvent(int cardIndex, int playerID) {
 	if (success != 1) //If the event did not execute properly
 		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
 	else {
-		playerlist[playerID]->discardCard(cardIndex, *discardPile);
+		playerlist[playerID]->discardCard(cardIndex, discardPile);
 		playerlist[playerID]->notify();
 	}
 }
