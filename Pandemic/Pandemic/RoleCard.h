@@ -163,7 +163,7 @@ public:
 	ContingencyPlanner(Map* mp);
 	ContingencyPlanner(const ContingencyPlanner& cp);
 	virtual ~ContingencyPlanner();
-	int pickUpSpecialEvent(PlayerCard* sp);
+	int pickUpSpecialEvent(vector<PlayerCard> &discardPile);
 	void discardSpecialEvent();
 private:
 	PlayerCard* specialEvent;
