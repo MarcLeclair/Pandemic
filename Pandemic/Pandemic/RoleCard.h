@@ -164,6 +164,7 @@ public:
 	ContingencyPlanner(const ContingencyPlanner& cp);
 	virtual ~ContingencyPlanner();
 	int pickUpSpecialEvent(vector<PlayerCard> &discardPile);
+	void showSpecialEvent();
 	void discardSpecialEvent();
 private:
 	PlayerCard* specialEvent;

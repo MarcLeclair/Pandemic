@@ -537,6 +537,15 @@ int ContingencyPlanner::pickUpSpecialEvent(vector<PlayerCard> &discardPile) {
 		return 0;
 	}
 }
+
+/***********************************************************
+/ Function to show the value of their special event card
+************************************************************/
+void ContingencyPlanner::showSpecialEvent() {
+	if (specialEvent) {
+		cout << specialEvent->getValue();
+	}
+}
 /****************************************************
 / Function to discard the stored special Event card
 ****************************************************/
