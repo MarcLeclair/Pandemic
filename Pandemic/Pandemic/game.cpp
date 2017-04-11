@@ -1,4 +1,6 @@
+
 #include <stdio.h>
+
 #include "game.h"
 using namespace std;
 
@@ -168,8 +170,15 @@ int Game::pollDispatcherPawn() {
 	int otherPlayerID = -1;
 	cout << "You are a Dispatcher, you can move any player's pawn as if it were your own.\nPlease choose the ID of the player whose pawn you'd like to move." << endl;
 	cout << "If you would like to move your own pawn, choose your own player ID." << endl;
-	otherPlayerID = pollPlayers();
-	return otherPlayerID;
+	do {
+		cin.clear();
+		cin.ignore(256, '\n');
+		for (int i = 0; i < playerlist.size(); i++) {
+			cout << "\t" << i + 1 << ". Player " << i << endl;
+		}
+		cin >> otherPlayerID;
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
+	return otherPlayerID - 1;
 }
 
 void Game::performPlayersTurn(int pId) {
@@ -426,7 +435,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success != 0) { //If it worked, we need to discard the cards used
 					for (int i = 0; i < cure.size(); i++) {
 						int relativeIndex = (cure[i]-i)% playerlist[pId]->getNumOfCards();
-						playerlist[pId]->discardCard(relativeIndex, *discardPile);
+						playerlist[pId]->discardCard(relativeIndex, discardPile);
 					}
 					cardIndex = -1;
 				}
