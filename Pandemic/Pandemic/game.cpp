@@ -520,7 +520,7 @@ void Game::drawPlayerCards(int pId) {
 		InfectionDeck->infectEpidemic(&map);
 	}
 	if (card2.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card2, *discardPile);
+		playerlist[pId]->drawCard(card2, discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
