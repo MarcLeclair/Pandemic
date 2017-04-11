@@ -25,6 +25,7 @@ class Game {
 	DeckOfCard<PlayerCard>* deck;
 	vector<PlayerCard>* discardPile;
 	Infection* InfectionDeck;
+	bool infectCities = true;
 	
 public:
 	Game();
@@ -39,26 +40,49 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
+
+	bool shouldCitiesBeInfected() {
+		return infectCities;
+	}
+
+	void resetInfectCities() {
+		infectCities = true;
+	}
+
 	void displayDisplayOptions();
+	void displayPlayers();
 	void drawPlayerCards(int);
+
+
 	void StartGame();
 	void SaveGame();
 	void LoadGame();
 	bool isGameOver();
+
 	void performPlayersTurn(int);
+
+	vector<PlayerCard> returnEventCards(vector<PlayerCard>);
+	void playEvent(int, int);
+	int governmentGrantEvent(int);
+	int resilientPopulationEvent();
+	int forecastEvent();
+	int airliftEvent(Pawn* playerPawn, int cityID);
+	int oneQuietNightEvent();
+
 	int pollForCity();
 	int pollForCards(int);
 	int pollForRetry();
+	int pollDispatcherPawn();
+	int pollPlayers();
+
+
 	void save_playerCards();
 	void save_players();
 	void load_players();
-
-	int pollDispatcherPawn();
 
 	void load_deck();
 
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
 	DeckOfCard<Infection>* instantiateInfectionDeck(Map map);
-	void displayPlayers();
 };
 

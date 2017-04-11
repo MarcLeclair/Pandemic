@@ -159,6 +159,11 @@ void Player::discardCard(int disc, vector<PlayerCard> &discardPile) {
 		setNumOfCards();
 		discardPile.push_back(card);
 	}
+	else {
+		cardsInHand.erase(cardsInHand.begin() + disc);
+		setNumOfCards();
+	}
+	notify();
 }
 
 /**********************************************************************
