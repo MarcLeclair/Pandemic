@@ -71,7 +71,6 @@ public:
 
 	int pollForCity();
 	int pollForCards(int);
-	int pollForEvents(int);
 	int pollForRetry();
 	int pollDispatcherPawn();
 	int pollPlayers();
