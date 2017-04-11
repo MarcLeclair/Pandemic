@@ -30,7 +30,7 @@ Game::Game(int numberPlayers) {
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
 			if (card.getType() != "epidemic") {
-				player->drawCard(card,*discardPile);
+				player->drawCard(card, discardPile);
 			}
 			else {
 				j--;
@@ -85,7 +85,7 @@ void Game::StartGame() {
 			RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
 			dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
 		}
-		currentPlayersId++; //move on to the next player
+		currentPlayersId++; 
 	}
 
 }
@@ -403,7 +403,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success > 0) {
 					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
 					PlayerCard givingCard =givingHand[cardIndex - 1];
-					playerlist[receiver]->drawCard(givingCard, *discardPile);
+					playerlist[receiver]->drawCard(givingCard, discardPile);
 					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation())->name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;
@@ -444,15 +444,19 @@ void Game::performPlayersTurn(int pId) {
 					PlayerCard moveCard = playerlist[pId]->getHand().at(cardIndex-1);
 					//We are casting the role to an OperationsExpert type because we know it is an Operations Expert
 					success = dynamic_cast<OperationsExpert&>(*rc).specialOperationsMove(playerlist[pId]->getMyPawn(), moveCard);
+					break;
 				}
 
 				else if (playerlist[pId]->getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
 					cout << "\nYou chose the Contingency Planner's special move!" << endl;
-					//Since we do not have a discard pile at the moment, we will pass any arbitrary card to the function
-					cout << "Passing an arbitrary PlayerCard to the function " << endl;
-					/*PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");*/
+
+					if (discardPile.size() == 0) {
+						cout << "Cannot pick up a discarded event; there are no discarded events to pick up!" << endl;
+						break;
+					}
 					RoleCard* rc = playerlist[pId]->getRoleCard();
-					/*success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(arbitrary);*/
+					success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(discardPile);
+					break;
 				}
 
 				else if (playerlist[pId]->getRole() == "Dispatcher") { //We will be moving any other pawn as if it is our own
@@ -472,6 +476,7 @@ void Game::performPlayersTurn(int pId) {
 
 					RoleCard* rc = playerlist[pId]->getRoleCard();
 					success = dynamic_cast<Dispatcher&>(*rc).specialMoveAnotherPlayer(playerlist[otherPlayerID]->getMyPawn(), newCityID);
+					break;
 				}
 				else {
 					cout << "\nYour role does not have any special moves." << endl;
