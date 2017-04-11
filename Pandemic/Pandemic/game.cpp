@@ -505,7 +505,7 @@ void Game::performPlayersTurn(int pId) {
 		if (success != 0) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
-			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  *discardPile);
+			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  discardPile);
 		}
 	}
 }
@@ -514,7 +514,7 @@ void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
 	if (card1.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card1, *discardPile);
+		playerlist[pId]->drawCard(card1, discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
