@@ -237,23 +237,23 @@ void Map::display_research_cities() {
 
 /**************************************************
 / Function to display the map's state to the user
-/ Displays the current state of all cities 
+/ Displays the current state of all cities
 ***************************************************/
-void Map::display_information(){
-  for(int cityIndex = 0; cityIndex < citylist.size(); cityIndex++){
-    citylist[cityIndex]->display_information();
-  }
+void Map::display_information() {
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		citylist[cityIndex]->display_information();
+	}
 }
 
 /**************************************************
 / Function to create connections between cities
 ****************************************************/
-void Map::createLinks(){
-  for(int cityIndex = 0; cityIndex < citylist.size(); cityIndex++){
-    for(int connectionIndex = 0; connectionIndex < citylist[cityIndex]->connections.size(); connectionIndex++){
-      citylist[cityIndex]->connectionsRef.push_back(citylist[citylist[cityIndex]->connections[connectionIndex]-1]);
-    }
-  }
+void Map::createLinks() {
+	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+		for (int connectionIndex = 0; connectionIndex < citylist[cityIndex]->connections.size(); connectionIndex++) {
+			citylist[cityIndex]->connectionsRef.push_back(citylist[citylist[cityIndex]->connections[connectionIndex] - 1]);
+		}
+	}
 }
 
 //
@@ -266,7 +266,7 @@ void Map::createLinks(){
 //}
 
 /*****************************************************************************************
-/ Function to cure a disease 
+/ Function to cure a disease
 / Takes the zone that that disease represents, and uses it to cure that color of disease
 ******************************************************************************************/
 void Map::cureDisease(char disease) {
@@ -310,25 +310,54 @@ void Map::treatDisease(int cityId, char color) {
 **************************************************************************************************************************************************/
 void Map::addDisease(int cityId) {
 	cityId--;
-	cout << "Adding disease cube on city: " << cityId << endl;
-	if (!cured[zoneIndex[citylist[cityId]->zone]]) {
-		if (citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]] < 3) {
-			citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]]++;
-		}
-		else if (!citylist[cityId]->outbreakHappened) {
-			citylist[cityId]->outbreakHappened = true;
-			cout << "Outbreak in " << citylist[cityId]->name << "!" << endl;
-			numberOutbreaks++;
-			for (int connectionIndex = 0; connectionIndex < citylist[cityId]->connections.size(); connectionIndex++) {
-				outbreak(citylist[cityId]->connections[connectionIndex], citylist[cityId]->zone);
+	
+	//orange green
+	//checking for quarantine speilcalist on nearby spots
+	bool ifQuarantineSpecialist = false;
+	if (citylist[cityId]->pawnOnCity("green")) {
+		ifQuarantineSpecialist == true;
+	}
+	else {
+		for (int connectionIndex = 0; connectionIndex < citylist[cityId]->connections.size(); connectionIndex++) {
+			if (citylist[cityId]->connectionsRef[connectionIndex]->pawnOnCity("green")) {
+				ifQuarantineSpecialist == true;
+				break;
 			}
 		}
 	}
 
-	//Reset the city outbreak indicators for the next time someone needs to infect
-	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
-		citylist[cityIndex]->outbreakHappened = false;
+	if (!(cured[zoneIndex[citylist[cityId]->zone]] && citylist[cityId]->pawnOnCity("orange")) && !ifQuarantineSpecialist) {
+		cout << "Adding disease cube on city: " << cityId << endl;
+		if (!eradicated[zoneIndex[citylist[cityId]->zone]]) {
+			if (citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]] < 3) {
+				citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]]++;
+			}
+			else if (!citylist[cityId]->outbreakHappened) {
+				citylist[cityId]->outbreakHappened = true;
+				cout << "Outbreak in " << citylist[cityId]->name << "!" << endl;
+				numberOutbreaks++;
+				for (int connectionIndex = 0; connectionIndex < citylist[cityId]->connections.size(); connectionIndex++) {
+					outbreak(citylist[cityId]->connections[connectionIndex], citylist[cityId]->zone);
+				}
+			}
+		}
+
+		//Reset the city outbreak indicators for the next time someone needs to infect
+		for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
+			citylist[cityIndex]->outbreakHappened = false;
+		}
 	}
+}
+
+bool City::pawnOnCity(string color) {
+	for (int i = 0; i < pawnRefList.size(); i++){
+		if (pawnRefList[i]->get_color() == color){
+			return true;
+		}
+	}
+	return false;
+
+
 }
 
 /***************************************************************************************************************************************************
