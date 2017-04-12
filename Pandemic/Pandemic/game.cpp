@@ -85,6 +85,7 @@ bool Game::isGameSaved() {
 void Game::StartGame() {
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
+		resetInfectCities();
 		int currentPlayersId = 0;
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
@@ -95,8 +96,14 @@ void Game::StartGame() {
 			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 
-			cout << "\nDrawing cards finished. Infecting Cities." << endl;
-			InfectionDeck->endTurnInfection(&map);
+			//If someone has played the one quiet night event, no cities will be infected
+			if (shouldCitiesBeInfected()) {
+				cout << "\nDrawing cards finished. Infecting Cities." << endl;
+				InfectionDeck->endTurnInfection(&map);
+			}
+			else {
+				cout << "\nSkipping the infect Cities step!" << endl;
+			}
 
 			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 				cout << "Saving the game" << endl;
@@ -108,12 +115,15 @@ void Game::StartGame() {
 				RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
 				dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
 			}
+
+
       		notify(); //If the action worked, notify all the observers
 			currentPlayersId++;
 
 		}
 	}
 	else if (this->hasGameStarted == true) {
+		resetInfectCities();
 		int currentPlayersId = playerTurnOnLoad;
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
@@ -124,8 +134,14 @@ void Game::StartGame() {
 			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 
-			cout << "\nDrawing cards finished. Infecting Cities." << endl;
-			InfectionDeck->endTurnInfection(&map);
+			//If someone has played the one quiet night event, no cities will be infected
+			if (shouldCitiesBeInfected()) {
+				cout << "\nDrawing cards finished. Infecting Cities." << endl;
+				InfectionDeck->endTurnInfection(&map);
+			}
+			else {
+				cout << "Skipping the infect Cities step!" << endl;
+			}
 
 			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 				cout << "Saving the game" << endl;
@@ -220,6 +236,23 @@ int Game::pollForCards(int pId) {
 	return cardIndex;
 }
 
+/**************************************************************
+/ Function to poll the players for a certain player number
+/ Used when players would like to execute an event
+**************************************************************/
+int Game::pollPlayers() {
+	int otherPlayerID = -1;
+	do {
+		cin.clear();
+		cin.ignore(256, '\n');
+		for (int i = 0; i < playerlist.size(); i++) {
+			cout << "\t" << i + 1 << ". Player " << i << endl;
+		}
+		cin >> otherPlayerID;
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
+	return otherPlayerID - 1;
+}
+
 int Game::pollForRetry() {
 	int redo = -1;
 	do {
@@ -243,9 +276,40 @@ int Game::pollDispatcherPawn() {
 		}
 		cin >> otherPlayerID;
 	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
-	return otherPlayerID-1;
+	return otherPlayerID - 1;
 }
 
+int Game::pollForEvents(int pid) {
+	int cardIndex = 0;
+	playerlist[pid]->displayCardsInHand();
+
+	if (playerHasSpecialEvent(pid)) {
+		cout << playerlist[pid]->getNumOfCards() + 1 << ". ";
+		RoleCard* rc = playerlist[pid]->getRoleCard();
+		cout << "\t" << endl;
+		dynamic_cast<ContingencyPlanner*>(rc)->showSpecialEvent();
+		cout << endl;
+	}
+	cin >> cardIndex;
+
+	//If the user enters a character other than a number
+	while (cin.fail()) {
+		std::cout << "\nPlease only input a number! Try again.\n" << std::endl;
+		playerlist[pid]->displayCardsInHand();
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> cardIndex;
+	}
+	return cardIndex;
+}
+
+/*******************************************************************************************
+/ Function discerning whether a player is a contingency planner holding a special event card
+********************************************************************************************/
+bool Game::playerHasSpecialEvent(int pid) {
+	RoleCard* playerRole = playerlist[pid]->getRoleCard();
+	return  playerlist[pid]->getRole() == "Contingency Planner" && dynamic_cast<ContingencyPlanner*>(playerRole)->hasSpecialEvent();
+}
 
 void Game::performPlayersTurn(int pId) {
 	playerlist[pId]->setActions(4);
@@ -315,12 +379,42 @@ void Game::performPlayersTurn(int pId) {
 				break;
 			case 6:
 				playerlist[pId]->display_player_info();
+				cout << "Player has " << playerlist[pId]->getAction() << " moves left this turn" << endl;
 				break;
 			case 7:
 				for (int i = 0; i < playerlist.size(); i++) {
 					playerlist[i]->display_player_info();
 				}
+				break;
+			case 8:
+				cout << "Which player would like to execute an event?" << endl;
+				otherPlayerID = pollPlayers();
 
+				//Get that player's event cards only
+				vector<PlayerCard> playerHand = playerlist[otherPlayerID]->getHand();
+				vector<PlayerCard> events = returnEventCards(playerHand);
+
+				if (events.size() == 0 && !playerHasSpecialEvent(otherPlayerID)) { //if the player has no event cards to play
+					cout << "Sorry, you do not have any event cards to play. Please choose another option." << endl;
+					break;
+				}
+
+				cout << "Which card would you like to play?" << endl;
+				cardIndex = pollForEvents(otherPlayerID);
+
+				//If the player is a contingency planner and they want to play the special card they are holding
+				if (playerlist[otherPlayerID]->getRole() == "Contingency Planner" && cardIndex > playerlist[otherPlayerID]->getNumOfCards()) {
+					RoleCard* role = playerlist[otherPlayerID]->getRoleCard();
+					PlayerCard* specialEvent = dynamic_cast<ContingencyPlanner*>(role)->getSpecialEventCard();
+					playEvent(specialEvent, otherPlayerID);
+					cardIndex = -1;
+					break;
+				}
+				else { //else, play a normal event card from your hand
+					playEvent(cardIndex - 1, otherPlayerID);
+					cardIndex = -1;
+					break;
+				}
 			}
 
 		} while (redoDisplay || cin.fail());
@@ -502,6 +596,7 @@ void Game::performPlayersTurn(int pId) {
 				else if (playerlist[pId]->getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
 					cout << "\nYou chose the Contingency Planner's special move!" << endl;
 
+
 					if (discardPile.size() == 0) {
 						cout << "Cannot pick up a discarded event; there are no discarded events to pick up!" << endl;
 						break;
@@ -535,11 +630,6 @@ void Game::performPlayersTurn(int pId) {
 					redo = 1;
 					break;
 				}
-				if (success != 0 && playerlist[pId]->getRole() == "Contingency Planner") {
-					//We need to delete the special event
-					RoleCard* rc = playerlist[pId]->getRoleCard();
-					dynamic_cast<ContingencyPlanner&>(*rc).discardSpecialEvent();
-				}
 				break;
 			default:
 				cout << "Invalid ID, please retry." << endl;
@@ -554,7 +644,7 @@ void Game::performPlayersTurn(int pId) {
 			}
 		} while (redo == 0);
 
-		if (success != 0) {
+		if (success != 0 && redo == 1) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
 			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  discardPile);
@@ -803,6 +893,7 @@ void Game::displayDisplayOptions() {
 	cout << "5) Display cards in hand"<< endl;
 	cout << "6) Display current player status" << endl;
 	cout << "7) Display all players status" << endl;
+	cout << "8) Play an event card" << endl;
 }
 
 bool Game::isGameOver() {
@@ -936,10 +1027,185 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	return InfectionDeck;
 }
 
+/*********************************************************************************
+/ Function to return all Event cards in a certain player's hand
+/ Takes in the player's hand and returns all the cards that are event cards only
+**********************************************************************************/
+vector<PlayerCard> Game::returnEventCards(vector<PlayerCard> playerHand) {
+	vector<PlayerCard> events;
+	for (int card = 0; card< playerHand.size(); card++) {
+		if (playerHand[card].getType() == "event")
+			events.push_back(playerHand[card]);
+	}
+	return events;
+}
+
+
+/*******************************************************************************************************************************
+/ Function to carry out the governmentGrant event
+/ If there are available research stations, and the desired city does not have a research station already, this can be played
+/ This does not cost the player an action
+/ Can be played by the player holding it during any player's turn
+********************************************************************************************************************************/
+int Game::governmentGrantEvent(int cityID) {
+	//check if there are available research stations
+	//if not, throw an error
+
+	City* newCity = map.getCityByID(cityID);
+	if (newCity->hasResearchStation()) {
+		cout << "Sorry, this city already has a research station, cannot build one here!" << endl;
+		return 0;
+	}
+	newCity->buildResearchStation();
+	cout << "A new research station has been built in " << newCity->name << "(" << newCity->getCityID() << ")" << endl;
+	return 1;
+}
+
+/********************************************************************************
+/ Function to carry out the Airlift event
+/ Will move the chosen player to the chosen city without requiring a city card
+********************************************************************************/
+int Game::airliftEvent(Pawn* playerPawn, int cityID) {
+	City* newCity = map.getCityByID(cityID);
+	map.movePawn(playerPawn, cityID);
+	cout << "Player " << playerPawn->get_playerId() << "'s pawn has moved to " << newCity->name << "(" << newCity->getCityID() << ")" << endl;
+	playerlist[playerPawn->get_playerId()]->notify();
+	return 1;
+}
+
+/***************************************************************************************
+/ Function to execute the one quiet night event
+/ Will skip the next infect cities step in the game 
+/ i.e. the current player will not infect any cities after they have drawn player cards
+*****************************************************************************************/
+int Game::oneQuietNightEvent() {
+	this->infectCities = false;
+	cout << "The next Infect Cities step will not be executed (at the end of this turn)!" << endl;
+	return 1;
+}
+
+/************************************************************
+/ Function to remove any card in the Infection Discard pile
+/ This will delete that card completely from the game
+************************************************************/
+int Game::resilientPopulationEvent() {
+	cout << "An infection card has been removed from the discard pile!" << endl;
+	return 1;
+}
+
+/*********************************************************************************************************
+/ Function to execute the forecast event
+/ Allows the player to view the top 6 cards of the infection pile
+/ The player will then be allowed to put them back on top of the infection deck in the order they choose
+***********************************************************************************************************/
+int Game::forecastEvent() {
+	cout << "You have seen the top 6 infection cards" << endl;
+	return 1;
+}
+
+/************************************************************************
+/ Overloaded play event function
+/ Special function for the contingency planner
+/ If the contingency planner wishes to play their special event card
+/ This special event card will be discarded from the game entirely once its played
+*************************************************************************/
+void Game::playEvent(PlayerCard* eventCard, int pid) {
+	int success = -1;
+	string eventName = eventCard->getName();
+
+	if (eventName == "FORECAST") {
+		success = forecastEvent();
+	}
+	else if (eventName == "GOVERNMENT GRANT") {
+		cout << "Which city would you like to build a research station in?" << endl;
+		int cityID = pollForCity();
+
+		success = governmentGrantEvent(cityID);
+	}
+	else if (eventName == "One Quiet Night") {
+		success = oneQuietNightEvent();
+	}
+	else if (eventName == "Resilient Population") {
+		success = resilientPopulationEvent();
+	}
+	else if (eventName == "Airlift") {
+		cout << "Which player would you like to move?" << endl;
+		int otherPlayer = pollPlayers();
+
+		cout << "Which city would you like to move to? Choose a number between 1 and 48." << endl;
+		int cityID = pollForCity();
+
+		Pawn* moverPawn = playerlist[otherPlayer]->getMyPawn();
+		success = airliftEvent(moverPawn, cityID);
+	}
+	else {
+		cout << "That event does not exist" << endl;
+	}
+
+	if (success != 1) //If the event did not execute properly
+		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
+	else { //Delete your special card
+		cout << "You are a contingency planner! The event card you just played will be removed from the game!" << endl;
+		RoleCard* role = playerlist[pid]->getRoleCard();
+		dynamic_cast<ContingencyPlanner*>(role)->discardSpecialEvent();
+		
+	}
+}
+
+/*****************************************************************************************
+/ Function to Excute an event depending on the string input
+/ String should correspond to the title of the event card the player would like to play
+******************************************************************************************/
+void Game::playEvent(int cardIndex, int playerID) {
+	int success = -1;
+	PlayerCard eventCard = playerlist[playerID]->getHand().at(cardIndex);
+	string eventType = eventCard.getType();
+
+	if (eventType != "event") {
+		cout << "You did not choose an event card. Aborting event execution" << endl;
+	}
+	string eventName = eventCard.getName();
+
+	if (eventName == "FORECAST") {
+		success = forecastEvent();
+	}
+	else if (eventName == "GOVERNMENT GRANT") {
+		cout << "Which city would you like to build a research station in?" << endl;
+		int cityID = pollForCity();
+
+		success = governmentGrantEvent(cityID);
+	}
+	else if (eventName == "One Quiet Night") {
+		success = oneQuietNightEvent();
+	}
+	else if (eventName == "Resilient Population") {
+		success = resilientPopulationEvent();
+	}
+	else if (eventName == "Airlift") {
+		cout << "Which player would you like to move?" << endl;
+		int otherPlayer = pollPlayers();
+
+		cout << "Which city would you like to move to? Choose a number between 1 and 48." << endl;
+		int cityID = pollForCity();
+
+		Pawn* moverPawn = playerlist[otherPlayer]->getMyPawn();
+		success = airliftEvent(moverPawn, cityID);
+	}
+	else {
+		cout << "That event does not exist" << endl;
+	}
+
+	if (success != 1) //If the event did not execute properly
+		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
+	else {
+		playerlist[playerID]->discardCard(cardIndex, discardPile);
+		playerlist[playerID]->notify();
+	}
+}
 
 void Game::dropTables() {
 	SqlConnection deleteTables;
-	
+
 	string* deleteAll = new string("dbo.sp_dropTables");
 
 	deleteTables.sqlExecuteSelect(deleteAll);

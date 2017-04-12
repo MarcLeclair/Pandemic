@@ -18,6 +18,14 @@ PlayerCard::PlayerCard(cardType type, std::string name, std::string value) { // 
 	this->type = type;
 };
 
+PlayerCard::PlayerCard(const PlayerCard& plrcrd) {
+	name = plrcrd.name;
+	type = plrcrd.type;
+	id = plrcrd.id;
+	cardValue = plrcrd.cardValue;
+	color = plrcrd.color;
+}
+
 void PlayerCard::setName(cardType type, std::string str) {
 	if (type == EVENT) 
 		name = str; 

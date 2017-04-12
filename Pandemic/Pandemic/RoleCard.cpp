@@ -512,6 +512,16 @@ ContingencyPlanner::~ContingencyPlanner()
 	delete specialEvent;
 }
 
+/******************************************************************************************************
+/ Function that returns a boolean discerning whether the player is holding a special event card or not
+*******************************************************************************************************/
+bool ContingencyPlanner::hasSpecialEvent() {
+	if (specialEvent) {
+		return true;
+	}
+	return false;
+}
+
 /****************************************************************************************************************
 / Function to pick up a discarded event card
 / Functionality to access the discard pile must be implemented in the future
@@ -528,7 +538,8 @@ int ContingencyPlanner::pickUpSpecialEvent(vector<PlayerCard> &discardPile) {
 			}
 			cin >> newEventCard;
 		} while (newEventCard < 0 || newEventCard > discardPile.size() || cin.fail());
-		specialEvent = &discardPile[newEventCard - 1];
+
+		specialEvent = new PlayerCard(discardPile[newEventCard - 1]);
 		&discardPile.erase(discardPile.begin() + (newEventCard - 1));
 		return 1;
 	}

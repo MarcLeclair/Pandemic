@@ -153,12 +153,17 @@ void Player::displayCardsInHand() {
 ************************************************************************************/
 
 void Player::discardCard(int disc, vector<PlayerCard> &discardPile) {
-	if (cardsInHand.at(disc).getValue() == "event"){
+	if (cardsInHand.at(disc).getType() == "event"){
 		PlayerCard card = cardsInHand.at(disc);
 		cardsInHand.erase(cardsInHand.begin() + disc);
 		setNumOfCards();
 		discardPile.push_back(card);
 	}
+	else {
+		cardsInHand.erase(cardsInHand.begin() + disc);
+		setNumOfCards();
+	}
+	notify();
 }
 
 /**********************************************************************
@@ -213,6 +218,16 @@ void Player::display_player_info() {
 	//3 PlayerCards information
 	cout << "    Player's current hand: " << endl;
 	displayCardsInHand();
+
+	if (getRole() == "Contingency Planner") {
+		cout << "    Special Event Card : ";
+		if (dynamic_cast<ContingencyPlanner*>(role)->hasSpecialEvent()){
+			dynamic_cast<ContingencyPlanner*>(role)->showSpecialEvent();
+			cout << endl;
+		}
+		else
+			cout << " None" << endl;
+	}
 
 }
 
