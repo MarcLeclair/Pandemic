@@ -16,6 +16,7 @@
 using namespace std;
 class Game {
 
+	int playerTurnOnLoad;
 	bool hasGameStarted;
 	ODBC_Class Example;
 	Map map;
@@ -39,10 +40,14 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
+
+	void dropTables();
+	void save_gameState(int playerIdTurns);
+	bool isGameSaved();
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
 	void StartGame();
-	void SaveGame();
+	void SaveGame(int playerIdTurn);
 	void LoadGame();
 	bool isGameOver();
 	void performPlayersTurn(int);
