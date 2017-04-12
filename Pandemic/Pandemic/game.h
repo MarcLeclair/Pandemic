@@ -24,7 +24,7 @@ class Game {
 	vector<RoleCard*> rolelist;
 	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
-	vector<PlayerCard>* discardPile;
+	vector<PlayerCard> discardPile;
 	Infection* InfectionDeck;
 	
 public:
