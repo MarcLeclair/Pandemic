@@ -41,7 +41,7 @@ class City {
 	  bool hasDisease(char); //checks if a city has a disease of specific type
       bool connectsTo(int);  //currentCity checks if it connects to a city with the ID newCity
 	  void treatDisease(); //treats disease on city
-   
+	  bool pawnOnCity(string);
 	  //Build a research station in the current city
       void buildResearchStation() {  this->researchCenter = true; }
 
