@@ -62,7 +62,9 @@ public:
 	void performPlayersTurn(int);
 
 	vector<PlayerCard> returnEventCards(vector<PlayerCard>);
+	bool playerHasSpecialEvent(int);
 	void playEvent(int, int);
+	void playEvent(PlayerCard*, int);
 	int governmentGrantEvent(int);
 	int resilientPopulationEvent();
 	int forecastEvent();

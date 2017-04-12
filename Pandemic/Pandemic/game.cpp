@@ -185,8 +185,11 @@ int Game::pollForEvents(int pid) {
 	int cardIndex = 0;
 	playerlist[pid]->displayCardsInHand();
 
-	if (playerlist[pid]->getRole() == "Contingency Planner") {
+	if (playerHasSpecialEvent(pid)) {
+		cout << playerlist[pid]->getNumOfCards() + 1 << ". ";
 		RoleCard* rc = playerlist[pid]->getRoleCard();
+		dynamic_cast<ContingencyPlanner*>(rc)->showSpecialEvent();
+		cout << endl;
 	}
 	cin >> cardIndex;
 
@@ -199,6 +202,14 @@ int Game::pollForEvents(int pid) {
 		std::cin >> cardIndex;
 	}
 	return cardIndex;
+}
+
+/*******************************************************************************************
+/ Function discerning whether a player is a contingency planner holding a special event card
+********************************************************************************************/
+bool Game::playerHasSpecialEvent(int pid) {
+	RoleCard* playerRole = playerlist[pid]->getRoleCard();
+	return  playerlist[pid]->getRole() == "Contingency Planner" && dynamic_cast<ContingencyPlanner*>(playerRole)->hasSpecialEvent();
 }
 
 void Game::performPlayersTurn(int pId) {
@@ -283,7 +294,7 @@ void Game::performPlayersTurn(int pId) {
 				vector<PlayerCard> playerHand = playerlist[otherPlayerID]->getHand();
 				vector<PlayerCard> events = returnEventCards(playerHand);
 
-				if (events.size() == 0) { //if the player has no event cards to play
+				if (events.size() == 0 && !playerHasSpecialEvent(otherPlayerID)) { //if the player has no event cards to play
 					cout << "Sorry, you do not have any event cards to play. Please choose another option." << endl;
 					break;
 				}
@@ -291,9 +302,19 @@ void Game::performPlayersTurn(int pId) {
 				cout << "Which card would you like to play?" << endl;
 				cardIndex = pollForEvents(otherPlayerID);
 
-				playEvent(cardIndex-1, otherPlayerID);
-				cardIndex = -1;
-				break;
+				//If the player is a contingency planner and they want to play the special card they are holding
+				if (playerlist[otherPlayerID]->getRole() == "Contingency Planner" && cardIndex > playerlist[otherPlayerID]->getNumOfCards()) {
+					RoleCard* role = playerlist[otherPlayerID]->getRoleCard();
+					PlayerCard* specialEvent = dynamic_cast<ContingencyPlanner*>(role)->getSpecialEventCard();
+					playEvent(specialEvent, otherPlayerID);
+					cardIndex = -1;
+					break;
+				}
+				else { //else, play a normal event card from your hand
+					playEvent(cardIndex - 1, otherPlayerID);
+					cardIndex = -1;
+					break;
+				}
 			}
 
 		} while (redoDisplay || cin.fail());
@@ -973,6 +994,55 @@ int Game::resilientPopulationEvent() {
 int Game::forecastEvent() {
 	cout << "You have seen the top 6 infection cards" << endl;
 	return 1;
+}
+
+/************************************************************************
+/ Overloaded play event function
+/ Special function for the contingency planner
+/ If the contingency planner wishes to play their special event card
+/ This special event card will be discarded from the game entirely once its played
+*************************************************************************/
+void Game::playEvent(PlayerCard* eventCard, int pid) {
+	int success = -1;
+	string eventName = eventCard->getName();
+
+	if (eventName == "FORECAST") {
+		success = forecastEvent();
+	}
+	else if (eventName == "GOVERNMENT GRANT") {
+		cout << "Which city would you like to build a research station in?" << endl;
+		int cityID = pollForCity();
+
+		success = governmentGrantEvent(cityID);
+	}
+	else if (eventName == "One Quiet Night") {
+		success = oneQuietNightEvent();
+	}
+	else if (eventName == "Resilient Population") {
+		success = resilientPopulationEvent();
+	}
+	else if (eventName == "Airlift") {
+		cout << "Which player would you like to move?" << endl;
+		int otherPlayer = pollPlayers();
+
+		cout << "Which city would you like to move to? Choose a number between 1 and 48." << endl;
+		int cityID = pollForCity();
+
+		Pawn* moverPawn = playerlist[otherPlayer]->getMyPawn();
+		success = airliftEvent(moverPawn, cityID);
+	}
+	else {
+		cout << "That event does not exist" << endl;
+	}
+
+	if (success != 1) //If the event did not execute properly
+		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
+	else { //Delete your special card
+		cout << "You are a contingency planner! The event card you just played will be removed from the game!" << endl;
+		RoleCard* role = playerlist[pid]->getRoleCard();
+		dynamic_cast<ContingencyPlanner*>(role)->discardSpecialEvent();
+		
+	}
 }
 
 /*****************************************************************************************

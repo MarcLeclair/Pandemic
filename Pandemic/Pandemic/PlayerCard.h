@@ -29,7 +29,8 @@ public:
 	PlayerCard();
 	PlayerCard(cardType type, int id, std::string value, std::string color);
 	PlayerCard(cardType type, std::string name, std::string value);
-	
+	PlayerCard(const PlayerCard&);
+
 	std::string getValue() { return cardValue; }
 	std::string getName() { return name; }
 	std::string getType() { return ToString(this->type); } 

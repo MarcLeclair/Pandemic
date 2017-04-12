@@ -166,6 +166,11 @@ public:
 	int pickUpSpecialEvent(vector<PlayerCard> &discardPile);
 	void showSpecialEvent();
 	void discardSpecialEvent();
+	bool hasSpecialEvent();
+
+	PlayerCard* getSpecialEventCard() {
+		return specialEvent;
+	}
 private:
 	PlayerCard* specialEvent;
 };
