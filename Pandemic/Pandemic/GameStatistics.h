@@ -69,7 +69,8 @@ public:
 	void update() {
 		ObserverDecorator::update();
 		int number = this->game->getMap()->numberInfectedCities();
-		cout << "Number of cities infected: " << number << endl;
+		cout << "Cities Statistics:" << endl;
+		cout << "Number of cities infected: " << number << endl << endl;
 	}
 
 };
@@ -88,10 +89,11 @@ public:
 	void update() {
 		ObserverDecorator::update();
 		vector<Player*> playerlist = this->game->getPlayerlist();
+		cout << "Player Statistics:" << endl;
 		for (int i = 0; i < playerlist.size(); i++) {
-			cout << "Player: " << playerlist[i]->getPlayerID() << endl;
-			cout << "Number of cards: " << playerlist[i]->getNumOfCards() << endl;
+			cout << "Player " << playerlist[i]->getPlayerID() << " has "<< playerlist[i]->getNumOfCards() <<" cards in hand"<<endl;
 		}
+		cout << endl;
 	}
 
 };
@@ -110,7 +112,8 @@ public:
 	void update() {
 		ObserverDecorator::update();
 		int number = this->game->getMap()->numberInfectedCubes();
-		cout << "Number of infection cubes found on the map: " << number << endl;
+		cout << "Disease Statistics:" << endl;
+		cout << "Number of infection cubes found on the map: " << number << endl << endl;;
 	}
 
 };
@@ -129,12 +132,12 @@ public:
 	void update() {
 		ObserverDecorator::update();
 		auto infectionCounters = this->game->getMap()->placedCubes();
-		cout << "No pieces left" << endl;
+		cout << "ResourcesStatistics:" << endl;
 		cout << "Number of research stations left in supply : " << this->game->getMap()->numberResearchStations() << endl;
 		cout << "Number of Black Cubes  left in supply: " << 24-infectionCounters[0] << endl;
 		cout << "Number of Red Cubes left in supply: " << 24-infectionCounters[1] << endl;
 		cout << "Number of Blue Cubes left in supply: " << 24-infectionCounters[2] << endl;
-		cout << "Number of Yellow Cubes left in supply: " << 24-infectionCounters[3] << endl;
+		cout << "Number of Yellow Cubes left in supply: " << 24-infectionCounters[3] << endl << endl;
 	}
 
 };

@@ -67,7 +67,7 @@ void GameStatistics::update() {
 }
 
 /***************************************************************************************************
-/ Functio to display the Game's information when something about their state is changed
+/ Function to display the Game's information when something about their state is changed
 / Includes information about their pawn, location, role, how many actions are left in their turn
 / Also outputs their hand of cards
 ****************************************************************************************************/
