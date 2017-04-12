@@ -60,6 +60,7 @@ Game::Game(int numberPlayers) {
 }
 
 
+
 bool Game::isGameSaved() {
 	SqlConnection startGame;
 
@@ -100,13 +101,15 @@ void Game::StartGame() {
 				cout << "Saving the game" << endl;
 				SaveGame(currentPlayersId);
 			}
-
+  
 			//If the player is an operations expert, reset their use of special operation so they can use it the next turn
 			if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
 				RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
 				dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
 			}
+      		notify(); //If the action worked, notify all the observers
 			currentPlayersId++;
+
 		}
 	}
 	else if (this->hasGameStarted == true) {
@@ -932,6 +935,7 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	return InfectionDeck;
 }
 
+
 void Game::dropTables() {
 	SqlConnection deleteTables;
 	
@@ -940,6 +944,7 @@ void Game::dropTables() {
 	deleteTables.sqlExecuteSelect(deleteAll);
 
 }
+/*
 int main() {
 	Game* checkIfgameSave = new Game();
 	checkIfgameSave->dropTables();
@@ -971,4 +976,5 @@ int main() {
 	system("PAUSE");
 	delete checkIfgameSave;
 	return 0;
-}
+}*/
+
