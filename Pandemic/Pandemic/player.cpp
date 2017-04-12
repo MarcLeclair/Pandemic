@@ -219,6 +219,16 @@ void Player::display_player_info() {
 	cout << "    Player's current hand: " << endl;
 	displayCardsInHand();
 
+	if (getRole() == "Contingency Planner") {
+		cout << "    Special Event Card : ";
+		if (dynamic_cast<ContingencyPlanner*>(role)->hasSpecialEvent()){
+			dynamic_cast<ContingencyPlanner*>(role)->showSpecialEvent();
+			cout << endl;
+		}
+		else
+			cout << " None" << endl;
+	}
+
 }
 
 /**************************************************************

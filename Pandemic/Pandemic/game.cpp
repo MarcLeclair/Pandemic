@@ -85,6 +85,7 @@ bool Game::isGameSaved() {
 void Game::StartGame() {
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
+		resetInfectCities();
 		int currentPlayersId = 0;
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
@@ -95,8 +96,14 @@ void Game::StartGame() {
 			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 
-			cout << "\nDrawing cards finished. Infecting Cities." << endl;
-			InfectionDeck->endTurnInfection(&map);
+			//If someone has played the one quiet night event, no cities will be infected
+			if (shouldCitiesBeInfected()) {
+				cout << "\nDrawing cards finished. Infecting Cities." << endl;
+				InfectionDeck->endTurnInfection(&map);
+			}
+			else {
+				cout << "\nSkipping the infect Cities step!" << endl;
+			}
 
 			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 				cout << "Saving the game" << endl;
@@ -108,12 +115,15 @@ void Game::StartGame() {
 				RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
 				dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
 			}
+
+
       		notify(); //If the action worked, notify all the observers
 			currentPlayersId++;
 
 		}
 	}
 	else if (this->hasGameStarted == true) {
+		resetInfectCities();
 		int currentPlayersId = playerTurnOnLoad;
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
@@ -124,8 +134,14 @@ void Game::StartGame() {
 			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
 			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
 
-			cout << "\nDrawing cards finished. Infecting Cities." << endl;
-			InfectionDeck->endTurnInfection(&map);
+			//If someone has played the one quiet night event, no cities will be infected
+			if (shouldCitiesBeInfected()) {
+				cout << "\nDrawing cards finished. Infecting Cities." << endl;
+				InfectionDeck->endTurnInfection(&map);
+			}
+			else {
+				cout << "Skipping the infect Cities step!" << endl;
+			}
 
 			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 				cout << "Saving the game" << endl;
@@ -270,6 +286,7 @@ int Game::pollForEvents(int pid) {
 	if (playerHasSpecialEvent(pid)) {
 		cout << playerlist[pid]->getNumOfCards() + 1 << ". ";
 		RoleCard* rc = playerlist[pid]->getRoleCard();
+		cout << "\t" << endl;
 		dynamic_cast<ContingencyPlanner*>(rc)->showSpecialEvent();
 		cout << endl;
 	}
@@ -362,6 +379,7 @@ void Game::performPlayersTurn(int pId) {
 				break;
 			case 6:
 				playerlist[pId]->display_player_info();
+				cout << "Player has " << playerlist[pId]->getAction() << " moves left this turn" << endl;
 				break;
 			case 7:
 				for (int i = 0; i < playerlist.size(); i++) {
@@ -612,11 +630,6 @@ void Game::performPlayersTurn(int pId) {
 					redo = 1;
 					break;
 				}
-				if (success != 0 && playerlist[pId]->getRole() == "Contingency Planner") {
-					//We need to delete the special event
-					RoleCard* rc = playerlist[pId]->getRoleCard();
-					dynamic_cast<ContingencyPlanner&>(*rc).discardSpecialEvent();
-				}
 				break;
 			default:
 				cout << "Invalid ID, please retry." << endl;
@@ -631,7 +644,7 @@ void Game::performPlayersTurn(int pId) {
 			}
 		} while (redo == 0);
 
-		if (success != 0) {
+		if (success != 0 && redo == 1) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
 			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  discardPile);
@@ -1168,7 +1181,7 @@ void Game::playEvent(int cardIndex, int playerID) {
 	else if (eventName == "Resilient Population") {
 		success = resilientPopulationEvent();
 	}
-	else if (eventName == "Airlift"){
+	else if (eventName == "Airlift") {
 		cout << "Which player would you like to move?" << endl;
 		int otherPlayer = pollPlayers();
 
@@ -1190,19 +1203,9 @@ void Game::playEvent(int cardIndex, int playerID) {
 	}
 }
 
-int main() {
-	Game* game = new Game(2);
-	DeckOfCard<PlayerCard>* deck = game->getDeck();
-	game->displayPlayers();
-	game->StartGame();
-	vector<Player*> players = game->getPlayerlist();
-	cout << players[0]->getCurrentLocation() << endl;
-	//game->getMap().display_information();
-	//players[1]->drive(26);
-
 void Game::dropTables() {
 	SqlConnection deleteTables;
-	
+
 	string* deleteAll = new string("dbo.sp_dropTables");
 
 	deleteTables.sqlExecuteSelect(deleteAll);
