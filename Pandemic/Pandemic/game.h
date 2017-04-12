@@ -17,6 +17,7 @@
 using namespace std;
 class Game : public Subject{
 
+	int playerTurnOnLoad;
 	bool hasGameStarted;
 	ODBC_Class Example;
 	Map map;
@@ -24,7 +25,7 @@ class Game : public Subject{
 	vector<RoleCard*> rolelist;
 	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
-	vector<PlayerCard>* discardPile;
+	vector<PlayerCard> discardPile;
 	Infection* InfectionDeck;
 	
 public:
@@ -40,10 +41,14 @@ public:
 	DeckOfCard<PlayerCard>* getDeck() {
 		return deck;
 	}
+
+	void dropTables();
+	void save_gameState(int playerIdTurns);
+	bool isGameSaved();
 	void displayDisplayOptions();
 	void drawPlayerCards(int);
 	void StartGame();
-	void SaveGame();
+	void SaveGame(int playerIdTurn);
 	void LoadGame();
 	bool isGameOver();
 	void performPlayersTurn(int);

@@ -9,80 +9,160 @@ Game::Game() {
 }
 Game::Game(int numberPlayers) {
 
-	this->hasGameStarted = true;
-	map = Map();
-	map.load_starting_map();
-	deck = instantiatePlayerCards(map, 4);
+	if (hasGameStarted == false) {
 
-	rolelist.push_back(new Medic(&map));
-	rolelist.push_back(new Researcher(&map));
-	rolelist.push_back(new OperationsExpert(&map));
-	rolelist.push_back(new Scientist(&map));
-	rolelist.push_back(new ContingencyPlanner(&map));
-	rolelist.push_back(new QuarantineSpecialist(&map));
-	rolelist.push_back(new Dispatcher(&map));
+		map = Map();
+		map.load_starting_map();
+		deck = instantiatePlayerCards(map, 4);
 
-	cout << "Creating role deck" << endl;
-	DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
-	
 
-	for (int i = 0; i < numberPlayers; i++) {
+		rolelist.push_back(new Medic(&map));
+		rolelist.push_back(new Researcher(&map));
+		rolelist.push_back(new OperationsExpert(&map));
+		rolelist.push_back(new Scientist(&map));
+		rolelist.push_back(new ContingencyPlanner(&map));
+		rolelist.push_back(new QuarantineSpecialist(&map));
+		rolelist.push_back(new Dispatcher(&map));
+
+		cout << "Creating role deck" << endl;
+		DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
+
+
+		for (int i = 0; i < numberPlayers; i++) {
 		Player* player = new Player(i, roledeck->getTopCard());
 		PlayerView* playerview = new PlayerView(player);
 		for (int j = 0; j < (6 - numberPlayers); j++) {
 			PlayerCard card = deck->getTopCard();
 			if (card.getType() != "epidemic") {
-				player->drawCard(card,*discardPile);
+				player->drawCard(card, discardPile);
 			}
 			else {
 				j--;
+				}
 			}
+			this->playerlist.push_back(player);
+			map.addPawn(player->getMyPawn());
 		}
-		this->playerlist.push_back(player);
-		map.addPawn(player->getMyPawn());
+		//load_players();
+		//initialize both decks of cards??
+		cout << endl;
+		InfectionDeck = new Infection(0);
+		InfectionDeck->makeDeck();
+		InfectionDeck->shuffleInfection();
+		InfectionDeck->startInfect(&map);
+		cout << endl;
 	}
-	//load_players();
-	//initialize both decks of cards??
-	cout << endl;
-	InfectionDeck = new Infection(0);
-	InfectionDeck->makeDeck();
-	InfectionDeck->shuffleInfection();
-	InfectionDeck->startInfect(&map);
-	cout << endl;
-}
-
-void Game::StartGame() {
-	notify(); //If the action worked, notify all the observers
-	int currentPlayersId = 0;
-	while (!(this->isGameOver())) {
-		cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
-		performPlayersTurn(currentPlayersId%playerlist.size());
-		cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
-		drawPlayerCards(currentPlayersId%playerlist.size());
-
-		cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
-		playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
-
-		cout << "\nDrawing cards finished. Infecting Cities." << endl;
-		InfectionDeck->endTurnInfection(&map);
+	else {
+		LoadGame();
+	}
 	
-		notify(); //If the action worked, notify all the observers
-		if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
-			cout << "Saving the game" << endl;
-			SaveGame();
+	    
+}
+
+
+
+bool Game::isGameSaved() {
+	SqlConnection startGame;
+
+	string* select = new string("Select * from GameState");
+
+	startGame.sqlExecuteSelect(select);
+
+	vector<vector<string>> resultSet = startGame.Connection.colData;
+
+	for (vector<string> rows : resultSet) {
+		if (rows.at(0) == "true") {
+			this->hasGameStarted = true;
+		}
+		else {
+			this->hasGameStarted = false;
+		}
+		playerTurnOnLoad = stoi(rows.at(1));
+	}
+	
+	return this->hasGameStarted;
+}
+void Game::StartGame() {
+	if (this->hasGameStarted == false) {
+		int currentPlayersId = 0;
+		while (!(this->isGameOver())) {
+			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
+			performPlayersTurn(currentPlayersId%playerlist.size());
+			cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
+			drawPlayerCards(currentPlayersId%playerlist.size());
+
+			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
+			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
+
+			cout << "\nDrawing cards finished. Infecting Cities." << endl;
+			InfectionDeck->endTurnInfection(&map);
+
+			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
+				cout << "Saving the game" << endl;
+				SaveGame(currentPlayersId);
+			}
+  
+			//If the player is an operations expert, reset their use of special operation so they can use it the next turn
+			if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
+				RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
+				dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
+			}
+      		notify(); //If the action worked, notify all the observers
+			currentPlayersId++;
+
+		}
+	}
+	else if (this->hasGameStarted == true) {
+		int currentPlayersId = playerTurnOnLoad;
+		while (!(this->isGameOver())) {
+			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
+			performPlayersTurn(currentPlayersId%playerlist.size());
+			cout << "\nPlayer " << currentPlayersId%playerlist.size() << " actions over. Drawing player cards." << endl;
+			drawPlayerCards(currentPlayersId%playerlist.size());
+
+			cout << "\nFinished drawn cards. Player " << currentPlayersId%playerlist.size() << "'s hand is now: " << endl;
+			playerlist[currentPlayersId%playerlist.size()]->displayCardsInHand();
+
+			cout << "\nDrawing cards finished. Infecting Cities." << endl;
+			InfectionDeck->endTurnInfection(&map);
+
+			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
+				cout << "Saving the game" << endl;
+				SaveGame(currentPlayersId);
+			}
+
+			//If the player is an operations expert, reset their use of special operation so they can use it the next turn
+			if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
+				RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
+				dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
+			}
+			currentPlayersId++;
 		}
 
-		//If the player is an operations expert, reset their use of special operation so they can use it the next turn
-		if (playerlist[currentPlayersId%playerlist.size()]->getRole() == "Operations Expert") {
-			RoleCard* rc = playerlist[currentPlayersId%playerlist.size()]->getRoleCard();
-			dynamic_cast<OperationsExpert&>(*rc).resetSpecialUsed();
-		}
-		currentPlayersId++;
 	}
 
 }
-void Game::SaveGame() {
-	if (hasGameStarted == true) {
+
+void Game::save_gameState(int playerIdTurns) {
+	SqlConnection saveGame;
+
+	string* select = new string("INSERT into GameState(playerTurnId, hasGameStarted) VALUES");
+
+
+	saveGame.sqlExecuteSelect(select);
+
+	std::stringstream stringbuffer;
+	stringbuffer << playerIdTurns;
+
+	std::string str = stringbuffer.str();
+	string values = "(1," + str;
+	select->append(values);
+
+	saveGame.sqlExecuteSelect(select);
+}
+void Game::SaveGame(int playerIdTurn) {
+	if (this->hasGameStarted == true) {
+		save_gameState(playerIdTurn);
 		map.save_map();
 		save_players();
 		save_playerCards();
@@ -93,9 +173,20 @@ void Game::SaveGame() {
 }
 
 void Game::LoadGame() {
+
 	map.load_map();
 	load_players();
 	load_deck();
+
+	rolelist.push_back(new Medic(&map));
+		rolelist.push_back(new Researcher(&map));
+		rolelist.push_back(new OperationsExpert(&map));
+		rolelist.push_back(new Scientist(&map));
+		rolelist.push_back(new ContingencyPlanner(&map));
+		rolelist.push_back(new QuarantineSpecialist(&map));
+		rolelist.push_back(new Dispatcher(&map));
+		cout << "Creating role deck" << endl;
+		DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
 
 }
 int Game::pollForCity() {
@@ -363,7 +454,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success > 0) {
 					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
 					PlayerCard givingCard =givingHand[cardIndex - 1];
-					playerlist[receiver]->drawCard(givingCard, *discardPile);
+					playerlist[receiver]->drawCard(givingCard, discardPile);
 					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation())->name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				break;
@@ -386,7 +477,7 @@ void Game::performPlayersTurn(int pId) {
 				if (success != 0) { //If it worked, we need to discard the cards used
 					for (int i = 0; i < cure.size(); i++) {
 						int relativeIndex = (cure[i]-i)% playerlist[pId]->getNumOfCards();
-						playerlist[pId]->discardCard(relativeIndex, *discardPile);
+						playerlist[pId]->discardCard(relativeIndex, discardPile);
 					}
 					cardIndex = -1;
 				}
@@ -404,15 +495,19 @@ void Game::performPlayersTurn(int pId) {
 					PlayerCard moveCard = playerlist[pId]->getHand().at(cardIndex-1);
 					//We are casting the role to an OperationsExpert type because we know it is an Operations Expert
 					success = dynamic_cast<OperationsExpert&>(*rc).specialOperationsMove(playerlist[pId]->getMyPawn(), moveCard);
+					break;
 				}
 
 				else if (playerlist[pId]->getRole() == "Contingency Planner") { //We are going to pick up a discarded Event card
 					cout << "\nYou chose the Contingency Planner's special move!" << endl;
-					//Since we do not have a discard pile at the moment, we will pass any arbitrary card to the function
-					cout << "Passing an arbitrary PlayerCard to the function " << endl;
-					/*PlayerCard* arbitrary = new PlayerCard("Event", 0, "Random Special Event");*/
+
+					if (discardPile.size() == 0) {
+						cout << "Cannot pick up a discarded event; there are no discarded events to pick up!" << endl;
+						break;
+					}
 					RoleCard* rc = playerlist[pId]->getRoleCard();
-					/*success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(arbitrary);*/
+					success = dynamic_cast<ContingencyPlanner&>(*rc).pickUpSpecialEvent(discardPile);
+					break;
 				}
 
 				else if (playerlist[pId]->getRole() == "Dispatcher") { //We will be moving any other pawn as if it is our own
@@ -432,6 +527,7 @@ void Game::performPlayersTurn(int pId) {
 
 					RoleCard* rc = playerlist[pId]->getRoleCard();
 					success = dynamic_cast<Dispatcher&>(*rc).specialMoveAnotherPlayer(playerlist[otherPlayerID]->getMyPawn(), newCityID);
+					break;
 				}
 				else {
 					cout << "\nYour role does not have any special moves." << endl;
@@ -460,7 +556,7 @@ void Game::performPlayersTurn(int pId) {
 		if (success != 0) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
-			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  *discardPile);
+			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  discardPile);
 		}
 	}
 }
@@ -469,13 +565,13 @@ void Game::drawPlayerCards(int pId) {
 	PlayerCard card1 = deck->getTopCard();
 	PlayerCard card2 = deck->getTopCard();
 	if (card1.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card1, *discardPile);
+		playerlist[pId]->drawCard(card1, discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
 	}
 	if (card2.getType() != "epidemic") {
-		playerlist[pId]->drawCard(card2, *discardPile);
+		playerlist[pId]->drawCard(card2, discardPile);
 	}
 	else {
 		InfectionDeck->infectEpidemic(&map);
@@ -588,6 +684,7 @@ void Game::load_players() {
 	string role;
 	vector<PlayerCard> hand;
 
+
 	string *select = new string("select * from SavePlayerInfo");
 	string *count = new string("select count(playerId) from SavePlayerInfo");
 	string *cardSelect = new string("select ISNULL(pcID, -1), ISNULL(pcValue, 'null'), ISNULL(pcColor, 'null'), ISNULL(eventName, 'null'), type, deckOrPlayerId from[SavePlayerCards] where[deckOrPlayerId] > -1");
@@ -645,6 +742,8 @@ void Game::load_players() {
 		player1->getMyPawn()->set_location(currentLoc);
 		playerlist.push_back(player1);
 		hand.clear();
+		this->playerlist.push_back(player1);
+		map.addPawn(player1->getMyPawn());
 	}
 }
 
@@ -674,6 +773,15 @@ void Game::load_deck() {
 			resultSet.push_back(*card);
 		}
 	}
+
+	PlayerCard epidemic = PlayerCard(PlayerCard::EPIDEMIC, -1, "1-INCREASE \n move the infection rate marker forward 1 space \n"
+		"\t 2-INFECT \n draw the bottom card from the infection deck  and put 3 cubes  on that city. Discard that card \n"
+		"\t 3-INTESIFY \n shuffle the cards in the infection discard pile and put them on top of the infection deck", "no colour");
+	for (int i = 0; i < 4; i++) {
+		resultSet.push_back(epidemic);
+	}
+
+
 	deck = new DeckOfCard<PlayerCard>(resultSet);
 }
 
@@ -826,4 +934,47 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 
 	return InfectionDeck;
 }
+
+
+void Game::dropTables() {
+	SqlConnection deleteTables;
+	
+	string* deleteAll = new string("dbo.sp_dropTables");
+
+	deleteTables.sqlExecuteSelect(deleteAll);
+
+}
+/*
+int main() {
+	Game* checkIfgameSave = new Game();
+	checkIfgameSave->dropTables();
+	bool startedOrNot = checkIfgameSave->isGameSaved();
+	
+	if(startedOrNot == false){
+		 Game * game = new Game(2);
+		DeckOfCard<PlayerCard>* deck = game->getDeck();
+		game->displayPlayers();
+		game->StartGame();
+		vector<Player*> players = game->getPlayerlist();
+		cout << players[0]->getCurrentLocation() << endl;
+		delete game;
+	}
+	else if (startedOrNot == true) {
+		
+		string userInput;
+		cout << "would you like to load the game found?" << endl;
+		cin >> userInput;
+		if (userInput == "yes") {
+			checkIfgameSave->LoadGame();
+		}
+		else
+			checkIfgameSave->dropTables();
+	}
+	//game->getMap().display_information();
+	//players[1]->drive(26);
+
+	system("PAUSE");
+	delete checkIfgameSave;
+	return 0;
+}*/
 

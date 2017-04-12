@@ -516,14 +516,34 @@ ContingencyPlanner::~ContingencyPlanner()
 / Function to pick up a discarded event card
 / Functionality to access the discard pile must be implemented in the future
 *****************************************************************************************************************/
-int ContingencyPlanner::pickUpSpecialEvent(PlayerCard* sp) {
+int ContingencyPlanner::pickUpSpecialEvent(vector<PlayerCard> &discardPile) {
 	if (!specialEvent) {
-		specialEvent = sp;
+		int newEventCard = -1;
+		cout << "Sorting through the discarded events! Which would you like to pick up?" << endl;
+		do {
+			cin.clear();
+			cin.ignore(256, '\n');
+			for (int cardIndex = 0; cardIndex < discardPile.size(); cardIndex++) {
+				cout << cardIndex + 1 << ". " << discardPile[cardIndex].getName() << endl;
+			}
+			cin >> newEventCard;
+		} while (newEventCard < 0 || newEventCard > discardPile.size() || cin.fail());
+		specialEvent = &discardPile[newEventCard - 1];
+		&discardPile.erase(discardPile.begin() + (newEventCard - 1));
 		return 1;
 	}
 	else {
 		cout << "You already have a special Event card stored. Please discard it before storing another." << endl;
 		return 0;
+	}
+}
+
+/***********************************************************
+/ Function to show the value of their special event card
+************************************************************/
+void ContingencyPlanner::showSpecialEvent() {
+	if (specialEvent) {
+		cout << specialEvent->getValue();
 	}
 }
 /****************************************************
