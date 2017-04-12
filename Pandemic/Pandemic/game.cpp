@@ -181,6 +181,26 @@ int Game::pollDispatcherPawn() {
 	return otherPlayerID - 1;
 }
 
+int Game::pollForEvents(int pid) {
+	int cardIndex = 0;
+	playerlist[pid]->displayCardsInHand();
+
+	if (playerlist[pid]->getRole() == "Contingency Planner") {
+		RoleCard* rc = playerlist[pid]->getRoleCard();
+	}
+	cin >> cardIndex;
+
+	//If the user enters a character other than a number
+	while (cin.fail()) {
+		std::cout << "\nPlease only input a number! Try again.\n" << std::endl;
+		playerlist[pid]->displayCardsInHand();
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+		std::cin >> cardIndex;
+	}
+	return cardIndex;
+}
+
 void Game::performPlayersTurn(int pId) {
 	playerlist[pId]->setActions(4);
 	int success = 0;
@@ -269,7 +289,7 @@ void Game::performPlayersTurn(int pId) {
 				}
 
 				cout << "Which card would you like to play?" << endl;
-				cardIndex = pollForCards(otherPlayerID);
+				cardIndex = pollForEvents(otherPlayerID);
 
 				playEvent(cardIndex-1, otherPlayerID);
 				cardIndex = -1;
