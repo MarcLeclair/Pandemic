@@ -83,6 +83,7 @@ bool Game::isGameSaved() {
 	return this->hasGameStarted;
 }
 void Game::StartGame() {
+	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
 		int currentPlayersId = 0;
 		while (!(this->isGameOver())) {
@@ -944,37 +945,5 @@ void Game::dropTables() {
 	deleteTables.sqlExecuteSelect(deleteAll);
 
 }
-/*
-int main() {
-	Game* checkIfgameSave = new Game();
-	checkIfgameSave->dropTables();
-	bool startedOrNot = checkIfgameSave->isGameSaved();
-	
-	if(startedOrNot == false){
-		 Game * game = new Game(2);
-		DeckOfCard<PlayerCard>* deck = game->getDeck();
-		game->displayPlayers();
-		game->StartGame();
-		vector<Player*> players = game->getPlayerlist();
-		cout << players[0]->getCurrentLocation() << endl;
-		delete game;
-	}
-	else if (startedOrNot == true) {
-		
-		string userInput;
-		cout << "would you like to load the game found?" << endl;
-		cin >> userInput;
-		if (userInput == "yes") {
-			checkIfgameSave->LoadGame();
-		}
-		else
-			checkIfgameSave->dropTables();
-	}
-	//game->getMap().display_information();
-	//players[1]->drive(26);
 
-	system("PAUSE");
-	delete checkIfgameSave;
-	return 0;
-}*/
 
