@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 
+#include "SqlConnection.h"
 #include "possession.h"
 #ifndef MAP_H
 #define MAP_H
@@ -31,7 +32,7 @@ class City {
       vector<City*> connectionsRef; //list of connected city references
 
 
-  	  City (int, string, char, int[],bool);//id,name,zone,locationx,locationy,infection counters, if rearch station
+  	  City (int, string, char*, int[],bool);//id,name,zone,locationx,locationy,infection counters, if rearch station
    	  City ();
 
   	  void display_information(); //displays information about the city
@@ -91,6 +92,10 @@ public:
 	void display_status(); //displays the status of the map
 	bool checkGameOver();
 	bool checkWin();
+	int* placedCubes();
+	int numberInfectedCities();
+	int numberInfectedCubes();
+	int numberResearchStations();
     City* getCityByID(int); //returns the city given by specified int 
 	vector<City*> getCities(); // return list of cities
     Map ();
