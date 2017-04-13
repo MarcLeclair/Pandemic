@@ -1205,6 +1205,11 @@ void Game::dropTables() {
 
 }
 
+
+/***************************************************************************************
+/ Infection step that occurs at the beginning of the game
+/ 9 cities are chosen from the top of the infection pile and those cities are infected
+***************************************************************************************/
 void Game::startInfect() {
 	int cityID = 0;
 	int innerInfect = 0;
@@ -1247,6 +1252,11 @@ void Game::startInfect() {
 	}
 }
 
+/***********************************************************************************************************
+/ Infection that occurs when the infect cities step of a player's turn happens
+/ Depending on the infection rate, a number of cards are drawn and those cities are infected with one cube
+/ Those cards are then placed in the infection discard pile
+***********************************************************************************************************/
 void Game::endTurnInfection() {
 	int cityID = 0;
 	int infectCardsToPull = 0;
@@ -1274,6 +1284,12 @@ void Game::endTurnInfection() {
 
 }
 
+/***************************************************************************************
+/ Function to infect when an epidemic card is pulled
+/ The bottom card of the infection pile is pulled, that city is infected with 3 cubes
+/ The card is then put to the discard pile, and the discard pile is shuffled
+/ The discard pile is then placed back on top of the infection deck
+****************************************************************************************/
 void Game::infectEpidemic() {
 	cout << "\nOh no! An epidemic card has been drawn!" << endl;
 
