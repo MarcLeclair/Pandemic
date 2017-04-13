@@ -86,7 +86,13 @@ void Game::StartGame() {
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
 		resetInfectCities();
-		int currentPlayersId = 0;
+
+		//If starting the game anew, choose a random player to start
+		std::random_device rd; // obtain a random number from hardware
+		std::mt19937 eng(rd()); // seed the generator
+		std::uniform_int_distribution<> distr(0, (playerlist.size()-1)); // define the range
+
+		int currentPlayersId = distr(eng); //obtain a random id to start
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 			performPlayersTurn(currentPlayersId%playerlist.size());
@@ -313,7 +319,7 @@ bool Game::playerHasSpecialEvent(int pid) {
 
 void Game::performPlayersTurn(int pId) {
 	playerlist[pId]->setActions(4);
-	int success = 0;
+	int success = -1;
 	int redo = 1;
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 
@@ -423,6 +429,9 @@ void Game::performPlayersTurn(int pId) {
 		int action = playerlist[pId]->requestAction();
 		do {
 			switch (action) {
+			case 0: //return to the display menu
+				redo = 1;
+				break;
 			case 1: //drive
 				cout << "\nYou chose to drive." << endl;
 
@@ -636,7 +645,7 @@ void Game::performPlayersTurn(int pId) {
 				redo = 0;
 			}
 
-			if (success != 1) { //If the action didn't work
+			if (success == 0) { //If the action didn't work
 				redo = pollForRetry();
 			}
 			else {
@@ -644,7 +653,7 @@ void Game::performPlayersTurn(int pId) {
 			}
 		} while (redo == 0);
 
-		if (success != 0 && redo == 1) {
+		if (success == 1 && redo == 1) {
 			playerlist[pId]->useAction();
 			cout << "\nPlayer " << pId << " has " << playerlist[pId]->getAction() << " actions left." << endl;
 			if (cardIndex != -1) playerlist[pId]->discardCard(cardIndex - 1,  discardPile);

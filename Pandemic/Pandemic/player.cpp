@@ -171,6 +171,7 @@ void Player::discardCard(int disc, vector<PlayerCard> &discardPile) {
 / Corresponds to the actions found in the Reference Card class
 **********************************************************************/
 void Player::outputPossibleActions() {
+	cout << "0. Go back to main menu " << endl;
 	vector<string> allActions = refcard->getAllActions();
 	int actionNum = 1;
 	for (string action : allActions) {
