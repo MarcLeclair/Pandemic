@@ -37,13 +37,9 @@ Game::Game(int numberPlayers) {
 			this->playerlist.push_back(player);
 			map.addPawn(player->getMyPawn());
 		}
-		//load_players();
-		//initialize both decks of cards??
-		cout << endl;
-		InfectionDeck = new Infection(0);
-		InfectionDeck->makeDeck();
-		InfectionDeck->shuffleInfection();
-		InfectionDeck->startInfect(&map);
+
+		InfectionDeck = instantiateInfectionDeck(map);
+		startInfect();
 		cout << endl;
 	}
 	else {
@@ -99,7 +95,7 @@ void Game::StartGame() {
 			//If someone has played the one quiet night event, no cities will be infected
 			if (shouldCitiesBeInfected()) {
 				cout << "\nDrawing cards finished. Infecting Cities." << endl;
-				InfectionDeck->endTurnInfection(&map);
+				endTurnInfection();
 			}
 			else {
 				cout << "\nSkipping the infect Cities step!" << endl;
@@ -137,7 +133,7 @@ void Game::StartGame() {
 			//If someone has played the one quiet night event, no cities will be infected
 			if (shouldCitiesBeInfected()) {
 				cout << "\nDrawing cards finished. Infecting Cities." << endl;
-				InfectionDeck->endTurnInfection(&map);
+				endTurnInfection();
 			}
 			else {
 				cout << "Skipping the infect Cities step!" << endl;
@@ -662,13 +658,13 @@ void Game::drawPlayerCards(int pId) {
 		playerlist[pId]->drawCard(card1, discardPile);
 	}
 	else {
-		InfectionDeck->infectEpidemic(&map);
+		infectEpidemic();
 	}
 	if (card2.getType() != "epidemic") {
 		playerlist[pId]->drawCard(card2, discardPile);
 	}
 	else {
-		InfectionDeck->infectEpidemic(&map);
+		infectEpidemic();
 	}
 
 
@@ -986,7 +982,7 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 		playerCards.push_back(cardToPush);
 	}
 	
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < numOfEpidemic; i++) {
 		playerCards.push_back(epidemic);
 	}
 	DeckOfCard<PlayerCard>* playerDeck = new DeckOfCard<PlayerCard>(playerCards);
@@ -1003,19 +999,13 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 
 
 DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
-
-	stringstream colourConversion;
-	string colour;
-
+	
 	vector<Infection> InfectionCards;
 	vector<City*> temp = map.getCities();
 
 	for (City* city : temp) {
 		int id = city->id;
-		string name = city->name;
-		colourConversion << (city->zone);
-		colourConversion >> colour;
-
+		
 		Infection cardToPush = Infection(id);
 		InfectionCards.push_back(cardToPush);
 	}
@@ -1216,3 +1206,113 @@ void Game::dropTables() {
 }
 
 
+/***************************************************************************************
+/ Infection step that occurs at the beginning of the game
+/ 9 cities are chosen from the top of the infection pile and those cities are infected
+***************************************************************************************/
+void Game::startInfect() {
+	int cityID = 0;
+	int innerInfect = 0;
+
+	//infect 3 cities with 3 cubes
+	for (int infect = 0; infect < 3; infect++) {
+		Infection infectCard = InfectionDeck->getTopCard();
+		cityID = infectCard.getInfectionID();
+
+		for (innerInfect = 0; innerInfect < 3; innerInfect++) {
+			map.addDisease(cityID);
+		}
+
+		infectionDiscard.push_back(infectCard);
+		cout << map.getCityByID(cityID)->name << " has been infected with " << innerInfect << " cubes." << endl;
+	}
+
+	//infect 3 cities with 2 cubes
+	for (int infect = 0; infect < 3; infect++) {
+		Infection infectCard = InfectionDeck->getTopCard();
+		cityID = infectCard.getInfectionID();
+
+		for (innerInfect = 0; innerInfect < 2; innerInfect++) {
+			map.addDisease(cityID);
+		}
+
+		infectionDiscard.push_back(infectCard);
+		cout << map.getCityByID(cityID)->name << " has been infected with " << innerInfect << " cubes." << endl;
+	}
+
+	//infect 3 cities with 1 cubes
+	for (int infect = 0; infect < 3; infect++) {
+		Infection infectCard = InfectionDeck->getTopCard();
+		cityID = infectCard.getInfectionID();
+
+		map.addDisease(cityID);
+
+		infectionDiscard.push_back(infectCard);
+		cout << map.getCityByID(cityID)->name << " has been infected with 1 cube." << endl;
+	}
+}
+
+/***********************************************************************************************************
+/ Infection that occurs when the infect cities step of a player's turn happens
+/ Depending on the infection rate, a number of cards are drawn and those cities are infected with one cube
+/ Those cards are then placed in the infection discard pile
+***********************************************************************************************************/
+void Game::endTurnInfection() {
+	int cityID = 0;
+	int infectCardsToPull = 0;
+
+	//Decide how many cards to pull depending on the infection rate
+	if (infectionRate < 4) {
+		infectCardsToPull = 2;
+	}
+	else if (infectionRate == 4 || infectionRate == 5) {
+		infectCardsToPull = 3;
+	}
+	else if (infectionRate > 5) {
+		infectCardsToPull = 4;
+	}
+
+	//Infect the selected cities with the decided amount of cubes
+	//Pushed the used infection cards onto the infection discard pile
+	for (int infect = 0; infect < infectCardsToPull; infect++) {
+		Infection infectCard = InfectionDeck->getTopCard();
+		cityID = infectCard.getInfectionID();
+		cout << map.getCityByID(cityID)->name << " has been infected." << endl;
+		map.addDisease(cityID);
+		infectionDiscard.push_back(infectCard);
+	}
+
+}
+
+/***************************************************************************************
+/ Function to infect when an epidemic card is pulled
+/ The bottom card of the infection pile is pulled, that city is infected with 3 cubes
+/ The card is then put to the discard pile, and the discard pile is shuffled
+/ The discard pile is then placed back on top of the infection deck
+****************************************************************************************/
+void Game::infectEpidemic() {
+	cout << "\nOh no! An epidemic card has been drawn!" << endl;
+
+	//pull the bottom card of the deck. infect that city x3
+	Infection infectCard = InfectionDeck->getBottomCard();
+	int cityID = infectCard.getInfectionID();
+
+	map.addDisease(cityID);
+	map.addDisease(cityID);
+	map.addDisease(cityID);
+	cout << map.getCityByID(cityID)->name << " has been infected." << endl;
+
+	//Push this card onto to the discard pile. then shuffle the discard pile and put it back on the infection pile.
+	infectionDiscard.push_back(infectCard);
+
+	//Create a deck with the discarded cards, shuffle them, and then return them to the infection deck
+	DeckOfCard<Infection>* disc = new DeckOfCard<Infection>(infectionDiscard);
+	disc->shuffleDeck();
+	for (int replaceInfection = 0; replaceInfection < disc->getSizeOfDeck(); replaceInfection++) {
+		InfectionDeck->pushCardToTop(disc->getTopCard());
+	}
+
+	//increase the infection rate value
+	infectionRate++;
+	cout << "Epidemic Infection finished." << endl;
+}
