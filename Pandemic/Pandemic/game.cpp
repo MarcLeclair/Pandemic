@@ -39,6 +39,8 @@ Game::Game(int numberPlayers) {
 		}
 
 		InfectionDeck = instantiateInfectionDeck(map);
+
+		cout << "end of infection deck" << endl;
 		startInfect();
 		cout << endl;
 	}
@@ -1082,7 +1084,26 @@ int Game::oneQuietNightEvent() {
 / This will delete that card completely from the game
 ************************************************************/
 int Game::resilientPopulationEvent() {
-	cout << "An infection card has been removed from the discard pile!" << endl;
+	int infectionID;
+	int cardIndex;
+	cout << "You have chosen the event card resilient population. Please choose one infection card to delete from the discard pile." << endl;
+
+	do {
+		//Clear any fails in input
+		std::cin.clear();
+		std::cin.ignore(256, '\n');
+
+		//Display all cards in the infection discard pile
+		for (int disc = 0; disc < infectionDiscard.size(); disc++) {
+			infectionID = infectionDiscard[disc].getInfectionID();
+			City* city = map.getCityByID(infectionID);
+			cout << disc + 1 << ". " << city->name << " (" << infectionID << ")" << endl;
+		}
+		cin >> cardIndex;
+	} while (cin.fail() || cardIndex < 1 || cardIndex > infectionDiscard.size());
+	
+	cout << "Removing " << map.getCityByID(infectionDiscard[cardIndex-1].getInfectionID())->name << " from the infection discard pile for the rest of the game.";
+	infectionDiscard.erase(infectionDiscard.begin() + (cardIndex - 1));
 	return 1;
 }
 
@@ -1092,7 +1113,33 @@ int Game::resilientPopulationEvent() {
 / The player will then be allowed to put them back on top of the infection deck in the order they choose
 ***********************************************************************************************************/
 int Game::forecastEvent() {
-	cout << "You have seen the top 6 infection cards" << endl;
+	cout << "You have chosen the Forecast Event. You may look at the top 6 cards of the infection deck and replace them in any order." << endl;
+	vector<Infection> topSix;
+	for (int top = 0; top < 6; top++) {
+		topSix.push_back(InfectionDeck->getTopCard());
+	}
+	int cardIndex;
+	while (topSix.size() > 0) {
+		do {
+			//Clear any fails in input
+			std::cin.clear();
+			std::cin.ignore(256, '\n');
+
+			cout << "Please indicate the cards to insert back into the infection deck IN BACKWARDS ORDER." << endl;
+			cout << "I.e. the card you wish to be on the top of the infection deck at the end of this event should be chosen LAST." << endl;
+			for (int card = 0; card < topSix.size(); card++) {
+				cout << "\t" << card + 1 << ". " << map.getCityByID(topSix[card].getInfectionID())->name << endl;
+			}
+			cin >> cardIndex;
+		} while (cin.fail() || cardIndex <1 || cardIndex > topSix.size());
+
+		Infection infectCard = topSix[cardIndex - 1];
+		InfectionDeck->pushCardToTop(infectCard);
+		topSix.erase(topSix.begin() + (cardIndex - 1));
+	}
+
+	cout << "All cards have been placed back into the infection deck!" << endl;
+
 	return 1;
 }
 
@@ -1307,7 +1354,6 @@ void Game::infectEpidemic() {
 
 	//Create a deck with the discarded cards, shuffle them, and then return them to the infection deck
 	DeckOfCard<Infection>* disc = new DeckOfCard<Infection>(infectionDiscard);
-	disc->shuffleDeck();
 	for (int replaceInfection = 0; replaceInfection < disc->getSizeOfDeck(); replaceInfection++) {
 		InfectionDeck->pushCardToTop(disc->getTopCard());
 	}
