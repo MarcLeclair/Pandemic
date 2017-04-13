@@ -15,16 +15,16 @@ Game::Game(int numberPlayers) {
 		map.load_starting_map();
 		deck = instantiatePlayerCards(map, 4);
 
-
-		rolelist.push_back(new Medic(&map));
-		rolelist.push_back(new Researcher(&map));
+		for (int roles = 0; roles < 7; roles++) {
+			rolelist.push_back(RoleFactory::create(roles, &map));
+		}
+		/*rolelist.push_back(new Researcher(&map));
 		rolelist.push_back(new OperationsExpert(&map));
 		rolelist.push_back(new Scientist(&map));
 		rolelist.push_back(new ContingencyPlanner(&map));
 		rolelist.push_back(new QuarantineSpecialist(&map));
-		rolelist.push_back(new Dispatcher(&map));
+		rolelist.push_back(new Dispatcher(&map));*/
 
-		cout << "Creating role deck" << endl;
 		DeckOfCard<RoleCard*>* roledeck = new DeckOfCard<RoleCard*>(rolelist);
 
 

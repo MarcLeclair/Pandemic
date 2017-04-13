@@ -14,6 +14,8 @@
 #include "ReferenceCard.h"
 #include "SqlConnection.h"
 #include "Subject.h"
+#include "RoleFactory.h"
+
 using namespace std;
 class Game : public Subject{
 
