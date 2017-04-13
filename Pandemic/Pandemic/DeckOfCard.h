@@ -26,18 +26,23 @@ public:
 	 DeckOfCard();
 	 DeckOfCard(std::vector<T> arrayOfCard);
 	 T getTopCard();
+	 T getBottomCard();
 	 void storeInQue(std::vector<T> initialDeck);
-	 void shuffleInInfection(DeckOfCard<T> &cardDeck, int numberOfEpidemic);
+	 void shuffleInEpidemic(DeckOfCard<T> &cardDeck, int numberOfEpidemic);
 	 void saveDeck(std::vector<int> idToSave);
 	 std::vector<int> loadDeck();
 	 std::vector<T> returnVector();
-	 //std::vector<int> indices();*/
+	 void shuffleDeck();
 
+	 void pushCardToTop(T card);
+	 int getSizeOfDeck() {
+		 return deck.size();
+	 }
 private:
 
+	void shuffleDeck(std::vector<T> &cardDeck);
 	void shufflePlayerCard(std::vector<T> &cardDeck, int epidemicRate, int position);
 	 
-	void shuffleDeck(std::vector<T> &cardDeck);
 
 };
 
@@ -84,7 +89,7 @@ template <class T> void DeckOfCard<T>::shufflePlayerCard(std::vector<T> &cardDec
 		}
 };
 
-template <class T> void DeckOfCard<T>::shuffleInInfection(DeckOfCard<T> &cardDeck, int numberOfEpidemic) {
+template <class T> void DeckOfCard<T>::shuffleInEpidemic(DeckOfCard<T> &cardDeck, int numberOfEpidemic) {
 
 
 	std::vector<T> playerTemp;
@@ -114,13 +119,27 @@ template <class T> void DeckOfCard<T>::shuffleInInfection(DeckOfCard<T> &cardDec
 	storeInQue(playerTemp);
 };
 
+template <class T> void DeckOfCard<T>::shuffleDeck() {
+	std::random_device rd; // obtain a random number from hardware
+	std::mt19937 eng(rd()); // seed the generator
+	std::uniform_int_distribution<> distr(1, deck.size()); // define the range
+
+	int N = deck.size();
+	for (int i = N - 1; i>0; --i) {
+		int r = distr(eng) % (i + 1);
+		std::swap(deck[i], deck[r]);
+		deck.push_back(r);
+	}
+}
+
 //Shuffle deck Algorithm fisher -yates shuffle based -- Takes in 2 cards at random place in the array and swap them together
 // Although rand() isn't truly random ( as in it will favor a side at some point), it does serve its purpose right in this case
+// This function is used upon initialization of the deck
 template <class T> void DeckOfCard<T>::shuffleDeck(std::vector<T> &cardDeck) {
 
 	std::random_device rd; // obtain a random number from hardware
 	std::mt19937 eng(rd()); // seed the generator
-	std::uniform_int_distribution<> distr(1, 48); // define the range
+	std::uniform_int_distribution<> distr(1, cardDeck.size()); // define the range
 
 	int N = cardDeck.size();
 	for (int i = N - 1; i>0; --i) {
@@ -162,7 +181,15 @@ template <class T> std::vector<int> DeckOfCard<T>::loadDeck() {
 	return savedIds;
 }
 
+template<class T>  void DeckOfCard<T>::pushCardToTop(T card) {
+	deck.push_front(card);
+}
 
+template<class T> T DeckOfCard<T>::getBottomCard() {
+	T returnValue = deck.back();
+	deck.pop_back();
+	return returnValue;
+}
 
 //template <class T> std::vector<int> DeckOfCard<T>::indices() {
 //	return some;

@@ -28,8 +28,10 @@ class Game : public Subject{
 	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
 	vector<PlayerCard> discardPile;
-	Infection* InfectionDeck;
+	DeckOfCard<Infection>* InfectionDeck;
+	vector<Infection> infectionDiscard;
 	bool infectCities = true;
+	int infectionRate = 1;
 	
 public:
 	Game();
@@ -90,8 +92,11 @@ public:
 	void save_playerCards();
 	void save_players();
 	void load_players();
-
 	void load_deck();
+
+	void endTurnInfection();
+	void startInfect();
+	void infectEpidemic();
 
 	DeckOfCard<PlayerCard>* instantiatePlayerCards(Map map, int numOfEpidemic);
 	DeckOfCard<Infection>* instantiateInfectionDeck(Map map);

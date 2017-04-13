@@ -327,7 +327,7 @@ void Map::addDisease(int cityId) {
 	}
 
 	if (!(cured[zoneIndex[citylist[cityId]->zone]] && citylist[cityId]->pawnOnCity("orange")) && !ifQuarantineSpecialist) {
-		cout << "Adding disease cube on city: " << cityId << endl;
+		//cout << "Adding disease cube on city: " << cityId << endl;
 		if (!eradicated[zoneIndex[citylist[cityId]->zone]]) {
 			if (citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]] < 3) {
 				citylist[cityId]->infectionCounters[zoneIndex[citylist[cityId]->zone]]++;
