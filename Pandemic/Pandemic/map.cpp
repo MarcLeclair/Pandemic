@@ -414,7 +414,7 @@ City* Map::getCityByID(int cityId){
 }
 
 /*************************************************
-/ Function to add a pawn to the beginning city 
+/ Function to add a pawn to the beginning city
 / In this game, all pawns begin in Castle Town
 **************************************************/
 void Map::addPawn(Pawn* pawn) {
@@ -422,7 +422,9 @@ void Map::addPawn(Pawn* pawn) {
 	citylist[3]->pawnRefList.push_back(pawn);
 	citylist[3]->pawnList.push_back(pawn->get_playerId());
 	pawn->set_location(4);
+	pawn->set_location_name(citylist[4]->name);
 }
+
 /*************************************************
 / Function return an array of the placed cubes
 **************************************************/
@@ -499,7 +501,7 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 	//Get the reference to the pawn we want to move and remove it from the current city
 	for (it3 = citylist[(pawn->get_location()) - 1]->pawnRefList.begin(); it3 != citylist[(pawn->get_location()) - 1]->pawnRefList.end(); ++it3) {
 		if ((*it3)->get_playerId() == pawn->get_playerId()) {
-			it3=citylist[(pawn->get_location()) - 1]->pawnRefList.erase(it3);
+			it3 = citylist[(pawn->get_location()) - 1]->pawnRefList.erase(it3);
 			break;
 		}
 	}
@@ -515,6 +517,7 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 
 	//Set the pawn's new ID and add him to the new city's list
 	pawn->set_location(cityId);
+	pawn->set_location_name(citylist[cityId - 1]->name);
 	citylist[cityId - 1]->pawnRefList.push_back(pawn);
 	citylist[cityId - 1]->pawnList.push_back(pawn->get_playerId());
 
