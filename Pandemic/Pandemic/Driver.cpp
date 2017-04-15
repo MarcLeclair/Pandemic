@@ -6,9 +6,34 @@ int main() {
 	Game* checkIfgameSave = new Game();
 	checkIfgameSave->dropTables();
 	bool startedOrNot = checkIfgameSave->isGameSaved();
+	bool newgame = true;
+	int numberOfPlayers = 0;
+	if (!startedOrNot) {
+		cout << "Starting a new game" << endl;
+		cout << "How many players with to play? (2 to 4)" << endl;
+		cin >> numberOfPlayers;
+	}
+	else {
+		cout << "Start a new game or load saved game?(N/L)" << endl;
+		string choice;
+		cin >> choice;
+		if (choice == "L") {
+			newgame = false;
+		}
+		else {
+			cout << "Starting a new game" << endl;
+			cout << "How many players with to play? (2 to 4)" << endl;
+			cin >> numberOfPlayers;
 
-	if (startedOrNot == false) {
-		Game * game = new Game(2);
+
+		}
+
+	}
+
+
+	if (newgame) {
+		checkIfgameSave->dropTables();
+		Game * game = new Game(numberOfPlayers);
 		DeckOfCard<PlayerCard>* deck = game->getDeck();
 		Observer *g = new GameStatistics();
 		g = new PlayersStatistics(g, game);
@@ -22,23 +47,18 @@ int main() {
 		cout << players[0]->getCurrentLocation() << endl;
 		delete game;
 	}
-	else if (startedOrNot == true) {
+	else if (!newgame) {
 
 		string userInput;
-		cout << "would you like to load the game found?" << endl;
-		cin >> userInput;
-		if (userInput == "yes") {
-			checkIfgameSave->LoadGame();
-			Observer *g = new GameStatistics();
-			g = new PlayersStatistics(g, checkIfgameSave);
-			g = new DiseaseStatistics(g, checkIfgameSave);
-			g = new CitiesStatistics(g, checkIfgameSave);
-			g = new ResourcesStatistics(g, checkIfgameSave);
-			checkIfgameSave->attach(g);
-			checkIfgameSave->StartGame();
-		}
-		else
-			checkIfgameSave->dropTables();
+
+		checkIfgameSave->LoadGame();
+		Observer *g = new GameStatistics();
+		g = new PlayersStatistics(g, checkIfgameSave);
+		g = new DiseaseStatistics(g, checkIfgameSave);
+		g = new CitiesStatistics(g, checkIfgameSave);
+		g = new ResourcesStatistics(g, checkIfgameSave);
+		checkIfgameSave->attach(g);
+		checkIfgameSave->StartGame();
 	}
 	system("PAUSE");
 	delete checkIfgameSave;
