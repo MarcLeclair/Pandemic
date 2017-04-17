@@ -92,7 +92,7 @@ public:
 	void display_status(); //displays the status of the map
 	bool checkGameOver();
 	bool checkWin();
-	int* placedCubes();
+	vector<int> placedCubes();
 	int numberInfectedCities();
 	int numberInfectedCubes();
 	int numberResearchStations();

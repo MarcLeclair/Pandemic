@@ -131,7 +131,7 @@ public:
 	*/
 	void update() {
 		ObserverDecorator::update();
-		auto infectionCounters = this->game->getMap()->placedCubes();
+		auto infectionCounters = game->getMap()->placedCubes();
 
 		int remainingResearchStations = 6- game->getMap()->numberResearchStations();
 		int infectionCountersBlack = 24 - infectionCounters[0];

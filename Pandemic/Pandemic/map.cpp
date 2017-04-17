@@ -429,7 +429,7 @@ void Map::addPawn(Pawn* pawn) {
 / Function return an array of the placed cubes
 **************************************************/
 
-int* Map::placedCubes() {
+vector<int> Map::placedCubes() {
 	int count[4] = { 0,0,0,0 };
 
 	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
@@ -437,7 +437,13 @@ int* Map::placedCubes() {
 			count[infectionIndex] += citylist[cityIndex]->infectionCounters[infectionIndex];
 		}
 	}
-	return count;
+
+	vector<int> placed;
+	placed.push_back(count[0]);
+	placed.push_back(count[1]);
+	placed.push_back(count[2]);
+	placed.push_back(count[3]);
+	return placed;
 }
 /*************************************************
 / Function returns the number of infected cubes
