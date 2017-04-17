@@ -276,7 +276,7 @@ int Game::pollDispatcherPawn() {
 			cout << "\t" << i + 1 << ". Player " << i << endl;
 		}
 		cin >> otherPlayerID;
-	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 1 || cin.fail());
 	return otherPlayerID - 1;
 }
 
