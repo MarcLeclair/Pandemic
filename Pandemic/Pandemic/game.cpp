@@ -75,8 +75,10 @@ bool Game::isGameSaved() {
 	return this->hasGameStarted;
 }
 void Game::StartGame() {
+	int round = 0;
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
+		hasGameStarted = true;
 		resetInfectCities();
 
 		//If starting the game anew, choose a random player to start
@@ -102,8 +104,9 @@ void Game::StartGame() {
 			else {
 				cout << "\nSkipping the infect Cities step!" << endl;
 			}
+			round++;
 
-			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
+			if ((round%playerlist.size()) == 0) {
 				cout << "Saving the game" << endl;
 				SaveGame(currentPlayersId);
 			}
