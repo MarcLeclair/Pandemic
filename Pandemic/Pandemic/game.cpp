@@ -831,6 +831,7 @@ void Game::load_players() {
 		player1->getMyPawn()->set_location(currentLoc);
 		this->playerlist.push_back(player1);
 		map.addPawn(player1->getMyPawn());
+		map.movePawn(player1->getMyPawn(), currentLoc);
 		hand.clear();
 	}
 }
