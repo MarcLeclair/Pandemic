@@ -78,7 +78,7 @@ void Game::StartGame() {
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
 		resetInfectCities();
-
+	
 		//If starting the game anew, choose a random player to start
 		std::random_device rd; // obtain a random number from hardware
 		std::mt19937 eng(rd()); // seed the generator
@@ -164,26 +164,24 @@ void Game::save_gameState(int playerIdTurns) {
 	string* select = new string("INSERT into GameState(playerTurnId, hasGameStarted) VALUES");
 
 
-	saveGame.sqlExecuteSelect(select);
-
 	std::stringstream stringbuffer;
 	stringbuffer << playerIdTurns;
 
 	std::string str = stringbuffer.str();
-	string values = "(1," + str;
+	string values = "(1," + str + " )" ;
 	select->append(values);
 
 	saveGame.sqlExecuteSelect(select);
 }
 void Game::SaveGame(int playerIdTurn) {
-	if (this->hasGameStarted == true) {
+	/*if (this->hasGameStarted == true) {*/
 		save_gameState(playerIdTurn);
 		map.save_map();
 		save_players();
 		save_playerCards();
-	}
-	else
-		cout << "Game has not started" << endl;
+	//}
+	////else
+	////	cout << "Game has not started" << endl;
 
 }
 
@@ -677,7 +675,6 @@ void Game::save_players() {
 	vector<string> playersToSave;
 	vector<string> playersCardToSave;
 
-
 	SqlConnection savePlayer;
 	
 	
@@ -721,9 +718,7 @@ void Game::save_players() {
 		else
 			select->append("( " + str + " )");
 	}
-	cout << *select << endl;
 	savePlayer.sqlExecuteSelect(select);
-	cout << "Players saved successfully!" << endl;
 	
 }
 void Game::save_playerCards() {
@@ -764,8 +759,6 @@ void Game::save_playerCards() {
 	}
 
 	saveCard.sqlExecuteSelect(select);
-
-	cout << "Players saved successfully!" << endl;
 
 }
 void Game::load_players() {

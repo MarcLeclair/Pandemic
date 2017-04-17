@@ -177,19 +177,19 @@ void Map::load_map(){
 / Will save the state of the map, plus all of the cities in the map
 ***********************************************************************/
 void Map::save_map(){
-  
 	SqlConnection connect;
   string *select = new string("INSERT into SaveMap(cityId, pawnOrNot,researchOrNot, blackCube, redCube,blueCube,yellowCube) VALUES");
   vector<string> mapToSave;
   //For each city in the city list, save the city's id, name, and all connections
   for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
 	  int id = citylist[cityIndex]->id;
-	  string infectionCounter = ",";
+	  string infectionCounter;
 	  bool pawnorNot = false;
 	  bool researchOrNot = false;
 	  //save the state of the infection counters
-	  for (int infection = 0; infection < 3; infection++) {
-		  infectionCounter = infectionCounter + to_string(citylist.at(cityIndex)->infectionCounters[infection]) + infectionCounter;
+	  for (int infection = 0; infection <= 3; infection++) {
+		  string temp = "," + to_string(citylist.at(cityIndex)->infectionCounters[infection]) ;
+		  infectionCounter = infectionCounter + temp;
 	  }
 	  if (citylist[cityIndex]->pawnList.size() >= 1) {
 		  pawnorNot = true;
@@ -200,20 +200,19 @@ void Map::save_map(){
 		  researchOrNot = true;
 	  }
 	  string comma = std::string(" , ");
-	  string cityToSave = to_string(id) +  comma + to_string(pawnorNot) + infectionCounter + to_string(researchOrNot);
+	  string cityToSave = to_string(id) +  comma + to_string(pawnorNot) + comma + to_string(researchOrNot) + infectionCounter;
 
 	  mapToSave.push_back(cityToSave);
-
-	  for (string str : mapToSave) {
-		  if ((str) != mapToSave.back()) {
-			  select->append("( " + str + " ),");
-		  }
-		  else
-			  select->append("( " + str + " )");
-	  }
-
 	  
   }
+  for (string str : mapToSave) {
+	  if ((str) != mapToSave.back()) {
+		  select->append("( " + str + " ),");
+	  }
+	  else
+		  select->append("( " + str + " )");
+  }
+
   connect.sqlExecuteSelect(select);
 }
 
