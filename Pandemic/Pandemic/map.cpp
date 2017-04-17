@@ -63,6 +63,7 @@ void Map::load_map(){
 	SqlConnection connect, iterate;
 	string *select = new string("select m.cityId, m.CityName, m.cityColor, s.pawnOrNot as pawn,s.blackCube as blackCube, s.redCube as redCube, s.blueCube as blueCube, s.yellowCube as yellowCube, s.researchOrNot as research, l.link1 as link1,l.link2 as link2,l.link3 as link3,l.link4 as link4,l.link5 as link5,l.link6 as link6,l.link7 as link7 from Map as m, MapLinks as l, SaveMap as s WHERE m.cityId = l.cityId  AND m.cityId = s.cityId");
 
+	map<string, char> zones = { {"bla", 'b'}, {"red", 'r'}, {"yel", 'y'}, {"blu", 'u'} };
 	connect.sqlExecuteSelect(select);
      
 	vector<vector<string>> results = connect.Connection.colData;
@@ -71,7 +72,8 @@ void Map::load_map(){
 		int id = stoi(rows.at(0));
 		int infectionCounter[4] = { 0,0,0,0 };
 		string name = rows.at(1);
-		char *color = new char[rows.at(2).length() - 1];
+		std::map<std::string, char>::iterator it = zones.find(rows.at(2).substr(0, 3));
+		char *color =  &it->second;
 		strcpy(color, rows.at(2).c_str());
 		bool researchCenter = false;
 
@@ -88,7 +90,7 @@ void Map::load_map(){
 
 
 
-		for (int count = 9; count <= 15; count++) {
+		for (int count = 9; count < rows.size(); count++) {
 			if (stoi(rows.at(count)) != -1) {
 				newCity->add_connection(stoi(rows.at(count)));
 			}
@@ -109,6 +111,8 @@ void Map::load_map(){
 			}
 
 		}
+
+		citylist.push_back(newCity);
 	}
 	
 }

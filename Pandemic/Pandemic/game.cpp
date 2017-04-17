@@ -803,7 +803,7 @@ void Game::load_players() {
 		currentLoc = stoi(rows.at(2));
 		numOfCards = stoi(rows.at(3));
 
-		for (vector<string>rows2 : resultsCards) {
+		for (vector<string> rows2 : resultsCards) {
 			if (id == stoi(rows2.at(5))) {
 				if (rows2.at(4).compare("city")) {
 					int cityId = stoi(rows2.at(0));
@@ -829,10 +829,9 @@ void Game::load_players() {
 		Player* player1 = new Player(id, rc);
 		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
-		playerlist.push_back(player1);
-		hand.clear();
 		this->playerlist.push_back(player1);
 		map.addPawn(player1->getMyPawn());
+		hand.clear();
 	}
 }
 
