@@ -4,7 +4,7 @@ int main() {
 
 
 	Game* checkIfgameSave = new Game();
-	checkIfgameSave->dropTables();
+	//checkIfgameSave->dropTables();
 	bool startedOrNot = checkIfgameSave->isGameSaved();
 	bool newgame = true;
 	int numberOfPlayers = 0;
