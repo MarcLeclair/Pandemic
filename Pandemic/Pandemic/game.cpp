@@ -63,7 +63,7 @@ bool Game::isGameSaved() {
 	vector<vector<string>> resultSet = startGame.Connection.colData;
 
 	for (vector<string> rows : resultSet) {
-		if (rows.at(0) == "true") {
+		if (rows.at(0) == "1") {
 			this->hasGameStarted = true;
 		}
 		else {
@@ -87,6 +87,7 @@ void Game::StartGame() {
 		std::uniform_int_distribution<> distr(0, (playerlist.size()-1)); // define the range
 
 		int currentPlayersId = distr(eng); //obtain a random id to start
+		
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 			performPlayersTurn(currentPlayersId%playerlist.size());
