@@ -827,6 +827,8 @@ void Game::load_players() {
 		}
 	
 		Player* player1 = new Player(id, rc);
+		Observer* obs = new PlayerView();
+		player1->attach(obs);
 		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
 		this->playerlist.push_back(player1);
