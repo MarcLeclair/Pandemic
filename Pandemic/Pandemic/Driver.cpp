@@ -8,15 +8,31 @@ int main() {
 	bool startedOrNot = checkIfgameSave->isGameSaved();
 	bool newgame = true;
 	int numberOfPlayers = 0;
+	string choice;
+
 	if (!startedOrNot) {
-		cout << "Starting a new game" << endl;
-		cout << "How many players with to play? (2 to 4)" << endl;
-		cin >> numberOfPlayers;
+		do {
+			if (cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(256, '\n');
+			}
+			cout << "Starting a new game" << endl;
+			cout << "How many players with to play? (2 to 4)" << endl;
+			cin >> numberOfPlayers;
+		} while (cin.fail() || numberOfPlayers < 2 || numberOfPlayers > 4);
+
 	}
 	else {
-		cout << "Start a new game or load saved game?(N/L)" << endl;
-		string choice;
-		cin >> choice;
+		do {
+			if (cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(256, '\n');
+			}
+			cout << "Start a new game or load saved game?(N/L)" << endl;
+			cin >> choice;
+			
+		} while (cin.fail() || (choice != "L" && choice != "N"));
+		
 		if (choice == "L") {
 			newgame = false;
 		}
