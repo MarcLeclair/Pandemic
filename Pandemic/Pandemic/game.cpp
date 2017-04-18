@@ -7,7 +7,7 @@ using namespace std;
 Game::Game() {
 
 }
-Game::Game(int numberPlayers) {
+Game::Game(int numberPlayers) : Subject() {
 
 	if (hasGameStarted == false) {
 
@@ -121,6 +121,7 @@ void Game::StartGame() {
 
 
       		notify(); //If the action worked, notify all the observers
+
 			currentPlayersId++;
 
 		}
@@ -442,6 +443,7 @@ void Game::performPlayersTurn(int pId) {
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
 				success = playerlist[pawnID]->drive(newCityID);
+				notify();
 				break;
 
 			case 2: //direct flight
@@ -458,6 +460,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
 				success = playerlist[pawnID]->direct_flight(cardIndex-1);
+				notify();
 				break;
 			case 3: //charter flight
 				cout << "\nYou chose to take a charter flight." << endl;
@@ -474,6 +477,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1 || newCityID >48 || newCityID < 1);
 
 				success = playerlist[pawnID]->charter_flight(cardIndex-1, newCityID);
+				notify();
 				break;
 			case 4: //shuttle flight
 				cout << "\nYou chose to take a shuttle flight." << endl;
@@ -488,6 +492,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (newCityID > 48 || newCityID < 1);
 
 				success = playerlist[pawnID]->shuttle_flight(newCityID);
+				notify();
 				break;
 			case 5: //build research station
 				do {
@@ -500,6 +505,7 @@ void Game::performPlayersTurn(int pId) {
 			case 6: //treat disease
 				cout << "\nYou chose to treat a disease!\nTreating disease in current city." << endl;
 				success = playerlist[pId]->treat_disease();
+				notify();
 				break;
 			case 7: //share knowledge
 				/*
@@ -556,6 +562,7 @@ void Game::performPlayersTurn(int pId) {
 					playerlist[receiver]->drawCard(givingCard, discardPile);
 					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityName(playerlist[giver]->getCurrentLocation()) << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
+				notify();
 				break;
 			case 8: //cure a disease
 				cout << "\nYou chose to cure a diease." << endl; 
@@ -580,6 +587,7 @@ void Game::performPlayersTurn(int pId) {
 					}
 					cardIndex = -1;
 				}
+				notify();
 				break;
 			case 9:
 				//This case can constitute a different action, as Contingency Planner, Operations Expert, and Dispatcher all have different extra actions
@@ -634,6 +642,7 @@ void Game::performPlayersTurn(int pId) {
 					redo = 1;
 					break;
 				}
+				notify();
 				break;
 			default:
 				cout << "Invalid ID, please retry." << endl;

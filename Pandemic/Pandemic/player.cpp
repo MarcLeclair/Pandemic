@@ -338,3 +338,51 @@ int Player::discover_cure(vector<int> cure) {
 		notify(); //If the action worked, notify all the observers
 	return success;
 }
+
+boolean Player::getViewPlayer() {
+	return viewPlayer;
+}
+
+boolean Player::getViewPAction() {
+	return viewPAction;
+}
+
+boolean Player::getViewDrawCard() {
+	return viewDrawCard;
+}
+
+boolean Player::getViewDrawInfection() {
+	return viewDrawInfection;
+}
+
+void Player::changeViewPlayer() {
+	if (viewPlayer == true)
+		viewPlayer = false;
+	else
+		viewPlayer = true;
+		
+}
+
+void Player::changeViewPAction() {
+	if (viewPAction == true)
+		viewPAction = false;
+	else
+		viewPAction = true;
+
+}
+
+void Player::changeViewDrawCard() {
+	if (viewDrawCard == true)
+		viewDrawCard = false;
+	else
+		viewDrawCard = true;
+
+}
+
+void Player::changeViewDrawInfection() {
+	if (viewDrawInfection == true)
+		viewDrawInfection = false;
+	else
+		viewDrawInfection = true;
+
+}
