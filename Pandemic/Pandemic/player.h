@@ -80,6 +80,17 @@ public:
 	int share_knowledge(vector<PlayerCard> receivingHand, int exchangeCard);
 	int discover_cure(vector<int> cure);
 	const Player& operator=(const Player& pl);
+
+	//get and set the toggle-able whatnots
+	boolean getViewPlayer();
+	boolean getViewPAction();
+	boolean getViewDrawCard();
+	boolean getViewDrawInfection();
+	void changeViewPlayer();
+	void changeViewPAction();
+	void changeViewDrawCard();
+	void changeViewDrawInfection();
+
 private:
 	Pawn* playerPawn;
 	ReferenceCard* refcard;
@@ -89,6 +100,11 @@ private:
 	int numOfCards;
 	int playerID;
 	int actions;
+
+	boolean viewPlayer = true; //toggles if player is shown in log
+	boolean viewPAction = true; //toggles actions
+	boolean viewDrawCard = true; //toggles Player cards drawn
+	boolean viewDrawInfection = true; //toggles infection cards drawn
 };
 
 //Constant variable defining the max amount of cards allowed in hand
