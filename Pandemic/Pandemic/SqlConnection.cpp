@@ -11,8 +11,12 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 
 	SQLCHAR DBName[20] = "PandemicMain";
 	SQLCHAR SQLStmt[4000] = { 0 };
+	SQLCHAR SqlState[6],  Msg[SQL_MAX_MESSAGE_LENGTH];
 	SQLRETURN rc = SQL_SUCCESS;
+	SQLSMALLINT   i, MsgLen;
+	SQLRETURN rc2;
 	ODBC_Class Example;
+	SQLINTEGER    NativeError;
 	if (Example.ConHandle != NULL)
 
 	{
@@ -24,6 +28,7 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 		rc = SQLAllocHandle(SQL_HANDLE_STMT, Example.ConHandle, &Example.StmtHandle);
 
 		rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+
 
 		if (rc == SQL_SUCCESS)
 
@@ -37,7 +42,17 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 
 			// Prepare And Execute The SQL Statement  
 
-				rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+			rc = SQLExecDirect(Example.StmtHandle, SQLStmt, SQL_NTS);
+
+			if ((rc == SQL_SUCCESS_WITH_INFO) || (rc == SQL_ERROR)) {
+				// Get the status records.  
+				i = 1;
+				while ((rc2 = SQLGetDiagRec(SQL_HANDLE_STMT, Example.StmtHandle, i, SqlState, &NativeError,
+					Msg, sizeof(Msg), &MsgLen)) != SQL_NO_DATA) {
+					cout << "SQLSTATE: " << SqlState << " NativeError: " << NativeError << " Msg: " << Msg << " MsgLen: " << MsgLen << endl;
+					i++;
+				}
+			}
 
 			// Display The Results Of The SQL Query  
 			if (!rc == SQL_SUCCESS) {

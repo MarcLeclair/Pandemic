@@ -63,7 +63,7 @@ bool Game::isGameSaved() {
 	vector<vector<string>> resultSet = startGame.Connection.colData;
 
 	for (vector<string> rows : resultSet) {
-		if (rows.at(0) == "true") {
+		if (rows.at(0) == "1") {
 			this->hasGameStarted = true;
 		}
 		else {
@@ -75,16 +75,19 @@ bool Game::isGameSaved() {
 	return this->hasGameStarted;
 }
 void Game::StartGame() {
+	int round = 0;
 	notify(); //If the action worked, notify all the observers
 	if (this->hasGameStarted == false) {
+		hasGameStarted = true;
 		resetInfectCities();
-
+	
 		//If starting the game anew, choose a random player to start
 		std::random_device rd; // obtain a random number from hardware
 		std::mt19937 eng(rd()); // seed the generator
 		std::uniform_int_distribution<> distr(0, (playerlist.size()-1)); // define the range
 
 		int currentPlayersId = distr(eng); //obtain a random id to start
+		
 		while (!(this->isGameOver())) {
 			cout << "\nPlayer " << currentPlayersId%playerlist.size() << "' turn starts." << endl;
 			performPlayersTurn(currentPlayersId%playerlist.size());
@@ -102,8 +105,9 @@ void Game::StartGame() {
 			else {
 				cout << "\nSkipping the infect Cities step!" << endl;
 			}
+			round++;
 
-			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
+			if ((round%playerlist.size()) == 0) {
 				cout << "Saving the game" << endl;
 				SaveGame(currentPlayersId);
 			}
@@ -164,26 +168,24 @@ void Game::save_gameState(int playerIdTurns) {
 	string* select = new string("INSERT into GameState(playerTurnId, hasGameStarted) VALUES");
 
 
-	saveGame.sqlExecuteSelect(select);
-
 	std::stringstream stringbuffer;
 	stringbuffer << playerIdTurns;
 
 	std::string str = stringbuffer.str();
-	string values = "(1," + str;
+	string values = "(1," + str + " )" ;
 	select->append(values);
 
 	saveGame.sqlExecuteSelect(select);
 }
 void Game::SaveGame(int playerIdTurn) {
-	if (this->hasGameStarted == true) {
+	/*if (this->hasGameStarted == true) {*/
 		save_gameState(playerIdTurn);
 		map.save_map();
 		save_players();
 		save_playerCards();
-	}
-	else
-		cout << "Game has not started" << endl;
+	//}
+	////else
+	////	cout << "Game has not started" << endl;
 
 }
 
@@ -273,7 +275,7 @@ int Game::pollDispatcherPawn() {
 			cout << "\t" << i + 1 << ". Player " << i << endl;
 		}
 		cin >> otherPlayerID;
-	} while (otherPlayerID > playerlist.size() || otherPlayerID < 0 || cin.fail());
+	} while (otherPlayerID > playerlist.size() || otherPlayerID < 1 || cin.fail());
 	return otherPlayerID - 1;
 }
 
@@ -432,9 +434,8 @@ void Game::performPlayersTurn(int pId) {
 				}
 				do {
 					cout << "Please choose a city id corresponding to the city you want to drive to." << endl;
-					current = map.getCityByID(playerlist[pawnID]->getCurrentLocation());
-					for (int i = 0; i < current->connections.size(); i++) {
-						cout << "\t" << map.getCityByID(current->connections[i])->name << " (" << current->connections[i] << ")" << endl;
+					for (int i = 0; i <  map.getConnections(playerlist[pawnID]->getCurrentLocation()).size(); i++) {
+						cout << "\t" << map.getCityName(map.getConnections(playerlist[pawnID]->getCurrentLocation())[i]) << " (" << map.getConnections(playerlist[pawnID]->getCurrentLocation())[i] << ")" << endl;
 					}
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
@@ -556,12 +557,12 @@ void Game::performPlayersTurn(int pId) {
 					//If you get here, it means the sharing knowledge is valid and the card will pass hands here
 					PlayerCard givingCard =givingHand[cardIndex - 1];
 					playerlist[receiver]->drawCard(givingCard, discardPile);
-					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityByID(playerlist[giver]->getCurrentLocation())->name << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
+					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityName(playerlist[giver]->getCurrentLocation()) << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
 				notify();
 				break;
 			case 8: //cure a disease
-				cout << "\nYou chose to cure a diease." << endl;
+				cout << "\nYou chose to cure a diease." << endl; 
 				if (playerlist[pId]->getNumOfCards() < 5) {
 					cout << "You do not have enough cards in your hand to cure a disease!" << endl;
 					success = 0;
@@ -685,7 +686,6 @@ void Game::save_players() {
 	vector<string> playersToSave;
 	vector<string> playersCardToSave;
 
-
 	SqlConnection savePlayer;
 	
 	
@@ -729,9 +729,7 @@ void Game::save_players() {
 		else
 			select->append("( " + str + " )");
 	}
-	cout << *select << endl;
 	savePlayer.sqlExecuteSelect(select);
-	cout << "Players saved successfully!" << endl;
 	
 }
 void Game::save_playerCards() {
@@ -773,8 +771,6 @@ void Game::save_playerCards() {
 
 	saveCard.sqlExecuteSelect(select);
 
-	cout << "Players saved successfully!" << endl;
-
 }
 void Game::load_players() {
 
@@ -814,7 +810,7 @@ void Game::load_players() {
 		currentLoc = stoi(rows.at(2));
 		numOfCards = stoi(rows.at(3));
 
-		for (vector<string>rows2 : resultsCards) {
+		for (vector<string> rows2 : resultsCards) {
 			if (id == stoi(rows2.at(5))) {
 				if (rows2.at(4).compare("city")) {
 					int cityId = stoi(rows2.at(0));
@@ -838,12 +834,14 @@ void Game::load_players() {
 		}
 	
 		Player* player1 = new Player(id, rc);
+		Observer* obs = new PlayerView(player1);
+		player1->attach(obs);
 		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
-		playerlist.push_back(player1);
-		hand.clear();
 		this->playerlist.push_back(player1);
 		map.addPawn(player1->getMyPawn());
+		map.movePawn(player1->getMyPawn(), currentLoc);
+		hand.clear();
 	}
 }
 
@@ -1060,13 +1058,13 @@ int Game::governmentGrantEvent(int cityID) {
 	//check if there are available research stations
 	//if not, throw an error
 
-	City* newCity = map.getCityByID(cityID);
-	if (newCity->hasResearchStation()) {
+	
+	if (map.hasResearchStation(cityID)) {
 		cout << "Sorry, this city already has a research station, cannot build one here!" << endl;
 		return 0;
 	}
-	newCity->buildResearchStation();
-	cout << "A new research station has been built in " << newCity->name << "(" << newCity->getCityID() << ")" << endl;
+	map.addResearchStation(cityID);
+	cout << "A new research station has been built in " << map.getCityName(cityID) << "(" << cityID << ")" << endl;
 	return 1;
 }
 
@@ -1075,9 +1073,8 @@ int Game::governmentGrantEvent(int cityID) {
 / Will move the chosen player to the chosen city without requiring a city card
 ********************************************************************************/
 int Game::airliftEvent(Pawn* playerPawn, int cityID) {
-	City* newCity = map.getCityByID(cityID);
 	map.movePawn(playerPawn, cityID);
-	cout << "Player " << playerPawn->get_playerId() << "'s pawn has moved to " << newCity->name << "(" << newCity->getCityID() << ")" << endl;
+	cout << "Player " << playerPawn->get_playerId() << "'s pawn has moved to " << map.getCityName(cityID) << "(" << cityID << ")" << endl;
 	playerlist[playerPawn->get_playerId()]->notify();
 	return 1;
 }
@@ -1110,13 +1107,12 @@ int Game::resilientPopulationEvent() {
 		//Display all cards in the infection discard pile
 		for (int disc = 0; disc < infectionDiscard.size(); disc++) {
 			infectionID = infectionDiscard[disc].getInfectionID();
-			City* city = map.getCityByID(infectionID);
-			cout << disc + 1 << ". " << city->name << " (" << infectionID << ")" << endl;
+			cout << disc + 1 << ". " << map.getCityName(infectionID) << " (" << infectionID << ")" << endl;
 		}
 		cin >> cardIndex;
 	} while (cin.fail() || cardIndex < 1 || cardIndex > infectionDiscard.size());
 	
-	cout << "Removing " << map.getCityByID(infectionDiscard[cardIndex-1].getInfectionID())->name << " from the infection discard pile for the rest of the game.";
+	cout << "Removing " << map.getCityName(infectionDiscard[cardIndex-1].getInfectionID()) << " from the infection discard pile for the rest of the game.";
 	infectionDiscard.erase(infectionDiscard.begin() + (cardIndex - 1));
 	return 1;
 }
@@ -1142,7 +1138,7 @@ int Game::forecastEvent() {
 			cout << "Please indicate the cards to insert back into the infection deck IN BACKWARDS ORDER." << endl;
 			cout << "I.e. the card you wish to be on the top of the infection deck at the end of this event should be chosen LAST." << endl;
 			for (int card = 0; card < topSix.size(); card++) {
-				cout << "\t" << card + 1 << ". " << map.getCityByID(topSix[card].getInfectionID())->name << endl;
+				cout << "\t" << card + 1 << ". " << map.getCityName(topSix[card].getInfectionID()) << endl;
 			}
 			cin >> cardIndex;
 		} while (cin.fail() || cardIndex <1 || cardIndex > topSix.size());
@@ -1253,7 +1249,6 @@ void Game::playEvent(int cardIndex, int playerID) {
 		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
 	else {
 		playerlist[playerID]->discardCard(cardIndex, discardPile);
-		playerlist[playerID]->notify();
 	}
 }
 
@@ -1285,7 +1280,7 @@ void Game::startInfect() {
 		}
 
 		infectionDiscard.push_back(infectCard);
-		cout << map.getCityByID(cityID)->name << " has been infected with " << innerInfect << " cubes." << endl;
+		cout << map.getCityName(cityID) << " has been infected with " << innerInfect << " cubes." << endl;
 	}
 
 	//infect 3 cities with 2 cubes
@@ -1298,7 +1293,7 @@ void Game::startInfect() {
 		}
 
 		infectionDiscard.push_back(infectCard);
-		cout << map.getCityByID(cityID)->name << " has been infected with " << innerInfect << " cubes." << endl;
+		cout << map.getCityName(cityID) << " has been infected with " << innerInfect << " cubes." << endl;
 	}
 
 	//infect 3 cities with 1 cubes
@@ -1309,7 +1304,7 @@ void Game::startInfect() {
 		map.addDisease(cityID);
 
 		infectionDiscard.push_back(infectCard);
-		cout << map.getCityByID(cityID)->name << " has been infected with 1 cube." << endl;
+		cout << map.getCityName(cityID) << " has been infected with 1 cube." << endl;
 	}
 }
 
@@ -1338,7 +1333,7 @@ void Game::endTurnInfection() {
 	for (int infect = 0; infect < infectCardsToPull; infect++) {
 		Infection infectCard = InfectionDeck->getTopCard();
 		cityID = infectCard.getInfectionID();
-		cout << map.getCityByID(cityID)->name << " has been infected." << endl;
+		cout << map.getCityName(cityID) << " has been infected." << endl;
 		map.addDisease(cityID);
 		infectionDiscard.push_back(infectCard);
 	}
@@ -1361,7 +1356,7 @@ void Game::infectEpidemic() {
 	map.addDisease(cityID);
 	map.addDisease(cityID);
 	map.addDisease(cityID);
-	cout << map.getCityByID(cityID)->name << " has been infected." << endl;
+	cout << map.getCityName(cityID) << " has been infected." << endl;
 
 	//Push this card onto to the discard pile. then shuffle the discard pile and put it back on the infection pile.
 	infectionDiscard.push_back(infectCard);
