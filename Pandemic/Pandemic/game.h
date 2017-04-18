@@ -89,10 +89,12 @@ public:
 	int pollPlayers();
 
 
+	void save_infectionCards();
 	void save_playerCards();
 	void save_players();
 	void load_players();
 	void load_deck();
+	void load_infectionCards();
 
 	void endTurnInfection();
 	void startInfect();

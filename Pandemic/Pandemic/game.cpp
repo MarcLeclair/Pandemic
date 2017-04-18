@@ -180,6 +180,7 @@ void Game::SaveGame(int playerIdTurn) {
 		map.save_map();
 		save_players();
 		save_playerCards();
+		save_infectionCards();
 	//}
 	////else
 	////	cout << "Game has not started" << endl;
@@ -762,6 +763,34 @@ void Game::save_playerCards() {
 	saveCard.sqlExecuteSelect(select);
 
 }
+
+void Game::save_infectionCards() {
+
+	vector<string> save;
+	SqlConnection saveInfections;
+	deque<Infection>::iterator infectionCardIt;
+	int counter = 0;
+	for (infectionCardIt = InfectionDeck->deck.begin(); infectionCardIt != InfectionDeck->deck.end(); infectionCardIt++) {
+		string card = to_string(infectionCardIt->getInfectionID()) + " , 0 " ; 
+		save.push_back(card);
+	}
+
+	for (Infection discardedCard : infectionDiscard) {
+		string discardSave = to_string(discardedCard.getInfectionID()) + " , 1 ";
+		save.push_back(discardSave);
+	}
+	string* select = new string("INSERT INTO SaveInfections(infectionId, discardedOrNot) VALUES ");
+
+	for (string str : save) {
+		if ((str) != toSave.back()) {
+			select->append("( " + str + " ),");
+		}
+		else
+			select->append("( " + str + " )");
+	}
+
+	saveInfections.sqlExecuteSelect(select);
+}
 void Game::load_players() {
 
 	SqlConnection loadPlayers,playerCount, loadCards;
@@ -869,8 +898,61 @@ void Game::load_deck() {
 
 
 	deck = new DeckOfCard<PlayerCard>(resultSet);
+
+	for (vector<string> rows : results) {
+		if (rows.at(4).compare("city")) {
+			int cityId = stoi(rows.at(0));
+			string cityName = rows.at(1);
+			string pcColor = rows.at(2);
+
+			PlayerCard* card = new PlayerCard(PlayerCard::CITY, cityId, cityName, pcColor);
+			resultSet.push_back(*card);
+		}
+		else if (rows.at(4).compare("event")) {
+			string eventValue = rows.at(1);
+			string eventName = rows.at(3);
+
+			PlayerCard* card = new PlayerCard(PlayerCard::EVENT, eventName, eventValue);
+			resultSet.push_back(*card);
+		}
+	}
+
 }
 
+void Game::load_infectionCards() {
+
+	SqlConnection loadInfection;
+	string* select = new string("select * from SaveInfection");
+
+	loadInfection.sqlExecuteSelect(select);
+
+
+	vector<vector<string>> results = loadInfection.Connection.colData;
+
+	vector<Infection>* tempDiscard = { 0 } ;
+	vector<Infection> deckOfInfection;
+	for (vector<string> rows : results) {
+		if (rows.at(1) == "1") {
+
+			int id = atoi(rows.at(0).c_str());
+
+			Infection discardToSave = Infection(id);
+			tempDiscard->push_back(discardToSave);
+			
+		}
+		else if (rows.at(1) == "0") {
+
+			int id = atoi(rows.at(0).c_str());
+
+			Infection cardToSave = Infection(id);
+			deckOfInfection.push_back(cardToSave);
+		}
+	}
+
+		infectionDiscard = *tempDiscard;
+
+		InfectionDeck = new DeckOfCard<Infection>(deckOfInfection);
+}
 void Game::displayPlayers() {
 	for (int i = 0; i < playerlist.size(); i++) {
 		cout << "Player " << playerlist[i]->getPlayerID() << " is a ";
@@ -1002,23 +1084,24 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 
 DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	
-	vector<Infection> InfectionCards;
-	vector<City*> temp = map.getCities();
+	vector<Infection> infectionCards;
+	SqlConnection infectionCard;
+	string* select = new string("select pcID from PlayerCards");
+	infectionCard.sqlExecuteSelect(select);
 
-	for (City* city : temp) {
-		int id = city->id;
+	vector<vector<string>> results = infectionCard.Connection.colData;
+
+	for (vector<string> rows : results) {
+
+		int id;
+
+		id = atoi(rows.at(0).c_str());
 		
 		Infection cardToPush = Infection(id);
-		InfectionCards.push_back(cardToPush);
+		infectionCards.push_back(cardToPush);
 	}
 
-	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(InfectionCards);
-
-	vector<Infection> t = InfectionDeck->returnVector();
-	for (Infection player : t) {
-		cout << player.getInfectionID() << endl;
-	}
-
+	DeckOfCard<Infection>* playerDeck = new DeckOfCard<Infection>(infectionCards);
 	return InfectionDeck;
 }
 
