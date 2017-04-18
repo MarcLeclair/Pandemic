@@ -457,7 +457,7 @@ vector<int> Map::getInfectionsCounters(int cityid) {
 	return v;
 }
 bool Map::connectsTo(int cityid, int newcityid){
-	return citylist[cityid]->connectsTo(newcityid);
+	return citylist[cityid-1]->connectsTo(newcityid);
 }
 void Map::displayCityInformation(int cityid) {
 	cityid--;

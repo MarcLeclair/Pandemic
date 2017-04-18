@@ -38,6 +38,7 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 			char* finalSelect = new char[select->length() + 1];
 			std::strcpy(finalSelect, select->c_str());
 
+			//std::cout << finalSelect << std::endl;
 			strcpy((char *)SQLStmt, finalSelect);
 
 			// Prepare And Execute The SQL Statement  

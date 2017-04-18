@@ -783,10 +783,10 @@ void Game::save_infectionCards() {
 		string discardSave = to_string(discardedCard.getInfectionID()) + " , 1 ";
 		save.push_back(discardSave);
 	}
-	string* select = new string("INSERT INTO SaveInfections(infectionId, discardedOrNot) VALUES ");
+	string* select = new string("INSERT INTO SaveInfection(infectionId, discardedOrNot) VALUES ");
 
 	for (string str : save) {
-		if ((str) != toSave.back()) {
+		if ((str) != save.back()) {
 			select->append("( " + str + " ),");
 		}
 		else
