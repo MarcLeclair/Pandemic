@@ -102,9 +102,9 @@ private:
 	int actions;
 
 	boolean viewPlayer = true; //toggles if player is shown in log
-	boolean viewPAction = true; //toggles actions
+	boolean viewPAction = false; //toggles actions
 	boolean viewDrawCard = true; //toggles Player cards drawn
-	boolean viewDrawInfection = true; //toggles infection cards drawn
+	boolean viewDrawInfection = false; //toggles infection cards drawn
 };
 
 //Constant variable defining the max amount of cards allowed in hand

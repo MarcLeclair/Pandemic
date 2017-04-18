@@ -120,6 +120,7 @@ void Game::StartGame() {
 
 
       		notify(); //If the action worked, notify all the observers
+
 			currentPlayersId++;
 
 		}
