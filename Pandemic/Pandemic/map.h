@@ -85,6 +85,7 @@ public:
     //void createIndexTable(); //deprecated
     void createLinks(); //creates pointer links between cities
     void display_information(); // displays information about all cities
+	void displayCityInformation(int);// displays information about a single city
     void load_starting_map(); //loads the starting map
 	void display_research_cities(); //displays all cities that have research stations
 	void cureDisease(char); // marks a disease as being cured
@@ -93,12 +94,16 @@ public:
 	void addPawn(Pawn*); //adds a pawn to starting location
 	void movePawn(Pawn*, int); //moves a pawns location
 	void display_status(); //displays the status of the map
+	void displayAdjacentCityInformation(int );
 	bool checkGameOver();
 	bool checkWin();
 	bool hasResearchStation(int);
 	bool hasDisease(int);
+	bool connectsTo(int, int );
 	char getZone(int);
 	vector<int> getConnections(int);
+	vector<int>getInfectionsCounters(int );
+	vector<Pawn*> getPawnsRef(int );
 
 
 	string getCityName(int);

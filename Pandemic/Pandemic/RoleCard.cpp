@@ -58,10 +58,9 @@ RoleCard::~RoleCard()
 int RoleCard::drive(Pawn* pawn, int newCityID) {
 	//Gets the player's current city. Should return a city object
 	int currentLocationID = pawn->get_location();
-	City* current = mapRef->getCityByID(currentLocationID);
 
 	//Check if the cities are connected
-	if (!(current->connectsTo(newCityID))) {
+	if (!(mapRef->connectsTo(currentLocationID, newCityID))) {
 		std::cout << "Sorry, cannot drive there; cities not connected." << std::endl;
 		return 0;
 	}
@@ -318,7 +317,6 @@ Medic::~Medic()
 *****************************************************************************************************************/
 int Medic::treatDisease(Pawn* pawn) {
 	int currentLocationID = pawn->get_location();
-	City* currentLocation = getMapRef()->getCityByID(currentLocationID);
 
 	if (!getMapRef()->hasDisease(currentLocationID)) {
 	cout << "Current location does not have any diseases to treat." << endl;
@@ -328,13 +326,13 @@ int Medic::treatDisease(Pawn* pawn) {
 	char zone;
 	int amountOfInfection;
 	for (int i = 0; i < 4; i++) {
-		if (currentLocation->infectionCounters[i] > 0) {
+		if (getMapRef()->getInfectionsCounters(currentLocationID)[i] > 0) {
 			if (i == 0) zone = 'b';
 			else if (i == 1) zone = 'r';
 			else if (i == 2) zone = 'u';
 			else zone = 'y';
 
-			amountOfInfection = currentLocation->infectionCounters[i];
+			amountOfInfection = getMapRef()->getInfectionsCounters(currentLocationID)[i];
 			break;
 		}
 	}
@@ -614,8 +612,8 @@ Dispatcher::~Dispatcher()
 / If yes, it moves the player to that city
 ********************************************************************************/
 int Dispatcher::specialMoveAnotherPlayer(Pawn* otherPlayer, int newCityID) {
-	City* newCity = getMapRef()->getCityByID(newCityID);
-	if (newCity->pawnRefList.size() < 1) {
+	
+	if (getMapRef()->getPawnsRef(newCityID).size() < 1) {
 		cout << "Cannot move to a city without Players in it." << endl;
 		return 0;
 	}
