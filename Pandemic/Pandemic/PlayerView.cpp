@@ -77,7 +77,6 @@ void PlayerView::displayPlayer() {
 	
 	//1) Pawn information
 	cout << "    Player is a " << subject->getRole() << " with a " << subject->getPawnColor() << " pawn in Location " << subject->getCurrentLocation() << endl;
-	cout << "    Player has " << subject->getAction() << " moves left.";
 	//3 PlayerCards information
 	cout << "    Player's current hand: " << endl;
 	subject->displayCardsInHand();

@@ -827,7 +827,7 @@ void Game::load_players() {
 		}
 	
 		Player* player1 = new Player(id, rc);
-		Observer* obs = new PlayerView();
+		Observer* obs = new PlayerView(player1);
 		player1->attach(obs);
 		player1->setCardsInHand(hand);
 		player1->getMyPawn()->set_location(currentLoc);
@@ -1244,7 +1244,6 @@ void Game::playEvent(int cardIndex, int playerID) {
 		cout << "Sorry, your event did not execute properly. Please choose to play an event again to retry!" << endl;
 	else {
 		playerlist[playerID]->discardCard(cardIndex, discardPile);
-		playerlist[playerID]->notify();
 	}
 }
 

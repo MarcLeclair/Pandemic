@@ -24,6 +24,8 @@ Map::Map(){
 / loads all basic city information from the database
 **********************************************************/
 void Map::load_starting_map(){
+	map<string, char> zones = { { "red", 'r' },{ "yel", 'y' },{ "blu", 'u' },{ "bla", 'b' } };
+
 	SqlConnection connect;
 	string* select = new string("select m.cityId,m.cityName,m.cityColor, isnull(l.link1,-1) as link1, isnull(l.link2,-1) as link2, isnull(l.link3,-1) as link3, isnull(l.link4,-1) as link4, isnull(l.link5,-1) as link5, isnull(l.link6,-1) as link6, isnull(l.link7 ,-1) as link7 from Map as m INNER JOIN MapLinks as l ON m.cityId = l.cityId");
 
@@ -35,8 +37,10 @@ void Map::load_starting_map(){
 	{
 		int cityId = stoi(rows.at(0));
 		string name = rows.at(1);
-		char *color = new char[rows.at(2).length() - 1];
-		strcpy(color, rows.at(2).c_str());
+
+		std::map<std::string, char>::iterator it = zones.find(rows.at(2).substr(0, 3));
+		char *color = &it->second;
+		//strcpy(color, rows.at(2).c_str());
 		int infectionCounter[4] = { 0,0,0,0 };
 		bool startFresh = false;
 
@@ -63,7 +67,7 @@ void Map::load_map(){
 	SqlConnection connect, iterate;
 	string *select = new string("select m.cityId, m.CityName, m.cityColor, s.pawnOrNot as pawn,s.blackCube as blackCube, s.redCube as redCube, s.blueCube as blueCube, s.yellowCube as yellowCube, s.researchOrNot as research, l.link1 as link1,l.link2 as link2,l.link3 as link3,l.link4 as link4,l.link5 as link5,l.link6 as link6,l.link7 as link7 from Map as m, MapLinks as l, SaveMap as s WHERE m.cityId = l.cityId  AND m.cityId = s.cityId");
 
-	map<string, char> zones = { {"bla", 'b'}, {"red", 'r'}, {"yel", 'y'}, {"blu", 'u'} };
+	map<string, char> zones = { {"red", 'r'}, {"yel", 'y'}, {"blu", 'u'}, {"bla", 'b'} };
 	connect.sqlExecuteSelect(select);
      
 	vector<vector<string>> results = connect.Connection.colData;
@@ -73,8 +77,8 @@ void Map::load_map(){
 		int infectionCounter[4] = { 0,0,0,0 };
 		string name = rows.at(1);
 		std::map<std::string, char>::iterator it = zones.find(rows.at(2).substr(0, 3));
-		char *color =  &it->second;
-		strcpy(color, rows.at(2).c_str());
+		char *color = &it->second;
+		//strcpy(color, rows.at(2).c_str());
 		bool researchCenter = false;
 
 		for (int count = 4; count <= 7; count++) {
