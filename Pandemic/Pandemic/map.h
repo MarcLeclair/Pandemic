@@ -34,6 +34,9 @@ class City {
 
   	  City (int, string, char*, int[],bool);//id,name,zone,locationx,locationy,infection counters, if rearch station
    	  City ();
+	  //getters and setters
+
+
 
   	  void display_information(); //displays information about the city
       bool hasDisease();//checks if a city has any disease
@@ -92,6 +95,13 @@ public:
 	void display_status(); //displays the status of the map
 	bool checkGameOver();
 	bool checkWin();
+	bool hasResearchStation(int);
+	bool hasDisease(int);
+	char getZone(int);
+	vector<int> getConnections(int);
+
+
+	string getCityName(int);
 	vector<int> placedCubes();
 	int numberInfectedCities();
 	int numberInfectedCubes();
