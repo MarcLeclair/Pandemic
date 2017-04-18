@@ -447,6 +447,29 @@ vector<int> Map::getConnections(int cityid) {
 	cityid--;
 	return citylist[cityid]->connections;
 	}
+vector<Pawn*> Map::getPawnsRef(int cityid) {
+	cityid--;
+	return citylist[cityid]->pawnRefList;
+}
+vector<int> Map::getInfectionsCounters(int cityid) {
+	cityid--;
+	vector<int> v(begin(citylist[cityid]->infectionCounters), end(citylist[cityid]->infectionCounters));
+	return v;
+}
+bool Map::connectsTo(int cityid, int newcityid){
+	return citylist[cityid]->connectsTo(newcityid);
+}
+void Map::displayCityInformation(int cityid) {
+	cityid--;
+	citylist[cityid]->display_information();
+}
+void Map::displayAdjacentCityInformation(int cityid) {
+	cityid--;
+	City* currentCity = citylist[cityid];
+	for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
+		currentCity->connectionsRef[i]->display_information();
+	}
+}
 /*************************************************
 / Function return an array of the placed cubes
 **************************************************/
