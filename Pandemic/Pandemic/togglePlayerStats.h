@@ -13,7 +13,7 @@ class togglePlayerStats
 public:
 	togglePlayerStats();
 	virtual string getGameLog(Player* p) = 0;
-	void getStats(Player* p);
+	static void getStats(Player* p);
 };
 
 class basicStats : public togglePlayerStats {

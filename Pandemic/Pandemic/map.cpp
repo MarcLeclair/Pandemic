@@ -18,6 +18,11 @@ Map::Map(){
 	}
 }
 
+Map::~Map() {
+	for (int i = 0; i < citylist.size();i++) {
+		delete citylist[i];
+	}
+}
 /********************************************************
 / Initial loading function
 / Used when loading a new game
@@ -457,7 +462,7 @@ vector<int> Map::getInfectionsCounters(int cityid) {
 	return v;
 }
 bool Map::connectsTo(int cityid, int newcityid){
-	return citylist[cityid]->connectsTo(newcityid);
+	return citylist[cityid-1]->connectsTo(newcityid);
 }
 void Map::displayCityInformation(int cityid) {
 	cityid--;
