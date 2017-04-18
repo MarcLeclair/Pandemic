@@ -451,6 +451,10 @@ vector<Pawn*> Map::getPawnsRef(int cityid) {
 	cityid--;
 	return citylist[cityid]->pawnRefList;
 }
+vector<int> Map::getPawns(int cityid) {
+	cityid--;
+	return citylist[cityid]->pawnList;
+}
 vector<int> Map::getInfectionsCounters(int cityid) {
 	cityid--;
 	vector<int> v(begin(citylist[cityid]->infectionCounters), end(citylist[cityid]->infectionCounters));
