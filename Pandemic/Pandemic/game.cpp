@@ -109,6 +109,7 @@ void Game::StartGame() {
 
 			if ((round%playerlist.size()) == 0) {
 				cout << "Saving the game" << endl;
+				dropTables();
 				SaveGame(currentPlayersId);
 			}
   
@@ -147,6 +148,7 @@ void Game::StartGame() {
 
 			if (currentPlayersId%playerlist.size() == playerlist.size() - 1) {
 				cout << "Saving the game" << endl;
+				dropTables();
 				SaveGame(currentPlayersId);
 			}
 
@@ -727,7 +729,7 @@ void Game::save_players() {
 void Game::save_playerCards() {
 
 	
-
+	toSave.clear();
 
 	SqlConnection saveCard;
 	deque<PlayerCard>::iterator playerCardIt;
