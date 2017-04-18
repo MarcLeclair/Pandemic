@@ -259,14 +259,7 @@ void Map::createLinks() {
 	}
 }
 
-//
-//void Map::createIndexTable(){
-//  for(int i=0;i<citylist.size();i++){
-//    for(int j=0;j<citylist[i].connections.size();j++){
-//      citylist[i].connectionsRef.push_back(&citylist[citylist[i].connections[j]]);
-//    }
-//  }
-//}
+
 
 /*****************************************************************************************
 / Function to cure a disease
@@ -559,8 +552,8 @@ bool Map::checkGameOver() {
 	}
 	//This is wrong. should be checking if all infection cubes were used.
 	for (int infectionIndex = 0; infectionIndex < 4; infectionIndex++) {
-		if (count[infectionIndex] == 0 >24) {
-			eradicated[infectionIndex] = true;
+		if (count[infectionIndex] >=24) {
+			return true;
 		}
 	}
 	return false;
