@@ -131,13 +131,20 @@ public:
 	*/
 	void update() {
 		ObserverDecorator::update();
-		auto infectionCounters = this->game->getMap()->placedCubes();
+		auto infectionCounters = game->getMap()->placedCubes();
+
+		int remainingResearchStations = 6- game->getMap()->numberResearchStations();
+		int infectionCountersBlack = 24 - infectionCounters[0];
+		int infectionCountersRed = 24 - infectionCounters[1];
+		int infectionCountersBlue = 24 - infectionCounters[2];
+		int infectionCountersYellow = 24 - infectionCounters[3];
+
 		cout << "ResourcesStatistics:" << endl;
-		cout << "Number of research stations left in supply : " << this->game->getMap()->numberResearchStations() << endl;
-		cout << "Number of Black Cubes  left in supply: " << 24-infectionCounters[0] << endl;
-		cout << "Number of Red Cubes left in supply: " << 24-infectionCounters[1] << endl;
-		cout << "Number of Blue Cubes left in supply: " << 24-infectionCounters[2] << endl;
-		cout << "Number of Yellow Cubes left in supply: " << 24-infectionCounters[3] << endl << endl;
+		cout << "Number of research stations left in supply : " << remainingResearchStations << endl;
+		cout << "Number of Black Cubes  left in supply: " << infectionCountersBlack << endl;
+		cout << "Number of Red Cubes left in supply: " << infectionCountersRed << endl;
+		cout << "Number of Blue Cubes left in supply: " << infectionCountersBlue << endl;
+		cout << "Number of Yellow Cubes left in supply: " << infectionCountersYellow << endl << endl;
 	}
 
 };

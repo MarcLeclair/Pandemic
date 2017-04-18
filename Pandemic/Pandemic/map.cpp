@@ -24,6 +24,8 @@ Map::Map(){
 / loads all basic city information from the database
 **********************************************************/
 void Map::load_starting_map(){
+	map<string, char> zones = { { "red", 'r' },{ "yel", 'y' },{ "blu", 'u' },{ "bla", 'b' } };
+
 	SqlConnection connect;
 	string* select = new string("select m.cityId,m.cityName,m.cityColor, isnull(l.link1,-1) as link1, isnull(l.link2,-1) as link2, isnull(l.link3,-1) as link3, isnull(l.link4,-1) as link4, isnull(l.link5,-1) as link5, isnull(l.link6,-1) as link6, isnull(l.link7 ,-1) as link7 from Map as m INNER JOIN MapLinks as l ON m.cityId = l.cityId");
 
@@ -35,8 +37,10 @@ void Map::load_starting_map(){
 	{
 		int cityId = stoi(rows.at(0));
 		string name = rows.at(1);
-		char *color = new char[rows.at(2).length() - 1];
-		strcpy(color, rows.at(2).c_str());
+
+		std::map<std::string, char>::iterator it = zones.find(rows.at(2).substr(0, 3));
+		char *color = &it->second;
+		//strcpy(color, rows.at(2).c_str());
 		int infectionCounter[4] = { 0,0,0,0 };
 		bool startFresh = false;
 
@@ -63,6 +67,7 @@ void Map::load_map(){
 	SqlConnection connect, iterate;
 	string *select = new string("select m.cityId, m.CityName, m.cityColor, s.pawnOrNot as pawn,s.blackCube as blackCube, s.redCube as redCube, s.blueCube as blueCube, s.yellowCube as yellowCube, s.researchOrNot as research, l.link1 as link1,l.link2 as link2,l.link3 as link3,l.link4 as link4,l.link5 as link5,l.link6 as link6,l.link7 as link7 from Map as m, MapLinks as l, SaveMap as s WHERE m.cityId = l.cityId  AND m.cityId = s.cityId");
 
+	map<string, char> zones = { {"red", 'r'}, {"yel", 'y'}, {"blu", 'u'}, {"bla", 'b'} };
 	connect.sqlExecuteSelect(select);
      
 	vector<vector<string>> results = connect.Connection.colData;
@@ -71,8 +76,9 @@ void Map::load_map(){
 		int id = stoi(rows.at(0));
 		int infectionCounter[4] = { 0,0,0,0 };
 		string name = rows.at(1);
-		char *color = new char[rows.at(2).length() - 1];
-		strcpy(color, rows.at(2).c_str());
+		std::map<std::string, char>::iterator it = zones.find(rows.at(2).substr(0, 3));
+		char *color = &it->second;
+		//strcpy(color, rows.at(2).c_str());
 		bool researchCenter = false;
 
 		for (int count = 4; count <= 7; count++) {
@@ -88,7 +94,7 @@ void Map::load_map(){
 
 
 
-		for (int count = 9; count <= 15; count++) {
+		for (int count = 9; count < rows.size(); count++) {
 			if (stoi(rows.at(count)) != -1) {
 				newCity->add_connection(stoi(rows.at(count)));
 			}
@@ -109,6 +115,8 @@ void Map::load_map(){
 			}
 
 		}
+
+		citylist.push_back(newCity);
 	}
 	
 }
@@ -255,14 +263,7 @@ void Map::createLinks() {
 	}
 }
 
-//
-//void Map::createIndexTable(){
-//  for(int i=0;i<citylist.size();i++){
-//    for(int j=0;j<citylist[i].connections.size();j++){
-//      citylist[i].connectionsRef.push_back(&citylist[citylist[i].connections[j]]);
-//    }
-//  }
-//}
+
 
 /*****************************************************************************************
 / Function to cure a disease
@@ -423,12 +424,57 @@ void Map::addPawn(Pawn* pawn) {
 	pawn->set_location(4);
 	pawn->set_location_name(citylist[4]->name);
 }
-
+/*************************************************
+/ Gets name of city given its id
+**************************************************/
+string Map::getCityName(int cityid) {
+	cityid--;
+	return citylist[cityid]->name;
+}
+bool Map::hasResearchStation(int cityid) {
+	cityid--;
+	return citylist[cityid]->hasResearchStation();
+}
+bool Map::hasDisease(int cityid) {
+	cityid--;
+	return citylist[cityid]->hasDisease();
+}
+char Map::getZone(int cityid) {
+	cityid--;
+	return citylist[cityid]->zone;
+}
+vector<int> Map::getConnections(int cityid) {
+	cityid--;
+	return citylist[cityid]->connections;
+	}
+vector<Pawn*> Map::getPawnsRef(int cityid) {
+	cityid--;
+	return citylist[cityid]->pawnRefList;
+}
+vector<int> Map::getInfectionsCounters(int cityid) {
+	cityid--;
+	vector<int> v(begin(citylist[cityid]->infectionCounters), end(citylist[cityid]->infectionCounters));
+	return v;
+}
+bool Map::connectsTo(int cityid, int newcityid){
+	return citylist[cityid]->connectsTo(newcityid);
+}
+void Map::displayCityInformation(int cityid) {
+	cityid--;
+	citylist[cityid]->display_information();
+}
+void Map::displayAdjacentCityInformation(int cityid) {
+	cityid--;
+	City* currentCity = citylist[cityid];
+	for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
+		currentCity->connectionsRef[i]->display_information();
+	}
+}
 /*************************************************
 / Function return an array of the placed cubes
 **************************************************/
 
-int* Map::placedCubes() {
+vector<int> Map::placedCubes() {
 	int count[4] = { 0,0,0,0 };
 
 	for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
@@ -436,7 +482,13 @@ int* Map::placedCubes() {
 			count[infectionIndex] += citylist[cityIndex]->infectionCounters[infectionIndex];
 		}
 	}
-	return count;
+
+	vector<int> placed;
+	placed.push_back(count[0]);
+	placed.push_back(count[1]);
+	placed.push_back(count[2]);
+	placed.push_back(count[3]);
+	return placed;
 }
 /*************************************************
 / Function returns the number of infected cubes
@@ -549,8 +601,8 @@ bool Map::checkGameOver() {
 	}
 	//This is wrong. should be checking if all infection cubes were used.
 	for (int infectionIndex = 0; infectionIndex < 4; infectionIndex++) {
-		if (count[infectionIndex] == 0 >24) {
-			eradicated[infectionIndex] = true;
+		if (count[infectionIndex] >=24) {
+			return true;
 		}
 	}
 	return false;
