@@ -1101,7 +1101,7 @@ DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 		infectionCards.push_back(cardToPush);
 	}
 
-	DeckOfCard<Infection>* playerDeck = new DeckOfCard<Infection>(infectionCards);
+	DeckOfCard<Infection>* InfectionDeck = new DeckOfCard<Infection>(infectionCards);
 	return InfectionDeck;
 }
 
