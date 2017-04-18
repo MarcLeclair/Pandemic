@@ -424,7 +424,29 @@ void Map::addPawn(Pawn* pawn) {
 	pawn->set_location(4);
 	pawn->set_location_name(citylist[4]->name);
 }
-
+/*************************************************
+/ Gets name of city given its id
+**************************************************/
+string Map::getCityName(int cityid) {
+	cityid--;
+	return citylist[cityid]->name;
+}
+bool Map::hasResearchStation(int cityid) {
+	cityid--;
+	return citylist[cityid]->hasResearchStation();
+}
+bool Map::hasDisease(int cityid) {
+	cityid--;
+	return citylist[cityid]->hasDisease();
+}
+char Map::getZone(int cityid) {
+	cityid--;
+	return citylist[cityid]->zone;
+}
+vector<int> Map::getConnections(int cityid) {
+	cityid--;
+	return citylist[cityid]->connections;
+	}
 /*************************************************
 / Function return an array of the placed cubes
 **************************************************/
