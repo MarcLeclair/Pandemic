@@ -321,7 +321,6 @@ void Game::performPlayersTurn(int pId) {
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 
 		//Preliminary initializations
-		City* current;
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
@@ -331,8 +330,7 @@ void Game::performPlayersTurn(int pId) {
 
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
-		City* currentCity = map.getCityByID(currentCityID);
-		vector<int> pawnsInCity = currentCity->pawnList;
+		vector<int> pawnsInCity = map.getPawns(currentCityID);
 		int giver = 0;
 		int receiver = 0;
 		int giverstatus = 0;
@@ -340,7 +338,6 @@ void Game::performPlayersTurn(int pId) {
 		vector<PlayerCard> givingHand;
 
 		int displayaction = -1;
-		vector<City*> allCities = map.getCities();
 		bool redoDisplay = true;
 		do {
 			cout << endl;
@@ -362,17 +359,13 @@ void Game::performPlayersTurn(int pId) {
 				redoDisplay = false;
 				break;
 			case 1:
-				currentCity->display_information();
+				map.displayCityInformation(currentCityID);
 				break;
 			case 2:
-				for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
-					currentCity->connectionsRef[i]->display_information();
-				}
+				map.displayAdjacentCityInformation(currentCityID);
 				break;
 			case 3:
-				for (int i = 0; i < allCities.size(); i++) {
-					allCities[i]->display_information();
-				}
+				map.display_information();
 				break;
 			case 4:
 				map.display_status();

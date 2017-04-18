@@ -104,7 +104,7 @@ public:
 	vector<int> getConnections(int);
 	vector<int>getInfectionsCounters(int );
 	vector<Pawn*> getPawnsRef(int );
-
+	vector<int> getPawns(int);
 
 	string getCityName(int);
 	vector<int> placedCubes();
