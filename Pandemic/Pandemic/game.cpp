@@ -693,7 +693,7 @@ void Game::save_players() {
 		string numOfCards = to_string(playerlist[i]->getNumOfCards());
 
 		//SavePlayers table --> pcID, pcValue, pcColor , eventName, type, deckOrPlayerId
-		string player = id + " , " + " ' " + playerlist[i]->getRole() + " ' " + " , " + location + " , " + numOfCards;
+		string player = id + " , " + " '" + playerlist[i]->getRole() + "' " + " , " + location + " , " + numOfCards;
 		playersToSave.push_back(player);
 
 
