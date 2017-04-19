@@ -38,6 +38,7 @@ const Subject& Subject::operator=(const Subject& sub) {
 
 Subject::~Subject()
 {
+	//to DO : LOOP
 	delete observers;
 }
 

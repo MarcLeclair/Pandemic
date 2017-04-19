@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 
+#include "SqlBuilder.h"
 #include "SqlConnection.h"
 #include "possession.h"
 #ifndef MAP_H
@@ -68,6 +69,7 @@ class City {
 / Operates directly on these city objects, encapsulating them so that outside objects do not access cities directly
 *********************************************************************************************************************/
 class  Map{
+
 	bool cured[4]; //list if a disease has been cured
 	bool eradicated[4]; //list of if a disease has been eradicated
 	vector<City*> citylist; //list of all cites

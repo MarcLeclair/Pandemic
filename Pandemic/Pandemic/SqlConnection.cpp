@@ -7,7 +7,7 @@ void SqlConnection::saveGame() {
 
 }
 
-void SqlConnection::sqlExecuteSelect(string *select) {
+void SqlConnection::sqlExecuteSelect(string *select, bool insert) {
 
 	SQLCHAR DBName[20] = "PandemicMain";
 	SQLCHAR SQLStmt[4000] = { 0 };
@@ -20,7 +20,7 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 	if (Example.ConHandle != NULL)
 
 	{
-
+		Connection.colData.clear();
 		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "concordia", SQL_NTS, (SQLCHAR *) "University4", SQL_NTS);
 
 		// Allocate An SQL Statement Handle 
@@ -62,9 +62,10 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 			if (rc == SQL_SUCCESS)
 
 			{
-				
-				Example.GetResultset();
-				Connection.colData = Example.colData;
+				if (insert == false) {
+					Example.GetResultset();
+					Connection.colData = Example.colData;
+				}
 
 
 

@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 
+#include "SqlBuilder.h"
 #include "ODBC.h"
 #include "possession.h"
 #include "DeckOfCard.h"
@@ -19,6 +20,7 @@
 using namespace std;
 class Game : public Subject{
 
+	
 	int playerTurnOnLoad;
 	bool hasGameStarted;
 	ODBC_Class Example;
