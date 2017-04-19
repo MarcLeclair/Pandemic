@@ -1011,11 +1011,10 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	
 	vector<Infection> InfectionCards;
-	vector<City*> temp = map.getCities();
+	vector<int> temp = map.getCityIds();
 
-	for (City* city : temp) {
-		int id = city->id;
-		
+	for (int id : temp) {
+	
 		Infection cardToPush = Infection(id);
 		InfectionCards.push_back(cardToPush);
 	}
