@@ -182,10 +182,10 @@ void Game::save_gameState(int playerIdTurns) {
 void Game::SaveGame(int playerIdTurn) {
 	/*if (this->hasGameStarted == true) {*/
 		save_gameState(playerIdTurn);
-
+		save_players();
 		save_playerCards();
 		map.save_map();
-		save_players();
+		
 		save_infectionCards();
 	//}
 	////else
@@ -698,26 +698,6 @@ void Game::save_players() {
 		string player = id + "," + "'" + playerlist[i]->getRole() + "'" + "," + location + "," + numOfCards;
 
 		playersToSave.push_back(player);
-
-
-		for (int j = 0; j < playerlist[i]->getNumOfCards(); j++) {
-			string cardType = playerlist[i]->getHand().at(j).getType();
-
-			if (cardType == "city") {
-
-				string cityId = to_string(playerlist[i]->getHand().at(j).getCityId());
-
-
-				string card = cityId + ",'" + playerlist[i]->getHand().at(j).getValue() + "','" + playerlist[i]->getHand().at(j).getColour() + "',null,'" + cardType + "'," + id;
-				toSave.push_back(card);
-			}
-			if (cardType == "event") {
-
-				string card = "null, ' " + playerlist[i]->getHand().at(j).getValue() + " '   , null , ' " + playerlist[i]->getHand().at(j).getName() + " '  ,  ' " +
-					playerlist[i]->getHand().at(j).getType() + " '  , " + id;
-				toSave.push_back(card);
-			}
-		}
 	}
 
 	string *select = new string("INSERT INTO SavePlayerInfo(playerId,playerRole, playerLoc, numOfCards) VALUES  ");
@@ -740,7 +720,7 @@ void Game::save_players() {
 }
 void Game::save_playerCards() {
 
-
+	vector<string> toSave;
 	SqlConnection saveCard;
 	deque<PlayerCard>::iterator playerCardIt;
 	int counter = 0;
@@ -751,18 +731,40 @@ void Game::save_playerCards() {
 
 				string cityId = to_string(playerCardIt->getCityId());
 				string deckId = to_string(-1);
-				string card = cityId + " ,  ' " + playerCardIt->getValue() + " ' ,  ' " + playerCardIt->getColour() + " ' ,  null , ' " + cardType + "' ," + deckId;
+				string card = cityId + ",'" + playerCardIt->getValue() + "','" + playerCardIt->getColour() + "',null,'" + cardType + "'," + deckId;
 				toSave.push_back(card);
 			}
 			if (cardType == "event") {
-				string card = "null, ' " + playerCardIt->getValue() + " '   , null , ' " + playerCardIt->getName() + " '  ,  ' " +
-					playerCardIt->getType() + " '  , " + deckId;
+				string card = "null,'" + playerCardIt->getValue() + "',null,'" + playerCardIt->getName() + "','" +
+					playerCardIt->getType() + "'," + deckId;
 				toSave.push_back(card);
 			}
 			if (cardType == "epidemic") {
 				//TODO
 			}
 		}
+
+	for (int i = 0; i < playerlist.size(); i++) {
+
+		for (int j = 0; j < playerlist[i]->getNumOfCards(); j++) {
+			string cardType = playerlist[i]->getHand().at(j).getType();
+
+			if (cardType == "city") {
+
+				string cityId = to_string(playerlist[i]->getHand().at(j).getCityId());
+
+
+				string card = cityId + ",'" + playerlist[i]->getHand().at(j).getValue() + "','" + playerlist[i]->getHand().at(j).getColour() + "',null,'" + cardType + "'," + to_string(playerlist[i]->getPlayerID());;
+				toSave.push_back(card);
+			}
+			if (cardType == "event") {
+
+				string card = "null, ' " + playerlist[i]->getHand().at(j).getValue() + "', null,'" + playerlist[i]->getHand().at(j).getName() + "','" +
+					playerlist[i]->getHand().at(j).getType() + " '  , " + to_string(playerlist[i]->getPlayerID());
+				toSave.push_back(card);
+			}
+		}
+	}
 	string* select = new string("INSERT INTO SavePlayerCards(pcID,pcValue, pcColor, eventName,type,deckOrPlayerId) VALUES ");
 
 	for (string str : toSave) {
@@ -773,7 +775,6 @@ void Game::save_playerCards() {
 			select->append("( " + str + " )");
 	}
 
-	toSave.clear();
 	saveCard.sqlExecuteSelect(select, true);
 
 }

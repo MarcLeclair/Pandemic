@@ -27,7 +27,6 @@ class Game : public Subject{
 	Map map;
 	vector<Player*> playerlist;
 	vector<RoleCard*> rolelist;
-	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
 	vector<PlayerCard> discardPile;
 	DeckOfCard<Infection>* InfectionDeck;
