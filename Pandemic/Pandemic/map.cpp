@@ -354,7 +354,7 @@ void Map::addDisease(int cityId) {
 	}
 }
 
-bool Map::City::pawnOnCity(string color) {
+bool City::pawnOnCity(string color) {
 	for (int i = 0; i < pawnRefList.size(); i++){
 		if (pawnRefList[i]->get_color() == color){
 			return true;
@@ -409,6 +409,14 @@ void Map::checkEradication() {
 	}
 }
 
+/*******************************************************************************************
+/ Function to return a pointer to a city object depending on the ID passed to the function
+/ Used for checks in the role classes
+********************************************************************************************/
+City* Map::getCityByID(int cityId){
+  return citylist[cityId-1];
+
+}
 
 /*************************************************
 / Function to add a pawn to the beginning city
@@ -470,14 +478,6 @@ void Map::displayAdjacentCityInformation(int cityid) {
 	for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
 		currentCity->connectionsRef[i]->display_information();
 	}
-}
-
-vector<int> Map::getCityIds() {
-	vector<int> citiesIds;
-	for (int i = 0; i < citylist.size();i++) {
-		citiesIds.push_back(citylist[i]->getCityID());
-	}
-	return citiesIds;
 }
 /*************************************************
 / Function return an array of the placed cubes
@@ -583,7 +583,12 @@ void Map::movePawn(Pawn* pawn, int cityId) {
 
 }
 
-
+/*********************************************
+/ Return the all the cities held by the map
+***********************************************/
+vector<City*> Map::getCities() {
+	return citylist;
+}
 
 /*****************************************************************************
 / Checks for the Game Over conditions
@@ -633,7 +638,7 @@ bool Map::checkWin() {
 / City default constructor
 / Instantiates arbitrary values to the variables
 *************************************************/
-Map::City::City(){
+City::City(){
 	id = -1;
 	zone = 'n';
 	name = "no name";
@@ -650,7 +655,7 @@ Map::City::City(){
 / City Constructor
 / Used when a previous game has been loaded, or when loading saved city values
 ********************************************************************************/
-Map::City::City (int id, string name, char* zone, int iC[], bool researchCenter ) {
+City::City (int id, string name, char* zone, int iC[], bool researchCenter ) {
   this->id = id;
   this->name = name;
   this->zone = *zone;
@@ -666,7 +671,7 @@ Map::City::City (int id, string name, char* zone, int iC[], bool researchCenter 
 / Display the information for a City
 / Includes its name, ID and the disease cubes it holds
 *******************************************************/
-void Map::City::display_information(){
+void City::display_information(){
 	 cout <<name << "(" << id << ")" << endl;
 	 cout << "Color: " << zone << endl;
 	 cout << "Black Cubes: "<<infectionCounters[0]<<endl;
@@ -691,7 +696,7 @@ void Map::City::display_information(){
 	 cout<< endl <<endl;
 }
 
-//void Map::City::treatDisease(char type) {
+//void City::treatDisease(char type) {
 //
 //
 //}
@@ -700,7 +705,7 @@ void Map::City::display_information(){
 / Function to treat disease cubes in the current city
 / Treats disease cubes corresponding to the city's zone
 ************************************************************/
-void Map::City::treatDisease() {
+void City::treatDisease() {
 	if (this->zone == 'b' && this->infectionCounters[0]>0) {
 		this->infectionCounters[0]--;
 	}
@@ -719,7 +724,7 @@ void Map::City::treatDisease() {
 / Checks to see if the city holds any disease cubes
 / Any color of disease cubes results in returning an answer of true
 ********************************************************************/
-bool Map::City::hasDisease(){
+bool City::hasDisease(){
 	//Iterate over all infection counters
 	for(int infectionIndex = 0; infectionIndex < 4; infectionIndex++){
 		if(infectionCounters[infectionIndex] > 0){
@@ -732,7 +737,7 @@ bool Map::City::hasDisease(){
 /********************************************************************
  Function that checks for a disease of a specific type in the city
 *********************************************************************/
-bool Map::City::hasDisease(char disease){
+bool City::hasDisease(char disease){
 	if (infectionCounters[zoneIndex[disease]] > 0)
 		return true;
   return false;
@@ -741,7 +746,7 @@ bool Map::City::hasDisease(char disease){
 /******************************************************************
 / Function that checks whether this city Connects to another city
 ******************************************************************/
-bool Map::City::connectsTo(int newCityId){
+bool City::connectsTo(int newCityId){
   for(int i=0; i<connections.size();i++){
 	  if(connections[i]==newCityId){
 		return true;
