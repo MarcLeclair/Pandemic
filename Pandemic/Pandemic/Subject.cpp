@@ -38,11 +38,12 @@ const Subject& Subject::operator=(const Subject& sub) {
 
 Subject::~Subject()
 {
+
 	list<Observer*>::iterator i = observers->begin(); //returns a bidirectional iterator pointing to the first element in the list
 	for (; i != observers->end(); ++i) {
 		delete *i;
 	}
-	delete observers;
+
 }
 
 /****************************************************************

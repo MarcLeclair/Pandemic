@@ -9,6 +9,6 @@ public:
 	void saveGame();
 	SqlConnection();
 	~SqlConnection();
-	void sqlExecuteSelect(string *select);
+	void sqlExecuteSelect(string *select, bool insert);
 };
 

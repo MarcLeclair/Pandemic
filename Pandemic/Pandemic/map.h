@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 
+#include "SqlBuilder.h"
 #include "SqlConnection.h"
 #include "possession.h"
 #ifndef MAP_H
@@ -24,6 +25,7 @@ using namespace std;
 / Operates directly on these city objects, encapsulating them so that outside objects do not access cities directly
 *********************************************************************************************************************/
 class  Map{
+
 private:
 	class City {
 	public:

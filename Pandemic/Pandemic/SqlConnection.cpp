@@ -7,11 +7,12 @@ void SqlConnection::saveGame() {
 
 }
 
-void SqlConnection::sqlExecuteSelect(string *select) {
+void SqlConnection::sqlExecuteSelect(string *select, bool insert) {
 
 	SQLCHAR DBName[20] = "PandemicMain";
 	SQLCHAR SQLStmt[4000] = { 0 };
-	SQLCHAR SqlState[6],  Msg[SQL_MAX_MESSAGE_LENGTH];
+	SQLCHAR SqlState[100] = { 0 };
+	SQLCHAR Msg[SQL_MAX_MESSAGE_LENGTH];
 	SQLRETURN rc = SQL_SUCCESS;
 	SQLSMALLINT   i, MsgLen;
 	SQLRETURN rc2;
@@ -20,7 +21,7 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 	if (Example.ConHandle != NULL)
 
 	{
-
+		Connection.colData.clear();
 		rc = SQLConnect(Example.ConHandle, DBName, SQL_NTS, (SQLCHAR *) "concordia", SQL_NTS, (SQLCHAR *) "University4", SQL_NTS);
 
 		// Allocate An SQL Statement Handle 
@@ -37,8 +38,9 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 			// Define A SELECT SQL Statement  
 			char* finalSelect = new char[select->length() + 1];
 			std::strcpy(finalSelect, select->c_str());
-
-			strcpy((char *)SQLStmt, finalSelect);
+/*
+			std::cout << finalSelect << std::endl;*/
+			strcpy((char *)SQLStmt, select->c_str());
 
 			// Prepare And Execute The SQL Statement  
 
@@ -61,9 +63,10 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 			if (rc == SQL_SUCCESS)
 
 			{
-				
-				Example.GetResultset();
-				Connection.colData = Example.colData;
+				if (insert == false) {
+					Example.GetResultset();
+					Connection.colData = Example.colData;
+				}
 
 
 
@@ -72,15 +75,15 @@ void SqlConnection::sqlExecuteSelect(string *select) {
 				// with the resultset, such as display it.  
 
 			}
-
+			delete finalSelect;
 		}
 
 		// Free The SQL Statement Handle  
 
 		if (Example.StmtHandle != NULL)
-
+			
 			SQLFreeHandle(SQL_HANDLE_STMT, Example.StmtHandle);
-
+		
 		// Disconnect From The Northwind Sample Database  
 		rc = SQLDisconnect(Example.ConHandle);
 

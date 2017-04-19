@@ -34,7 +34,7 @@ void Map::load_starting_map(){
 	SqlConnection connect;
 	string* select = new string("select m.cityId,m.cityName,m.cityColor, isnull(l.link1,-1) as link1, isnull(l.link2,-1) as link2, isnull(l.link3,-1) as link3, isnull(l.link4,-1) as link4, isnull(l.link5,-1) as link5, isnull(l.link6,-1) as link6, isnull(l.link7 ,-1) as link7 from Map as m INNER JOIN MapLinks as l ON m.cityId = l.cityId");
 
-	connect.sqlExecuteSelect(select);
+	connect.sqlExecuteSelect(select, false);
 
 	vector<vector<string>> results = connect.Connection.colData;
 
@@ -70,10 +70,18 @@ void Map::load_starting_map(){
 **********************************************************************************************************************/
 void Map::load_map(){
 	SqlConnection connect, iterate;
+	
 	string *select = new string("select m.cityId, m.CityName, m.cityColor, s.pawnOrNot as pawn,s.blackCube as blackCube, s.redCube as redCube, s.blueCube as blueCube, s.yellowCube as yellowCube, s.researchOrNot as research, l.link1 as link1,l.link2 as link2,l.link3 as link3,l.link4 as link4,l.link5 as link5,l.link6 as link6,l.link7 as link7 from Map as m, MapLinks as l, SaveMap as s WHERE m.cityId = l.cityId  AND m.cityId = s.cityId");
+	//Director dir;
+	//Builder* loadMap = new LoadMap();
+	//dir.setBuilder(loadMap);
+	//dir.constructStatement();
+	//Statement* sel = dir.getQuery();
+
+	//string* select = sel->getStatement();
 
 	map<string, char> zones = { {"red", 'r'}, {"yel", 'y'}, {"blu", 'u'}, {"bla", 'b'} };
-	connect.sqlExecuteSelect(select);
+	connect.sqlExecuteSelect(select, false);
      
 	vector<vector<string>> results = connect.Connection.colData;
 	
@@ -111,7 +119,7 @@ void Map::load_map(){
 
 			string* execute = new string("select playerId, pawnColor from SavePlayerInfo where playerLoc = ");
 			execute->append(rows.at(0));
-			playerId.sqlExecuteSelect(execute);
+			playerId.sqlExecuteSelect(execute, false);
 			vector<vector<string>> playerSets = playerId.Connection.colData;
 
 			for (vector<string> row : playerSets) {
@@ -123,7 +131,7 @@ void Map::load_map(){
 
 		citylist.push_back(newCity);
 	}
-	
+	createLinks();
 }
 
 
@@ -177,6 +185,8 @@ void Map::load_map(){
 		if (nothingCured) {
 			cout << "No dieases have been cured or eradicated" << endl;
 		}
+
+		
 	}
 
 /*
@@ -191,7 +201,17 @@ void Map::load_map(){
 ***********************************************************************/
 void Map::save_map(){
 	SqlConnection connect;
-  string *select = new string("INSERT into SaveMap(cityId, pawnOrNot,researchOrNot, blackCube, redCube,blueCube,yellowCube) VALUES");
+ 
+
+	string *select = new string("INSERT into SaveMap(cityId, pawnOrNot,researchOrNot, blackCube, redCube,blueCube,yellowCube) VALUES");
+	/*Director dir;
+	Builder* saveMap = new SaveMap();
+	dir.setBuilder(saveMap);
+	dir.constructStatement();
+	Statement* sel = dir.getQuery();
+
+	string* select = sel->getStatement();*/
+
   vector<string> mapToSave;
   //For each city in the city list, save the city's id, name, and all connections
   for (int cityIndex = 0; cityIndex < citylist.size(); cityIndex++) {
@@ -226,7 +246,7 @@ void Map::save_map(){
 		  select->append("( " + str + " )");
   }
 
-  connect.sqlExecuteSelect(select);
+  connect.sqlExecuteSelect(select,true);
 }
 
 /*********************************************************************

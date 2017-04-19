@@ -4,6 +4,7 @@
 #include <vector>
 #include <sstream>
 
+#include "SqlBuilder.h"
 #include "ODBC.h"
 #include "possession.h"
 #include "DeckOfCard.h"
@@ -20,13 +21,13 @@
 using namespace std;
 class Game : public Subject{
 
+	
 	int playerTurnOnLoad;
 	bool hasGameStarted;
 	ODBC_Class Example;
 	Map map;
 	vector<Player*> playerlist;
 	vector<RoleCard*> rolelist;
-	vector<string> toSave;
 	DeckOfCard<PlayerCard>* deck;
 	vector<PlayerCard> discardPile;
 	DeckOfCard<Infection>* InfectionDeck;
@@ -90,10 +91,12 @@ public:
 	int pollPlayers();
 
 
+	void save_infectionCards();
 	void save_playerCards();
 	void save_players();
 	void load_players();
 	void load_deck();
+	void load_infectionCards();
 
 	void endTurnInfection();
 	void startInfect();
