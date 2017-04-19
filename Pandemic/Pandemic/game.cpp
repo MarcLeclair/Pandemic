@@ -7,7 +7,7 @@ using namespace std;
 Game::Game() {
 
 }
-Game::Game(int numberPlayers) {
+Game::Game(int numberPlayers) : Subject() {
 
 	if (hasGameStarted == false) {
 
@@ -121,6 +121,7 @@ void Game::StartGame() {
 
 
       		notify(); //If the action worked, notify all the observers
+
 			currentPlayersId++;
 
 		}
@@ -323,7 +324,6 @@ void Game::performPlayersTurn(int pId) {
 	while (playerlist[pId]->getAction() > 0 && redo == 1) {
 
 		//Preliminary initializations
-		City* current;
 		int newCityID;
 		int count = 0;
 		int cardIndex = -1;
@@ -333,8 +333,7 @@ void Game::performPlayersTurn(int pId) {
 
 		//These initializations are important for the share knowledge function
 		int currentCityID = playerlist[pId]->getCurrentLocation();
-		City* currentCity = map.getCityByID(currentCityID);
-		vector<int> pawnsInCity = currentCity->pawnList;
+		vector<int> pawnsInCity = map.getPawns(currentCityID);
 		int giver = 0;
 		int receiver = 0;
 		int giverstatus = 0;
@@ -342,7 +341,6 @@ void Game::performPlayersTurn(int pId) {
 		vector<PlayerCard> givingHand;
 
 		int displayaction = -1;
-		vector<City*> allCities = map.getCities();
 		bool redoDisplay = true;
 		do {
 			cout << endl;
@@ -364,17 +362,13 @@ void Game::performPlayersTurn(int pId) {
 				redoDisplay = false;
 				break;
 			case 1:
-				currentCity->display_information();
+				map.displayCityInformation(currentCityID);
 				break;
 			case 2:
-				for (int i = 0; i < currentCity->connectionsRef.size(); i++) {
-					currentCity->connectionsRef[i]->display_information();
-				}
+				map.displayAdjacentCityInformation(currentCityID);
 				break;
 			case 3:
-				for (int i = 0; i < allCities.size(); i++) {
-					allCities[i]->display_information();
-				}
+				map.display_information();
 				break;
 			case 4:
 				map.display_status();
@@ -445,6 +439,7 @@ void Game::performPlayersTurn(int pId) {
 					newCityID = pollForCity();
 				} while (newCityID < 1 || newCityID > 48);
 				success = playerlist[pawnID]->drive(newCityID);
+				notify();
 				break;
 
 			case 2: //direct flight
@@ -461,6 +456,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1);
 
 				success = playerlist[pawnID]->direct_flight(cardIndex-1);
+				notify();
 				break;
 			case 3: //charter flight
 				cout << "\nYou chose to take a charter flight." << endl;
@@ -477,6 +473,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (cardIndex > playerlist[pId]->getNumOfCards() || cardIndex < 1 || newCityID >48 || newCityID < 1);
 
 				success = playerlist[pawnID]->charter_flight(cardIndex-1, newCityID);
+				notify();
 				break;
 			case 4: //shuttle flight
 				cout << "\nYou chose to take a shuttle flight." << endl;
@@ -491,6 +488,7 @@ void Game::performPlayersTurn(int pId) {
 				} while (newCityID > 48 || newCityID < 1);
 
 				success = playerlist[pawnID]->shuttle_flight(newCityID);
+				notify();
 				break;
 			case 5: //build research station
 				do {
@@ -503,6 +501,7 @@ void Game::performPlayersTurn(int pId) {
 			case 6: //treat disease
 				cout << "\nYou chose to treat a disease!\nTreating disease in current city." << endl;
 				success = playerlist[pId]->treat_disease();
+				notify();
 				break;
 			case 7: //share knowledge
 				/*
@@ -559,6 +558,7 @@ void Game::performPlayersTurn(int pId) {
 					playerlist[receiver]->drawCard(givingCard, discardPile);
 					std::cout << "Player " << playerlist[giver]->getPlayerID() << " has given a card to another player in " << map.getCityName(playerlist[giver]->getCurrentLocation()) << "(" << playerlist[pId]->getCurrentLocation() << "). " << std::endl;
 				}
+				notify();
 				break;
 			case 8: //cure a disease
 				cout << "\nYou chose to cure a diease." << endl; 
@@ -583,6 +583,7 @@ void Game::performPlayersTurn(int pId) {
 					}
 					cardIndex = -1;
 				}
+				notify();
 				break;
 			case 9:
 				//This case can constitute a different action, as Contingency Planner, Operations Expert, and Dispatcher all have different extra actions
@@ -637,6 +638,7 @@ void Game::performPlayersTurn(int pId) {
 					redo = 1;
 					break;
 				}
+				notify();
 				break;
 			default:
 				cout << "Invalid ID, please retry." << endl;
@@ -1101,12 +1103,14 @@ DeckOfCard<PlayerCard>* Game::instantiatePlayerCards(Map map, int numOfEpidemic)
 
 DeckOfCard<Infection>* Game::instantiateInfectionDeck(Map map) {
 	
+
 	vector<Infection> infectionCards;
 	SqlConnection infectionCard;
 	string* select = new string("select pcID from PlayerCards");
 	infectionCard.sqlExecuteSelect(select,false);
 
 	vector<vector<string>> results = infectionCard.Connection.colData;
+
 
 	for (vector<string> rows : results) {
 

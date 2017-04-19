@@ -16,6 +16,7 @@
 #include "SqlConnection.h"
 #include "Subject.h"
 #include "RoleFactory.h"
+#include "togglePlayerStats.h"
 
 using namespace std;
 class Game : public Subject{
