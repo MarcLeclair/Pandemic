@@ -38,6 +38,7 @@
     <ClCompile Include="Subject.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Builder.h" />
     <ClInclude Include="DeckOfCard.h" />
     <ClInclude Include="Driver.h" />
     <ClInclude Include="game.h" />
@@ -53,7 +54,6 @@
     <ClInclude Include="ReferenceCard.h" />
     <ClInclude Include="RoleCard.h" />
     <ClInclude Include="RoleFactory.h" />
-    <ClInclude Include="SqlBuilder.h" />
     <ClInclude Include="SqlConnection.h" />
     <ClInclude Include="Strategy.h" />
     <ClInclude Include="Subject.h" />

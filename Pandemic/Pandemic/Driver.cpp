@@ -48,8 +48,15 @@ int main() {
 
 
 	if (newgame) {
+
+		director director;
+		builder* startGame = new loadstartgame();
+
+		director.setbuilder(startGame);
+		director.buildInitialGame(numberOfPlayers);
+
 		checkIfgameSave->dropTables();
-		Game * game = new Game(numberOfPlayers);
+		Game * game = director.getgame();
 		DeckOfCard<PlayerCard>* deck = game->getDeck();
 		Observer *g = new GameStatistics();
 		g = new PlayersStatistics(g, game);
@@ -62,21 +69,39 @@ int main() {
 		vector<Player*> players = game->getPlayerlist();
 		cout << players[0]->getCurrentLocation() << endl;
 		delete game;
+		delete startGame;
 	}
 	else if (!newgame) {
 
 		string userInput;
 
-		checkIfgameSave->LoadGame();
+
+		director dir;
+		
+		builder* loadGame = new loadSavedGame();
+
+
+		dir.setbuilder(loadGame);
+		loadGame->createnewstatement();
+		
+		dir.buildLoadedGame();
+
+
+		Game* loadedGame = dir.getgame();
+		
+
+
 		Observer *g = new GameStatistics();
 		g = new PlayersStatistics(g, checkIfgameSave);
 		g = new DiseaseStatistics(g, checkIfgameSave);
 		g = new CitiesStatistics(g, checkIfgameSave);
 		g = new ResourcesStatistics(g, checkIfgameSave);
-		checkIfgameSave->attach(g);
-		checkIfgameSave->StartGame();
+		loadedGame->attach(g);
+		loadedGame->StartGame();
+		delete loadedGame;
 	}
 	system("PAUSE");
+	
 	delete checkIfgameSave;
 	return 0;
 }
